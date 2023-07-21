@@ -46,6 +46,10 @@
 		});
 	}
 
+	const goToLogin = () => {
+		window.location.href = '/'
+	}
+
 	onMount(async() => {
 		getUserIds();
 	})
@@ -152,6 +156,7 @@
 											setUserData(email, full_name, username, password);
 											messageModalSuccess = 1;
 											messagePayload = "Registration successful";
+											setTimeout(goToLogin, 3000);
 										}
 									}
 								}
