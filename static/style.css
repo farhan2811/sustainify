@@ -566,7 +566,7 @@ html,body {
 }
 
 .card {
-	background: url("../src/lib/images/card-bg.svg");
+	background: url("card-bg.svg");
 	background-size: cover;
 	color: #105157;
 	padding: 20px;
