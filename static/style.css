@@ -274,6 +274,14 @@ html,body {
 	padding: 6.69vh 7.246vw 7.81vh 7.246vw;
 }
 
+.modal-backdrop {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background: rgba(0,0,0,0.5);
+	z-index: 9999999999;
+}
+
 .template-form-bg {
 	border-radius: 40px 40px 0px 0px;
 	padding: 3.90vh 7.246vw 5.58vh 7.246vw;
@@ -287,7 +295,7 @@ html,body {
 	min-height: 75vh;
 }
 
-.mh-75 {
+.mh-90 {
 	min-height: 90vh;
 }
 
@@ -363,6 +371,32 @@ html,body {
 	line-height: normal;
 }
 
+.text-center {
+	text-align: center;
+}
+
+.loading-text {
+	color: #105157;
+	font-family: Montserrat;
+	font-size: 3.5vw;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
+
+.btn-modal {
+	border: none;
+	border-radius: 20px;
+	background: #105157;
+	padding: 15px;
+	color: #D1E987;
+	font-family: Montserrat;
+	font-size: 4.831vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
 .btn-secondary {
 	border: none;
 	border-radius: 20px;
@@ -413,4 +447,11 @@ html,body {
 .arrow-back {
 	color: #105157;
 	font-size: 21px;
+}
+
+.card {
+	background: #F8FDDF;
+	color: #105157;
+	padding: 20px;
+	border-radius: 20px;
 }
