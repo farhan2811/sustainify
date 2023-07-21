@@ -1,59 +1,44 @@
 <script>
-	import Counter from './Counter.svelte';
+	/*import Counter from './Counter.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+	import welcome_fallback from '$lib/images/svelte-welcome.png';*/
+	import vector_login from '$lib/images/vector-login.png';
+	import logo from '$lib/images/logo-sustainify.png';
+
+	let hidden_state = 0;
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Login</title>
+	<meta name="description" content="Login Page" />
 </svelte:head>
 
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
+<section class="bg-primary vw-100 vh-100 flex flex-direction-col">
+	<div class="vw-100 vh-25">
+		<img src="{vector_login}" alt="" class="vw-100 h-100 img-login">
+	</div>
+	<div class="vw-100 vh-75 bg-secondary login-form-bg flex flex-direction-col flex-gap-large">
+		<div class="flex flex-direction-col flex-center-vertical flex-gap-small">
+			<div class="sub-header-login">Welcome to</div>
+			<img src="{logo}" alt="" class="header-login">
+		</div>
+		<div class="flex flex-direction-col flex-gap-semi-large">
+			<div class="flex flex-direction-col flex-gap-regular">
+				<div class="head-input">Email</div>
+				<input type="text" name="" class="input-field w-100" placeholder="input email..">
+			</div>
+			<div class="flex flex-direction-col flex-gap-regular">
+				<i class="{hidden_state == 0 ? "fa-solid fa-eye icon-eye" : "fa-solid fa-eye-slash icon-eye"}"></i>
+				<div class="head-input">Password</div>
+				<input type="password" name="" class="input-field w-100" placeholder="input password..">
+			</div>
+		</div>
+		<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+			<button class="btn-primary w-100">Log In</button>
+			<div class="flex flex-between-horizontal">
+				<a href="" class="link-login">Sign Up</a>
+				<a href="" class="link-login">Forgot Password</a>
+			</div>
+		</div>
+	</div>
 </section>
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
-</style>
