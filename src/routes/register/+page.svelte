@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import {frdb} from "$lib/firebaseConfig.js";
 	import {doc, setDoc, getDocs, collection } from "firebase/firestore"; 
+	import {fly, scale} from 'svelte/transition'
 
 	let hidden_state = 0;
 	let overflow = null;
@@ -62,7 +63,7 @@
 </svelte:head>
 
 {#if messageModal == 1}
-	<div class="modal-backdrop">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
 				<div class="head-input-primary text-center">{messagePayload}</div>
@@ -75,7 +76,7 @@
 {/if}
 
 {#if messageModalSuccess == 1}
-	<div class="modal-backdrop">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
 				<div class="head-input-primary text-center">{messagePayload}</div>

@@ -4,18 +4,50 @@
 	import welcome_fallback from '$lib/images/svelte-welcome.png';*/
 	import vector_login from '$lib/images/vector-login.png';
 	import logo from '$lib/images/logo-sustainify.png';
+	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
+	import {frdb} from "$lib/firebaseConfig.js";
+	import {doc, setDoc, getDocs, collection } from "firebase/firestore"; 
+	import {fly, scale} from 'svelte/transition'
 
 	let hidden_state = 0;
 	let overflow = null;
+	let email = null;
+	let password = null;
+	let emails_list = [];
+	let passwords_list = [];
+	let usernames_list = [];
+	let messageModal = 0;
+	let messageModalSuccess = 0;
+	let messagePayload = null;
 
 	function isOverflowY(element) {
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
 	}
 
+	// access the db collection
+	const getUserIds = async () => {
+	    const querySnapshot1 = await getDocs(collection(frdb, "users"));
+	    const querySnapshot2 = await getDocs(collection(frdb, "users"));
+	    const querySnapshot3 = await getDocs(collection(frdb, "users"));
+	    querySnapshot1.forEach((doc) => 
+	    	emails_list.push(doc.data().email)
+	    );
+	    querySnapshot2.forEach((doc) => 
+	    	passwords_list.push(doc.data().password)
+	    );
+	    querySnapshot3.forEach((doc) => 
+	    	usernames_list.push(doc.id)
+	    );
+	}
+
+	const goToHome = () => {
+		window.location.href = '/home'
+	}
+
 	onMount(() => {
+		getUserIds();
 		overflow = isOverflowY(document.getElementById("form-login"))
-		console.log(overflow)
 	})
 </script>
 
@@ -23,6 +55,34 @@
 	<title>Login</title>
 	<meta name="description" content="Login Page" />
 </svelte:head>
+
+
+{#if messageModal == 1}
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<button class="btn-modal w-100" on:click={() => {
+					messageModal = 0
+				}}>Close</button>
+			</div>
+		</div>
+	</div>
+{/if}
+
+{#if messageModalSuccess == 1}
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+					<div class="loading-text text-center">Please wait a moment</div>
+					<img src="{loading}" class="w-30">
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}
 
 <section class="bg-primary vw-100 vh-100 flex flex-direction-col">
 	<div class="vw-100 vh-25">
@@ -36,15 +96,42 @@
 		<div class="flex flex-direction-col flex-gap-semi-large">
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="head-input-primary">Email</div>
-				<input type="email" name="" class="input-field w-100" placeholder="input email..">
+				<input type="email" name="" class="input-field w-100" placeholder="input email.." bind:value={email}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="head-input-primary">Password</div>
-				<input type="password" name="" class="input-field w-100" placeholder="input password..">
+				<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={password}>
 			</div>
 		</div>
 		<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
-			<button class="btn-primary w-100">Log In</button>
+			<button class="btn-primary w-100" on:click={() => {
+				if (email == "" || email == null) {
+					messageModal = 1;
+					messagePayload = "Please fill your email";
+				} else if(password == "" || password == null) {
+					messageModal = 1;
+					messagePayload = "Please fill your password";
+				} else {
+					for (var i = 0; i < emails_list.length; i++) {
+						if (emails_list[i] == email) {
+							if (passwords_list[i] == password) {
+								localStorage.setItem("email", email);
+								localStorage.setItem("username", usernames_list[i]);
+								messageModalSuccess = 1;
+								messagePayload = "Login successful";
+								setTimeout(goToHome, 3000);
+								break;
+							} else {
+								messageModal = 1;
+								messagePayload = "Your email/password doesn't match";
+							}
+						} else {
+							messageModal = 1;
+							messagePayload = "Your email/password doesn't match";
+						}
+					}
+				}
+			}}>Log In</button>
 			<div class="flex flex-between-horizontal">
 				<a href="/register" class="link-login">Sign Up</a>
 				<a href="" class="link-login">Forgot Password</a>

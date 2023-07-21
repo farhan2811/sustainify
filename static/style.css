@@ -41,6 +41,10 @@ html,body {
 	height: 40vh;
 }
 
+.vh-37 {
+	height: 37vh;
+}
+
 .vh-30 {
 	height: 30vh;
 }
@@ -89,8 +93,16 @@ html,body {
 	height: 30%;
 }
 
+.h-37 {
+	height: 37%;
+}
+
 .h-20 {
 	height: 20%;
+}
+
+.h-15 {
+	height: 15%;
 }
 
 .h-10 {
@@ -282,9 +294,24 @@ html,body {
 	z-index: 9999999999;
 }
 
+.title-card-home {
+	color: #D1E987;
+	font-family: Montserrat;
+	font-size: 7.246vw;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+	margin-top: 3px;
+}
+
 .template-form-bg {
 	border-radius: 40px 40px 0px 0px;
 	padding: 3.90vh 7.246vw 5.58vh 7.246vw;
+}
+
+.template-home-bg {
+	border-radius: 40px 40px 0px 0px;
+	padding: 3.90vh 7.246vw 13vh 7.246vw;
 }
 
 .h-fit {
@@ -299,8 +326,57 @@ html,body {
 	min-height: 90vh;
 }
 
+.mh-60 {
+	min-height: 60vh;
+}
+
 .img-login {
 	margin-top: 3vh;
+}
+
+.navbar {
+	position: fixed;
+	padding: 2.23vh 9.662vw 2.23vh 9.662vw;
+	border-radius: 10px 10px 0px 0px;
+	background: #F8FDDF;
+	bottom: 0;
+	filter: drop-shadow(0px 10px 50px #105157);
+}
+
+.sub-home {
+	color: #105157;
+	font-family: Montserrat;
+	font-size: 4.831vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
+.carbon-level {
+	color: #FF8A00;
+	font-family: Montserrat;
+	font-size: 4.831vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
+.carbon-count {
+	color: #105157;
+	font-family: Montserrat;
+	font-size: 12.077vw;
+	font-style: normal;
+	font-weight: 800;
+	line-height: normal;
+}
+
+.carbon-status-home {
+	padding: 10px 7.246vw 10px 7.246vw;
+}
+
+.card-bg {
+	min-height: 60vh;
+	overflow: auto;
 }
 
 .sub-header-login {
@@ -410,8 +486,20 @@ html,body {
 	line-height: normal;
 }
 
+.icon-house-signal {
+	font-size: 30px;
+	color: #105157;
+}
+
 .page-top {
 	padding: 2.34vh 7.246vw 2.34vh 7.246vw;
+}
+
+.home-button {
+	width: 50px;
+	height: 50px;
+	background: #D1E987;
+	border-radius: 100px;
 }
 
 .input-field::placeholder {
@@ -449,8 +537,37 @@ html,body {
 	font-size: 21px;
 }
 
+.star-missions {
+	font-size: 5.609vw;
+	color: #105157;
+}
+
+.mission-title {
+	color: #105157;
+	font-family: Montserrat;
+	font-size: 4.348vw;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+.mission-points {
+	color: #105157;
+	font-family: Montserrat;
+	font-size: 5.556vw;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
+
+.card-mission {
+	padding-top: 30px !important;
+	padding-bottom: 30px !important;
+}
+
 .card {
-	background: #F8FDDF;
+	background: url("../src/lib/images/card-bg.svg");
+	background-size: cover;
 	color: #105157;
 	padding: 20px;
 	border-radius: 20px;
