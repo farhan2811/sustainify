@@ -4,8 +4,19 @@
 	import welcome_fallback from '$lib/images/svelte-welcome.png';*/
 	import vector_login from '$lib/images/vector-login.png';
 	import logo from '$lib/images/logo-sustainify.png';
+	import { onMount } from 'svelte';
 
 	let hidden_state = 0;
+	let overflow = null;
+
+	function isOverflowY(element) {
+	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
+	}
+
+	onMount(() => {
+		overflow = isOverflowY(document.getElementById("form-login"))
+		console.log(overflow)
+	})
 </script>
 
 <svelte:head>
@@ -17,7 +28,7 @@
 	<div class="vw-100 vh-25">
 		<img src="{vector_login}" alt="" class="vw-100 h-100 img-login">
 	</div>
-	<div class="vw-100 vh-75 bg-secondary login-form-bg flex flex-direction-col flex-gap-large">
+	<div class="vw-100 {overflow == true ? "h-fit" : "mh-75"} bg-secondary login-form-bg flex flex-direction-col flex-gap-large" id="form-login">
 		<div class="flex flex-direction-col flex-center-vertical flex-gap-small">
 			<div class="sub-header-login">Welcome to</div>
 			<img src="{logo}" alt="" class="header-login">
@@ -28,7 +39,6 @@
 				<input type="text" name="" class="input-field w-100" placeholder="input email..">
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
-				<i class="{hidden_state == 0 ? "fa-solid fa-eye icon-eye" : "fa-solid fa-eye-slash icon-eye"}"></i>
 				<div class="head-input">Password</div>
 				<input type="password" name="" class="input-field w-100" placeholder="input password..">
 			</div>
