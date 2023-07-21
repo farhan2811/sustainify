@@ -35,18 +35,18 @@
 		</div>
 		<div class="flex flex-direction-col flex-gap-semi-large">
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input">Email</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input email..">
+				<div class="head-input-primary">Email</div>
+				<input type="email" name="" class="input-field w-100" placeholder="input email..">
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input">Password</div>
+				<div class="head-input-primary">Password</div>
 				<input type="password" name="" class="input-field w-100" placeholder="input password..">
 			</div>
 		</div>
 		<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
 			<button class="btn-primary w-100">Log In</button>
 			<div class="flex flex-between-horizontal">
-				<a href="" class="link-login">Sign Up</a>
+				<a href="/register" class="link-login">Sign Up</a>
 				<a href="" class="link-login">Forgot Password</a>
 			</div>
 		</div>

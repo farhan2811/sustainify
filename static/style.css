@@ -274,12 +274,21 @@ html,body {
 	padding: 6.69vh 7.246vw 7.81vh 7.246vw;
 }
 
+.template-form-bg {
+	border-radius: 40px 40px 0px 0px;
+	padding: 3.90vh 7.246vw 5.58vh 7.246vw;
+}
+
 .h-fit {
 	height: fit-content;
 }
 
 .mh-75 {
 	min-height: 75vh;
+}
+
+.mh-75 {
+	min-height: 90vh;
 }
 
 .img-login {
@@ -303,8 +312,17 @@ html,body {
 	grid-gap: 2.174vw;
 }
 
-.head-input {
+.head-input-primary {
 	color: #105157;
+	font-family: Montserrat;
+	font-size: 4.831vw;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+.head-input-secondary {
+	color: #D1E987;
 	font-family: Montserrat;
 	font-size: 4.831vw;
 	font-style: normal;
@@ -345,6 +363,23 @@ html,body {
 	line-height: normal;
 }
 
+.btn-secondary {
+	border: none;
+	border-radius: 20px;
+	background: #D1E987;
+	padding: 25px;
+	color: #105157;
+	font-family: Montserrat;
+	font-size: 4.831vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
+.page-top {
+	padding: 2.34vh 7.246vw 2.34vh 7.246vw;
+}
+
 .input-field::placeholder {
 	color: rgba(16, 81, 87, 0.50);
 	font-family: Montserrat;
@@ -373,4 +408,9 @@ html,body {
 	font-weight: 500;
 	line-height: normal;
 	text-decoration: none;
+}
+
+.arrow-back {
+	color: #105157;
+	font-size: 21px;
 }
