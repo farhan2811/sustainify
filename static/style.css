@@ -327,7 +327,9 @@ html,body {
 }
 
 .input-field:focus {
-	outline: 2px solid #105157;
+	outline: none;
+	transition: 0.5s;
+	box-shadow: 5px 10px rgba(16, 81, 87, 0.1);
 }
 
 .btn-primary {
