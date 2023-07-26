@@ -42,6 +42,11 @@
 
 	onMount(async() => {
 		// getUserIds();
+		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
+			window.location.href = '/'
+		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
+			window.location.href = '/'
+		}
 	})
 
 </script>
@@ -60,8 +65,8 @@
 		</div>
 	</div>
 	<div class="vw-100 vh-37 flex flex-direction-col flex-center-vertical flex-gap-regular carbon-status-home">
-		<div class="sub-home">Previous Month Carbon Footprint</div>
-		<div class="carbon-count">4.139 Kg CO2</div>
+		<div class="sub-home">Last Month Carbon Footprint</div>
+		<div class="carbon-count">3321 Kg CO2</div>
 		<div class="sub-home">Emission Level : <span class="carbon-level">Average</span></div>
 	</div>
 	<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large">

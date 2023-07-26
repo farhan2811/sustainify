@@ -48,6 +48,11 @@
 	onMount(() => {
 		getUserIds();
 		overflow = isOverflowY(document.getElementById("form-login"))
+		if (localStorage.getItem("email") != null) {
+			if (localStorage.getItem("username") != null) {
+				window.location.href = '/home'
+			}
+		}
 	})
 </script>
 
