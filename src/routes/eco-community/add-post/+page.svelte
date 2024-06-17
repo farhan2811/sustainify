@@ -28,6 +28,24 @@
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
 	}
 
+	const setCarbonData = async (electricity, gas, fuel, meat, vegetable, water, garbage, flight, total, level) => {
+		try {
+			await setDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year), {
+			  home_electricity: electricity,
+			  kitchen_gas: gas,
+			  meat_consumption: meat,
+			  vegetable_consumption: vegetable,
+			  water_usage: water,
+			  garbage_disposal: garbage,
+			  airplane_flight: flight,
+			  carbon_total : total,
+			  carbon_level : level
+			});
+		} catch(error) {
+			console.log(error)
+		}
+	}
+
 	// // access the db collection
 	// const getUserIds = async () => {
 	//     const querySnapshot1 = await getDocs(collection(frdb, "users"));

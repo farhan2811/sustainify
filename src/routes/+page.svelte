@@ -96,7 +96,7 @@
 	<div class="vw-100 {overflow == true ? "h-fit" : "mh-75"} bg-secondary login-form-bg flex flex-direction-col flex-gap-large" id="form-login">
 		<div class="flex flex-direction-col flex-center-vertical flex-gap-small">
 			<div class="sub-header-login">Welcome to</div>
-			<img src="{logo}" alt="" class="header-login">
+			<img src="{logo}" alt="header login image" class="header-login">
 		</div>
 		<div class="flex flex-direction-col flex-gap-semi-large">
 			<div class="flex flex-direction-col flex-gap-regular">

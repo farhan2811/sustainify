@@ -285,6 +285,24 @@ html,body {
 	background: #105157;
 }
 
+.bg-card-profile {
+	background: url('card-ornament2.svg') !important;
+	background-size: cover !important;
+	background-position: top;
+}
+
+.points-show{
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 22px;	
+color: #105157;
+background: #F8FDDF;
+padding: 10px 25px 10px 25px;
+border-radius: 10px;
+}
+
 .bg-secondary {
 	background: #D1E987;
 }
@@ -292,6 +310,10 @@ html,body {
 .login-form-bg {
 	border-radius: 40px 40px 0px 0px;
 	padding: 6.69vh 7.246vw 7.81vh 7.246vw;
+}
+
+.rounded-image {
+	border-radius: 100px;
 }
 
 .modal-backdrop {
@@ -317,6 +339,16 @@ html,body {
 	font-size: 7.246vw;
 	font-style: normal;
 	font-weight: 700;
+	line-height: normal;
+	margin-top: 3px;
+}
+
+.title-card-profile {
+	color: #D1E987;
+	font-family: Montserrat;
+	font-size: 18px;
+	font-style: normal;
+	font-weight: 500;
 	line-height: normal;
 	margin-top: 3px;
 }
@@ -419,6 +451,15 @@ html,body {
 	line-height: normal;
 }
 
+.sub-track {
+	color: #D1E987;
+	font-family: Montserrat;
+	font-size: 4.831vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
 .carbon-level {
 	color: #FF8A00;
 	font-family: Montserrat;
@@ -434,6 +475,15 @@ html,body {
 	font-size: 12.077vw;
 	font-style: normal;
 	font-weight: 800;
+	line-height: normal;
+}
+
+.time-track {
+	color: #D1E987;
+	font-family: Montserrat;
+	font-size: 7.077vw;
+	font-style: normal;
+	font-weight: 600;
 	line-height: normal;
 }
 
@@ -456,7 +506,7 @@ html,body {
 }
 
 .carbon-status-home {
-	padding: 10px 7.246vw 10px 7.246vw;
+	padding: 4.4vh 7.246vw 5.8vh 7.246vw;
 }
 
 .card-bg {
@@ -760,6 +810,51 @@ html,body {
 	line-height: normal;
 }
 
+.select-track {
+	appearance: none;
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 1.5rem center !important;
+    background-size: 1.3em !important;
+	border: none;
+	border-radius: 20px;
+	background: #F8FDDF;
+	padding: 15px;
+	padding-left: 15px;
+	color: #105157;
+	font-family: Montserrat;
+	font-size: 4.348vw;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+.btn-track {
+	border: none;
+	border-radius: 20px;
+	background: #105157;
+	padding: 15px;
+	color: #D1E987;
+	font-family: Montserrat;
+	font-size: 4.348vw;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+.btn-stop-track {
+	border: none;
+	border-radius: 20px;
+	background: #dc3545;
+	padding: 15px;
+	color: #fff;
+	font-family: Montserrat;
+	font-size: 4.348vw;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
 .sub-title-emission {
 	color: #D1E987;
 	font-family: Montserrat;
@@ -921,6 +1016,11 @@ html,body {
 	border-radius: 20px;
 }
 
+.card-track {
+	padding: 40px 20px;
+	border-radius: 20px;
+}
+
 .icon-post {
 	margin-top: 4px;
 	width: 25px;
@@ -1006,7 +1106,24 @@ html,body {
 	line-height: normal;
 }
 
+.username-display {
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 25px;
+	line-height: 30px;
+	color: #105157;	
+}
 
+.name-display {
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 24px;
+
+	color: #105157;
+}
 
 
 

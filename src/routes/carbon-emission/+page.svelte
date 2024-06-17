@@ -160,6 +160,9 @@
 		</div>
 	</div>
 	<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large">
+		<a href="/carbon-emission/vehicle-tracker/" class="no-decoration">
+			<button class="btn-secondary w-100 flex flex-gap-regular flex-center-vertical flex-center-horizontal"><i class="fa-solid fa-car"></i>Vehicle Tracker</button>
+		</a>
 		<a href="/carbon-emission/emission-calculator/" class="no-decoration">
 			<button class="btn-secondary w-100 flex flex-gap-regular flex-center-vertical flex-center-horizontal"><i class="fa-solid fa-calculator"></i>Emission Calculator</button>
 		</a>

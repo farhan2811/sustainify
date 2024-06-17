@@ -31,5 +31,11 @@
 			<i class="fa-solid fa-earth-americas icon-house-signal"></i>
 		{/if}
 	</a>
-	<i class="fa-solid fa-user icon-house-signal"></i>
+	<a href="/profile" class="no-decoration">
+		{#if pagePointer == "profile"}
+			<i class="fa-solid fa-user icon-house-signal active"></i>
+		{:else}
+			<i class="fa-solid fa-user icon-house-signal"></i>
+		{/if}
+	</a>
 </div>

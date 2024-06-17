@@ -15,88 +15,141 @@
 	  "July", "August", "September", "October", "November", "December"
 	];
 	let overflow = null;
-	let home_electricity = null;
-	let kitchen_gas = null;
-	let vehicle_fuel = null;
-	let meat_consumption = null;
-	let vegetable_consumption = null;
-	let water_usage = null;
-	let garbage_disposal = null;
-	let airplane_flight = null;
-	let real_home_electricity = null;
-	let real_kitchen_gas = null;
-	let real_vehicle_fuel = null;
-	let real_meat_consumption = null;
-	let real_vegetable_consumption = null;
-	let real_water_usage = null;
-	let real_garbage_disposal = null;
-	let real_airplane_flight = null;
-	let carbon_total = null;
-	let carbon_level = null;
+	// let home_electricity = null;
+	// let kitchen_gas = null;
+	// let vehicle_fuel = null;
+	// let meat_consumption = null;
+	// let vegetable_consumption = null;
+	// let water_usage = null;
+	// let garbage_disposal = null;
+	// let airplane_flight = null;
+	// let real_home_electricity = null;
+	// let real_kitchen_gas = null;
+	// let real_vehicle_fuel = null;
+	// let real_meat_consumption = null;
+	// let real_vegetable_consumption = null;
+	// let real_water_usage = null;
+	// let real_garbage_disposal = null;
+	// let real_airplane_flight = null;
+	// let carbon_total = null;
+	// let carbon_level = null;
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
-	let username_list = [];
-	let email_list = [];
-	let dateObj = new Date();
-	let month = dateObj.getUTCMonth();
-	let day = dateObj.getUTCDate();
-	let year = dateObj.getUTCFullYear();
-	let month_year_list = [];
-	let month_year_avail = false;
+	let watchId;
+	let startTime = "-";
+	let endTime = "-";
+	let previousPosition = null;
+	let totalDistance = 0;
+	let totalEmissions = 0;
+	const carEmissionFactor = 2.31; // kg CO2 per liter of gasoline
+	const motorcycleEmissionFactor = 0.103; // kg CO2 per km
+	const averageFuelEfficiencyCar = 12; // km per liter
+	// let username_list = [];
+	// let email_list = [];
+	let vehicle_state = "Car"
+	let track_state = "stop"
+	// let dateObj = new Date();
+	// let month = dateObj.getUTCMonth();
+	// let day = dateObj.getUTCDate();
+	// let year = dateObj.getUTCFullYear();
+	// let month_year_list = [];
+	// let month_year_avail = false;
 
 
 	function isOverflowY(element) {
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
 	}
 
-	// access the db collection
-	const getUserMonthYear = async () => {
-	    const querySnapshot1 = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
-	    querySnapshot1.forEach((doc) => 
-	    	month_year_list.push(doc.id)
-	    );
-	    for (var i = 0; i < month_year_list.length; i++) {
-	    	if (month_year_list[i] == monthNames[month]+"-"+year) {
-	    		month_year_avail = true;
-	    		break;
-	    	} else {
-	    		month_year_avail = false;
-	    	}
+
+	function updatePosition(position) {
+	    const { latitude, longitude } = position.coords;
+	    if (previousPosition) {
+	        const distance = calculateDistance(previousPosition.latitude, previousPosition.longitude, latitude, longitude);
+	        totalDistance += distance;
+	        const emissions = calculateEmissions(distance, vehicle_state);
+        	totalEmissions += emissions;
+	    }
+	    previousPosition = { latitude, longitude };
+	}
+
+	function showError(error) {
+	    console.error("Error getting location: ", error);
+	}
+
+	function calculateDistance(lat1, lon1, lat2, lon2) {
+	    const R = 6371;
+	    const dLat = degreesToRadians(lat2 - lat1);
+	    const dLon = degreesToRadians(lon2 - lon1);
+	    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+	              Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
+	              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+	    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	    return R * c;
+	}
+
+	function degreesToRadians(degrees) {
+	    return degrees * (Math.PI / 180);
+	}
+
+	function calculateEmissions(distance, vehicleType) {
+	    if (vehicleType === "Car") {
+	        return distance * (carEmissionFactor / averageFuelEfficiencyCar);
+	    } else if (vehicleType === "Motorcycle") {
+	        return distance * motorcycleEmissionFactor;
+	    } else {
+	        return 0;
 	    }
 	}
 
-	const setCarbonData = async (electricity, gas, fuel, meat, vegetable, water, garbage, flight, total, level) => {
-		try {
-			await setDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year), {
-			  home_electricity: electricity,
-			  kitchen_gas: gas,
-			  meat_consumption: meat,
-			  vegetable_consumption: vegetable,
-			  water_usage: water,
-			  garbage_disposal: garbage,
-			  airplane_flight: flight,
-			  carbon_total : total,
-			  carbon_level : level
-			});
-		} catch(error) {
-			console.log(error)
-		}
-	}
+	// // access the db collection
+	// const getUserMonthYear = async () => {
+	//     const querySnapshot1 = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
+	//     querySnapshot1.forEach((doc) => 
+	//     	month_year_list.push(doc.id)
+	//     );
+	//     for (var i = 0; i < month_year_list.length; i++) {
+	//     	if (month_year_list[i] == monthNames[month]+"-"+year) {
+	//     		month_year_avail = true;
+	//     		break;
+	//     	} else {
+	//     		month_year_avail = false;
+	//     	}
+	//     }
+	// }
 
-	const goToCarbonResult = () => {
-		window.location.href = '/carbon-emission/emission-calculator/carbon-result'
-	}
+	// const setCarbonData = async (electricity, gas, fuel, meat, vegetable, water, garbage, flight, total, level) => {
+	// 	try {
+	// 		await setDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year), {
+	// 		  home_electricity: electricity,
+	// 		  kitchen_gas: gas,
+	// 		  meat_consumption: meat,
+	// 		  vegetable_consumption: vegetable,
+	// 		  water_usage: water,
+	// 		  garbage_disposal: garbage,
+	// 		  airplane_flight: flight,
+	// 		  carbon_total : total,
+	// 		  carbon_level : level
+	// 		});
+	// 	} catch(error) {
+	// 		console.log(error)
+	// 	}
+	// }
+
+	// const goToCarbonResult = () => {
+	// 	window.location.href = '/carbon-emission/emission-calculator/carbon-result'
+	// }
 
 	onMount(async() => {
-		getUserMonthYear();
-		console.log(monthNames[month]+"-"+year)
+		// getUserMonthYear();
+		// console.log(monthNames[month]+"-"+year)
+
 	})
 
 </script>
 
 <svelte:head>
-	<title>Emission Calculator</title>
+	<title>Vehicle Tracker</title>
 	<meta name="description" content="Emission Calculator Page" />
 </svelte:head>
 
@@ -113,7 +166,7 @@
 	</div>
 {/if}
 
-{#if month_year_avail == true}
+<!-- {#if month_year_avail == true}
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -124,7 +177,7 @@
 			</div>
 		</div>
 	</div>
-{/if}
+{/if} -->
 
 {#if messageModalSuccess == 1}
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
@@ -151,7 +204,53 @@
 			<img src="{logo}" alt="" class="w-50">
 		</div>
 	</div>
-	<div class="bg-primary vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+	<div class="vw-100 h-fit flex flex-direction-col flex-center-vertical page-top flex-gap-extra-large-double">
+		<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
+			<select class="select-track w-50" bind:value={vehicle_state}>
+				<option>Car</option>
+				<option>Motorcycle</option>
+			</select>
+			{#if track_state == "start"}
+				<button class="btn-stop-track w-50" on:click={() => {
+					track_state = "stop"
+					endTime = new Date().toLocaleTimeString('it-IT');
+					navigator.geolocation.clearWatch(watchId);
+				}}>Stop</button>	
+			{:else}
+				<button class="btn-track w-50" on:click={() => {
+					track_state = "start"
+					startTime = new Date().toLocaleTimeString('it-IT');
+					totalDistance = 0; 
+					totalEmissions = 0; 
+				    previousPosition = null; 
+				    watchId = navigator.geolocation.watchPosition(updatePosition, showError, { enableHighAccuracy: true });
+				}}>Start</button>
+			{/if}
+		</div>
+		<div class="flex flex-direction-col flex-gap-extra-large-double w-100 bg-primary card-track">
+			<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
+				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+					<div class="sub-track">Start Time</div>
+					<div class="time-track">{startTime}</div>
+				</div>
+				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+					<div class="sub-track">End Time</div>
+					<div class="time-track">{endTime}</div>
+				</div>
+			</div>
+			<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
+				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+					<div class="sub-track">Distance</div>
+					<div class="time-track">{totalDistance}</div>
+				</div>
+				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+					<div class="sub-track">CO<sub>2</sub></div>
+					<div class="time-track">{totalEmissions} KGs</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="bg-primary vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
 		<div class="flex flex-direction-col flex-gap-semi-large">
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="head-input-secondary">Home Electricity Usage (Kwh)</div>
@@ -231,5 +330,5 @@
 				}}>Calculate</button>
 			</div>
 		</div>
-	</div>
+	</div> -->
 </section>
