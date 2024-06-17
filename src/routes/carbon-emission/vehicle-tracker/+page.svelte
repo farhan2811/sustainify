@@ -66,9 +66,9 @@
 	    const { latitude, longitude } = position.coords;
 	    if (previousPosition) {
 	        const distance = calculateDistance(previousPosition.latitude, previousPosition.longitude, latitude, longitude);
-	        totalDistance += distance;
+	        totalDistance += distance.toFixed(2);
 	        const emissions = calculateEmissions(distance, vehicle_state);
-        	totalEmissions += emissions;
+        	totalEmissions += emissions.toFixed(2);
 	    }
 	    previousPosition = { latitude, longitude };
 	}
