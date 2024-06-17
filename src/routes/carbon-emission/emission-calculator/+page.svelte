@@ -7,7 +7,7 @@
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
 	import {frdb} from "$lib/firebaseConfig.js";
-	import {doc, setDoc, getDocs, collection } from "firebase/firestore"; 
+	import {doc, setDoc, getDocs, collection, getDoc, updateDoc } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition'
 
 	let hidden_state = 0;
@@ -17,20 +17,25 @@
 	let overflow = null;
 	let home_electricity = null;
 	let kitchen_gas = null;
-	let vehicle_fuel = null;
 	let meat_consumption = null;
 	let vegetable_consumption = null;
-	let water_usage = null;
+	let grains_consumption = null;
 	let garbage_disposal = null;
 	let airplane_flight = null;
 	let real_home_electricity = null;
 	let real_kitchen_gas = null;
-	let real_vehicle_fuel = null;
 	let real_meat_consumption = null;
 	let real_vegetable_consumption = null;
-	let real_water_usage = null;
+	let real_grains_consumption = null;
 	let real_garbage_disposal = null;
 	let real_airplane_flight = null;
+	let home_electricity_emission_factor = 0.233;
+    let kitchen_gas_emission_factor= 2.95;
+    let meat_consumption_emission_factor = 27;
+    let vegetable_consumption_emission_factor = 2;
+    let grains_consumption_emission_factor = 1.2;
+    let garbage_disposal_emission_factor = 0.45;
+    let airplane_flight_emission_factor = 0.15;
 	let carbon_total = null;
 	let carbon_level = null;
 	let messageModal = 0;
@@ -44,6 +49,8 @@
 	let year = dateObj.getUTCFullYear();
 	let month_year_list = [];
 	let month_year_avail = false;
+	let done_calculate = "";
+	let carbon_data = null;
 
 
 	function isOverflowY(element) {
@@ -59,6 +66,12 @@
 	    for (var i = 0; i < month_year_list.length; i++) {
 	    	if (month_year_list[i] == monthNames[month]+"-"+year) {
 	    		month_year_avail = true;
+	    		const querySnapshot2 = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record", monthNames[month]+"-"+year));
+	    		if (querySnapshot2.data().is_calculator == "no") {
+	    			done_calculate = "no";
+	    		} else {
+	    			done_calculate = "yes"
+	    		}
 	    		break;
 	    	} else {
 	    		month_year_avail = false;
@@ -66,21 +79,53 @@
 	    }
 	}
 
-	const setCarbonData = async (electricity, gas, fuel, meat, vegetable, water, garbage, flight, total, level) => {
-		try {
-			await setDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year), {
-			  home_electricity: electricity,
-			  kitchen_gas: gas,
-			  meat_consumption: meat,
-			  vegetable_consumption: vegetable,
-			  water_usage: water,
-			  garbage_disposal: garbage,
-			  airplane_flight: flight,
-			  carbon_total : total,
-			  carbon_level : level
-			});
-		} catch(error) {
-			console.log(error)
+	const setCarbonData = async (electricity, gas, meat, vegetable, grains, garbage, flight, total, level) => {
+		if (month_year_avail == false) {
+			try {
+				await setDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year), {
+				  home_electricity: parseFloat(electricity.toFixed(1)),
+				  kitchen_gas: parseFloat(gas.toFixed(1)),
+				  meat_consumption: parseFloat(meat.toFixed(1)),
+				  vegetable_consumption: parseFloat(vegetable.toFixed(1)),
+				  grains_consumption: parseFloat(grains.toFixed(1)),
+				  garbage_disposal: parseFloat(garbage.toFixed(1)),
+				  airplane_flight: parseFloat(flight.toFixed(1)),
+				  carbon_total : parseFloat(total.toFixed(1)),
+				  carbon_level : level,
+				  vehicle_fuel : 0,
+				  is_calculator : "yes"
+				});
+			} catch(error) {
+				console.log(error)
+			}
+		} else {
+			try {
+				const querySnapshot3 = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record", monthNames[month]+"-"+year));
+				carbon_data = querySnapshot3.data();
+				carbon_data.carbon_total = parseFloat(carbon_data.carbon_total);
+				total = parseFloat(total);
+				total += carbon_data.carbon_total;
+				if (carbon_data.carbon_total < 1000) {
+					carbon_data.carbon_level = "Low"
+				} else if (carbon_data.carbon_total >= 1000 && carbon_data.carbon_total <= 2000) {
+					carbon_data.carbon_level = "Average"
+				} else {
+					carbon_data.carbon_level = "High"
+				}
+				updateDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record", monthNames[month]+"-"+year), {
+						home_electricity: parseFloat(electricity.toFixed(1)),
+						kitchen_gas: parseFloat(gas.toFixed(1)),
+						meat_consumption: parseFloat(meat.toFixed(1)),
+						vegetable_consumption: parseFloat(vegetable.toFixed(1)),
+						grains_consumption: parseFloat(grains.toFixed(1)),
+						garbage_disposal: parseFloat(garbage.toFixed(1)),
+						airplane_flight: parseFloat(flight.toFixed(1)),
+						carbon_total : parseFloat(total.toFixed(1)),
+					  	carbon_level : carbon_data.carbon_level
+					})
+			} catch(error) {
+				console.log(error)
+			}
 		}
 	}
 
@@ -113,7 +158,7 @@
 	</div>
 {/if}
 
-{#if month_year_avail == true}
+{#if done_calculate == "yes"}
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -159,8 +204,7 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="flex flex-direction-col flex-gap-small">
-					<div class="head-input-secondary">Kitchen Gas Usage (m3)</div>
-					<div class="head-input-accent">1 kg = 1.25 (m3)</div>
+					<div class="head-input-secondary">Kitchen Gas Usage (Kg)</div>
 				</div>
 				<input type="text" name="" class="input-field w-100" placeholder="input kitchen gas usage.." bind:value={kitchen_gas}>
 			</div>
@@ -173,15 +217,16 @@
 				<input type="text" name="" class="input-field w-100" placeholder="input vegetable consumption.." bind:value={vegetable_consumption}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Water Usage (liter)</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input water usage.." bind:value={water_usage}>
+				<div class="head-input-secondary">Grains Consumption (Kg)</div>
+				<div class="head-input-accent">(Rice, Corn, Wheat, Quinoa, etc.)</div>
+				<input type="text" name="" class="input-field w-100" placeholder="input grains consumption.." bind:value={grains_consumption}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="head-input-secondary">Garbage/Waste Disposal (Kg)</div>
 				<input type="text" name="" class="input-field w-100" placeholder="input garbage/waste disposal.." bind:value={garbage_disposal}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Airplane Flight (Number of Flights)</div>
+				<div class="head-input-secondary">Airplane Flight (Km)</div>
 				<input type="text" name="" class="input-field w-100" placeholder="input airplane flight.." bind:value={airplane_flight}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
@@ -198,9 +243,9 @@
 					} else if(vegetable_consumption == "" || vegetable_consumption == null) {
 						messageModal = 1;
 						messagePayload = "Please fill your vegetable consumption";
-					} else if(water_usage == "" || water_usage == null) {
+					} else if(grains_consumption == "" || grains_consumption == null) {
 						messageModal = 1;
-						messagePayload = "Please fill your water usage";
+						messagePayload = "Please fill your grains consumption";
 					} else if(garbage_disposal == "" || garbage_disposal == null) {
 						messageModal = 1;
 						messagePayload = "Please fill your garbage disposal usage";
@@ -208,22 +253,22 @@
 						messageModal = 1;
 						messagePayload = "Please fill your airplane flight";
 					} else {
-						real_home_electricity = Math.round(home_electricity * 0.5);
-						real_kitchen_gas = Math.round(kitchen_gas * 0.2);
-						real_meat_consumption = Math.round(meat_consumption * 27);
-						real_vegetable_consumption = Math.round(vegetable_consumption * 1.5);
-						real_water_usage = Math.round(water_usage * 0.3);
-						real_garbage_disposal = Math.round(garbage_disposal * 0.4);
-						real_airplane_flight = Math.round((airplane_flight * 1155) * 0.2);
-						carbon_total = real_home_electricity+real_kitchen_gas+real_meat_consumption+real_vegetable_consumption+real_water_usage+real_garbage_disposal+real_airplane_flight;
+						real_home_electricity = home_electricity * home_electricity_emission_factor;
+						real_kitchen_gas = kitchen_gas * kitchen_gas_emission_factor;
+						real_meat_consumption = meat_consumption * meat_consumption_emission_factor;
+						real_vegetable_consumption = vegetable_consumption * vegetable_consumption_emission_factor;
+						real_grains_consumption = grains_consumption * grains_consumption_emission_factor;
+						real_garbage_disposal = garbage_disposal * garbage_disposal_emission_factor;
+						real_airplane_flight = airplane_flight * airplane_flight_emission_factor;
+						carbon_total = real_home_electricity+real_kitchen_gas+real_meat_consumption+real_vegetable_consumption+real_grains_consumption+real_garbage_disposal+real_airplane_flight;
 						if (carbon_total < 1000) {
 							carbon_level = "Low"
-						} else if (carbon_total >= 1000 && carbon_total <= 5000) {
+						} else if (carbon_total >= 1000 && carbon_total <= 2000) {
 							carbon_level = "Average"
 						} else {
 							carbon_level = "High"
 						}
-						setCarbonData(real_home_electricity, real_kitchen_gas, real_meat_consumption, real_vegetable_consumption, real_water_usage, real_garbage_disposal, real_airplane_flight,carbon_total,carbon_level);
+						setCarbonData(real_home_electricity, real_kitchen_gas, real_meat_consumption, real_vegetable_consumption, real_grains_consumption, real_garbage_disposal, real_airplane_flight,carbon_total,carbon_level);
 						messagePayload = "Calculating your data"
 						messageModalSuccess = 1;
 						setTimeout(goToCarbonResult, 3000);

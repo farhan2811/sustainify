@@ -460,8 +460,26 @@ border-radius: 10px;
 	line-height: normal;
 }
 
-.carbon-level {
+.carbon-level-high {
+	color: #dc3545;
+	font-family: Montserrat;
+	font-size: 4.831vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
+.carbon-level-average {
 	color: #FF8A00;
+	font-family: Montserrat;
+	font-size: 4.831vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
+.carbon-level-low {
+	color: #61be25;
 	font-family: Montserrat;
 	font-size: 4.831vw;
 	font-style: normal;

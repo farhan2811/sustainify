@@ -7,6 +7,10 @@
 	import {doc, setDoc, getDocs, getDoc, collection } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
+	let month_year_list = [];
+	const monthNames = ["January", "February", "March", "April", "May", "June",
+	  "July", "August", "September", "October", "November", "December"
+	];
 	let dateObj = new Date();
 	let month = dateObj.getUTCMonth();
 	let day = dateObj.getUTCDate();
@@ -20,7 +24,7 @@
 	let carbon_all_month = [];
 	let carbon_all_month_processed_temp
 	let carbon_all_month_processed = [];
-	let carbon_bundle = [1200, 1543, 1329, 1123, 2342, 3321];
+	let carbon_bundle = [];
 	let newOption = null;
 	let select = null;
 	let carbon_data = null;
@@ -28,6 +32,30 @@
 
 	function isOverflowY(element) {
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
+	}
+
+	const carbonGraphData = async () => {
+		const carbon_data_snapshot = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
+	    carbon_data_snapshot.forEach((doc) => 
+	    	carbon_all_month.push(doc.id)
+	    );
+	}
+
+	const getUserMonthYear = async () => {
+	    const querySnapshot1 = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
+	    querySnapshot1.forEach((doc) => 
+	    	month_year_list.push(doc.id)
+	    );
+	    for (var i = 0; i < monthNames.length; i++) {
+	    	 for (var j = 0; j < month_year_list.length; j++) {
+	    	 	if (month_year_list[j] == monthNames[i]+"-"+year) {
+		    		const carbon_data_snapshot = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year));
+		    		carbon_bundle[i] = carbon_data_snapshot.data().carbon_total	
+		    	} else {
+		    		carbon_bundle[i] = "0"
+		    	}
+	    	 }
+	    }
 	}
 
 	const getCarbonData = async () => {
@@ -41,22 +69,6 @@
 	    	newOption = new Option(carbon_all_month[i],carbon_all_month[i]);
 	    	select.add(newOption,undefined);
 	    }
-	    // percentage_carbon_data[0] = ((carbon_data.home_electricity / carbon_data.carbon_total) * 100).toFixed(1)
-	    // percentage_carbon_data[1] = ((carbon_data.kitchen_gas / carbon_data.carbon_total) * 100).toFixed(1)
-	    // percentage_carbon_data[2] = ((carbon_data.vehicle_fuel / carbon_data.carbon_total) * 100).toFixed(1)
-	    // percentage_carbon_data[3] = ((carbon_data.meat_consumption / carbon_data.carbon_total) * 100).toFixed(1)
-	    // percentage_carbon_data[4] = ((carbon_data.vegetable_consumption / carbon_data.carbon_total) * 100).toFixed(1)
-	    // percentage_carbon_data[5] = ((carbon_data.water_usage / carbon_data.carbon_total) * 100).toFixed(1)
-	    // percentage_carbon_data[6] = ((carbon_data.garbage_disposal / carbon_data.carbon_total) * 100).toFixed(1)
-	    // percentage_carbon_data[7] = ((carbon_data.airplane_flight / carbon_data.carbon_total) * 100).toFixed(1)
-	    // document.querySelector("#home-electricity").style.width = percentage_carbon_data[0]+"%";
-	    // document.querySelector("#kitchen-gas").style.width = percentage_carbon_data[1]+"%";
-	    // document.querySelector("#vehicle-fuel").style.width = percentage_carbon_data[2]+"%";
-	    // document.querySelector("#meat-consumption").style.width = percentage_carbon_data[3]+"%";
-	    // document.querySelector("#vegetable-consumption").style.width = percentage_carbon_data[4]+"%";
-	    // document.querySelector("#water-usage").style.width = percentage_carbon_data[5]+"%";
-	    // document.querySelector("#garbage").style.width = percentage_carbon_data[6]+"%";
-	    // document.querySelector("#airplane-flight").style.width = percentage_carbon_data[7]+"%";
 	}
 
 	const changeCarbonData = async (month) => {
@@ -68,15 +80,16 @@
 	    percentage_carbon_data[2] = ((carbon_data.vehicle_fuel / carbon_data.carbon_total) * 100).toFixed(1)
 	    percentage_carbon_data[3] = ((carbon_data.meat_consumption / carbon_data.carbon_total) * 100).toFixed(1)
 	    percentage_carbon_data[4] = ((carbon_data.vegetable_consumption / carbon_data.carbon_total) * 100).toFixed(1)
-	    percentage_carbon_data[5] = ((carbon_data.water_usage / carbon_data.carbon_total) * 100).toFixed(1)
+	    percentage_carbon_data[5] = ((carbon_data.grains_consumption / carbon_data.carbon_total) * 100).toFixed(1)
 	    percentage_carbon_data[6] = ((carbon_data.garbage_disposal / carbon_data.carbon_total) * 100).toFixed(1)
 	    percentage_carbon_data[7] = ((carbon_data.airplane_flight / carbon_data.carbon_total) * 100).toFixed(1)
+	    console.log(carbon_data)
 	    document.querySelector("#home-electricity").style.width = percentage_carbon_data[0]+"%";
 	    document.querySelector("#kitchen-gas").style.width = percentage_carbon_data[1]+"%";
 	    document.querySelector("#vehicle-fuel").style.width = percentage_carbon_data[2]+"%";
 	    document.querySelector("#meat-consumption").style.width = percentage_carbon_data[3]+"%";
 	    document.querySelector("#vegetable-consumption").style.width = percentage_carbon_data[4]+"%";
-	    document.querySelector("#water-usage").style.width = percentage_carbon_data[5]+"%";
+	    document.querySelector("#grains-consumption").style.width = percentage_carbon_data[5]+"%";
 	    document.querySelector("#garbage").style.width = percentage_carbon_data[6]+"%";
 	    document.querySelector("#airplane-flight").style.width = percentage_carbon_data[7]+"%";
 	}
@@ -107,8 +120,10 @@
 	// }
 
 	onMount(async() => {
-		getCarbonData();
+		await getCarbonData();
 		// getUserIds();
+		await getUserMonthYear();
+		console.log(carbon_bundle)
 		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
 			window.location.href = '/'
 		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
@@ -186,196 +201,205 @@
 			<div class="sub-title-emission text-center">Please select month & year</div>
 		{:else}
 			<div class="flex flex-direction-col flex-gap-semi-large">
-				<div class="sub-title-emission">Energy Consumption</div>
-				<div class="flex flex-direction-col flex-gap-regular">
-					<div class="accent-title-emission">Home Electricity Usage</div>
+			<div class="sub-title-emission">Energy Consumption</div>
+			<div class="flex flex-direction-col flex-gap-regular">
+				<div class="accent-title-emission">Home Electricity Usage</div>
+			</div>
+			<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
+				<div class="carbon-level-bar">
+					<div class="carbon-bar-count" id="home-electricity"></div>
 				</div>
-				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
-					<div class="carbon-level-bar">
-						<div class="carbon-bar-count" id="home-electricity"></div>
+				<div class="flex flex-between-horizontal">
+					<div class="carbon-percentage"> 
+					{#if carbon_data}
+						{carbon_data.home_electricity} Kg CO2
+					{/if}
 					</div>
-					<div class="flex flex-between-horizontal">
-						<div class="carbon-percentage"> 
+					<div class="carbon-percentage">
+					{#if percentage_carbon_data && percentage_carbon_data[0] != undefined}
+						{percentage_carbon_data[0]} %
+					{/if}
+					</div>
+				</div>
+			</div>
+			<div class="flex flex-direction-col flex-gap-regular">
+				<div class="accent-title-emission">Kitchen Gas Usage</div>
+			</div>
+			<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
+				<div class="carbon-level-bar">
+					<div class="carbon-bar-count" id="kitchen-gas"></div>
+				</div>
+				<div class="flex flex-between-horizontal">
+					<div class="carbon-percentage"> 
 						{#if carbon_data}
-							{carbon_data.home_electricity} Kg CO2
+							{carbon_data.kitchen_gas} Kg CO2
 						{/if}
-						</div>
-						<div class="carbon-percentage">
-						{#if percentage_carbon_data && percentage_carbon_data[0] != undefined}
-							{percentage_carbon_data[0]} %
+					</div>
+					<div class="carbon-percentage">
+						{#if percentage_carbon_data && percentage_carbon_data[1] != undefined}
+							{percentage_carbon_data[1]} %
 						{/if}
-						</div>
-					</div>
-				</div>
-				<div class="flex flex-direction-col flex-gap-regular">
-					<div class="accent-title-emission">Kitchen Gas Usage</div>
-				</div>
-				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
-					<div class="carbon-level-bar">
-						<div class="carbon-bar-count" id="kitchen-gas"></div>
-					</div>
-					<div class="flex flex-between-horizontal">
-						<div class="carbon-percentage"> 
-							{#if carbon_data}
-								{carbon_data.kitchen_gas} Kg CO2
-							{/if}
-						</div>
-						<div class="carbon-percentage">
-							{#if percentage_carbon_data && percentage_carbon_data[1] != undefined}
-								{percentage_carbon_data[1]} %
-							{/if}
-						</div>
 					</div>
 				</div>
 			</div>
-			<div class="flex flex-direction-col flex-gap-semi-large">
-				<div class="sub-title-emission">Transportation</div>
-				<div class="flex flex-direction-col flex-gap-regular">
-					<div class="accent-title-emission">Vehicle Fuel</div>
+		</div>
+		<div class="flex flex-direction-col flex-gap-semi-large">
+			<div class="sub-title-emission">Transportation</div>
+			<div class="flex flex-direction-col flex-gap-regular">
+				<div class="accent-title-emission">Vehicle Fuel</div>
+			</div>
+			<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
+				<div class="carbon-level-bar">
+					<div class="carbon-bar-count" id="vehicle-fuel"></div>
 				</div>
-				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
-					<div class="carbon-level-bar">
-						<div class="carbon-bar-count" id="vehicle-fuel"></div>
+				<div class="flex flex-between-horizontal">
+					<div class="carbon-percentage"> 
+						{#if carbon_data}
+							{carbon_data.vehicle_fuel} Kg CO2
+						{/if}
 					</div>
-					<div class="flex flex-between-horizontal">
-						<div class="carbon-percentage"> 
-							{#if carbon_data}
-								{carbon_data.vehicle_fuel} Kg CO2
-							{/if}
-						</div>
-						<div class="carbon-percentage">
-							{#if percentage_carbon_data && percentage_carbon_data[2] != undefined}
-								{percentage_carbon_data[2]} %
-							{/if}
-						</div>
+					<div class="carbon-percentage">
+						{#if percentage_carbon_data && percentage_carbon_data[2] != undefined}
+							{percentage_carbon_data[2]} %
+						{/if}
 					</div>
 				</div>
 			</div>
-			<div class="flex flex-direction-col flex-gap-semi-large">
-				<div class="sub-title-emission">Food</div>
-				<div class="flex flex-direction-col flex-gap-regular">
-					<div class="accent-title-emission">Meat Consumption</div>
+		</div>
+		<div class="flex flex-direction-col flex-gap-semi-large">
+			<div class="sub-title-emission">Food</div>
+			<div class="flex flex-direction-col flex-gap-regular">
+				<div class="accent-title-emission">Meat Consumption</div>
+			</div>
+			<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
+				<div class="carbon-level-bar">
+					<div class="carbon-bar-count" id="meat-consumption"></div>
 				</div>
-				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
-					<div class="carbon-level-bar">
-						<div class="carbon-bar-count" id="meat-consumption"></div>
+				<div class="flex flex-between-horizontal">
+					<div class="carbon-percentage">
+						{#if carbon_data}
+							{carbon_data.meat_consumption} Kg CO2
+						{/if}
 					</div>
-					<div class="flex flex-between-horizontal">
-						<div class="carbon-percentage">
-							{#if carbon_data}
-								{carbon_data.meat_consumption} Kg CO2
-							{/if}
-						</div>
-						<div class="carbon-percentage">
-							{#if percentage_carbon_data && percentage_carbon_data[3] != undefined}
-								{percentage_carbon_data[3]} %
-							{/if}
-						</div>
-					</div>
-				</div>
-				<div class="flex flex-direction-col flex-gap-regular">
-					<div class="accent-title-emission">Vegetable Consumption</div>
-				</div>
-				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
-					<div class="carbon-level-bar">
-						<div class="carbon-bar-count" id="vegetable-consumption"></div>
-					</div>
-					<div class="flex flex-between-horizontal">
-						<div class="carbon-percentage">
-							{#if carbon_data}
-								{carbon_data.vegetable_consumption} Kg CO2
-							{/if}
-						</div>
-						<div class="carbon-percentage">
-							{#if percentage_carbon_data && percentage_carbon_data[4] != undefined}
-								{percentage_carbon_data[4]} %
-							{/if}
-						</div>
+					<div class="carbon-percentage">
+						{#if percentage_carbon_data && percentage_carbon_data[3] != undefined}
+							{percentage_carbon_data[3]} %
+						{/if}
 					</div>
 				</div>
 			</div>
-			<div class="flex flex-direction-col flex-gap-semi-large">
-				<div class="sub-title-emission">Water Consumption</div>
-				<div class="flex flex-direction-col flex-gap-regular">
-					<div class="accent-title-emission">Water Usage</div>
+			<div class="flex flex-direction-col flex-gap-regular">
+				<div class="accent-title-emission">Vegetable Consumption</div>
+			</div>
+			<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
+				<div class="carbon-level-bar">
+					<div class="carbon-bar-count" id="vegetable-consumption"></div>
 				</div>
-				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
-					<div class="carbon-level-bar">
-						<div class="carbon-bar-count" id="water-usage"></div>
+				<div class="flex flex-between-horizontal">
+					<div class="carbon-percentage">
+						{#if carbon_data}
+							{carbon_data.vegetable_consumption} Kg CO2
+						{/if}
 					</div>
-					<div class="flex flex-between-horizontal">
-						<div class="carbon-percentage">
-							{#if carbon_data}
-								{carbon_data.water_usage} Kg CO2
-							{/if}
-						</div>
-						<div class="carbon-percentage">
-							{#if percentage_carbon_data && percentage_carbon_data[5] != undefined}
-								{percentage_carbon_data[5]} %
-							{/if}
-						</div>
+					<div class="carbon-percentage">
+						{#if percentage_carbon_data && percentage_carbon_data[4] != undefined}
+							{percentage_carbon_data[4]} %
+						{/if}
 					</div>
 				</div>
 			</div>
-			<div class="flex flex-direction-col flex-gap-semi-large">
-				<div class="sub-title-emission">Waste Disposal</div>
-				<div class="flex flex-direction-col flex-gap-regular">
-					<div class="accent-title-emission">Garbage</div>
+			<div class="flex flex-direction-col flex-gap-regular">
+				<div class="accent-title-emission">Grains Consumption</div>
+			</div>
+			<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
+				<div class="carbon-level-bar">
+					<div class="carbon-bar-count" id="grains-consumption"></div>
 				</div>
-				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
-					<div class="carbon-level-bar">
-						<div class="carbon-bar-count" id="garbage"></div>
+				<div class="flex flex-between-horizontal">
+					<div class="carbon-percentage">
+						{#if carbon_data}
+							{carbon_data.grains_consumption} Kg CO2
+						{/if}
 					</div>
-					<div class="flex flex-between-horizontal">
-						<div class="carbon-percentage">
-							{#if carbon_data}
-								{carbon_data.garbage_disposal} Kg CO2
-							{/if}
-						</div>
-						<div class="carbon-percentage">
-							{#if percentage_carbon_data && percentage_carbon_data[6] != undefined}
-								{percentage_carbon_data[6]} %
-							{/if}
-						</div>
+					<div class="carbon-percentage">
+						{#if percentage_carbon_data && percentage_carbon_data[5] != undefined}
+							{percentage_carbon_data[5]} %
+						{/if}
 					</div>
 				</div>
 			</div>
-			<div class="flex flex-direction-col flex-gap-semi-large">
-				<div class="sub-title-emission">Air Travel</div>
-				<div class="flex flex-direction-col flex-gap-regular">
-					<div class="accent-title-emission">Airplane Flight</div>
+		</div>
+		<div class="flex flex-direction-col flex-gap-semi-large">
+			<div class="sub-title-emission">Waste Disposal</div>
+			<div class="flex flex-direction-col flex-gap-regular">
+				<div class="accent-title-emission">Garbage</div>
+			</div>
+			<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
+				<div class="carbon-level-bar">
+					<div class="carbon-bar-count" id="garbage"></div>
 				</div>
-				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
-					<div class="carbon-level-bar">
-						<div class="carbon-bar-count" id="airplane-flight"></div>
+				<div class="flex flex-between-horizontal">
+					<div class="carbon-percentage">
+						{#if carbon_data}
+							{carbon_data.garbage_disposal} Kg CO2
+						{/if}
 					</div>
-					<div class="flex flex-between-horizontal">
-						<div class="carbon-percentage">
-							{#if carbon_data}
-								{carbon_data.airplane_flight} Kg CO2
-							{/if}
-						</div>
-						<div class="carbon-percentage">
-							{#if percentage_carbon_data && percentage_carbon_data[7] != undefined}
-								{percentage_carbon_data[7]} %
-							{/if}
-						</div>
+					<div class="carbon-percentage">
+						{#if percentage_carbon_data && percentage_carbon_data[6] != undefined}
+							{percentage_carbon_data[6]} %
+						{/if}
 					</div>
 				</div>
 			</div>
-			<div class="card-2 flex flex-direction-col flex-center-vertical flex-center-horizontal flex-gap-semi-large">	
-				<div class="sub-home">CO2 Emission Total</div>
-				<div class="carbon-count-2">
-					{#if carbon_data}
-						{carbon_data.carbon_total} Kg CO2
-					{/if}
+		</div>
+		<div class="flex flex-direction-col flex-gap-semi-large">
+			<div class="sub-title-emission">Air Travel</div>
+			<div class="flex flex-direction-col flex-gap-regular">
+				<div class="accent-title-emission">Airplane Flight</div>
+			</div>
+			<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
+				<div class="carbon-level-bar">
+					<div class="carbon-bar-count" id="airplane-flight"></div>
 				</div>
-				<div class="sub-home">Emission Level : <span class="carbon-level">
-					{#if carbon_data}
+				<div class="flex flex-between-horizontal">
+					<div class="carbon-percentage">
+						{#if carbon_data}
+							{carbon_data.airplane_flight} Kg CO2
+						{/if}
+					</div>
+					<div class="carbon-percentage">
+						{#if percentage_carbon_data && percentage_carbon_data[7] != undefined}
+							{percentage_carbon_data[7]} %
+						{/if}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card-2 flex flex-direction-col flex-center-vertical flex-center-horizontal flex-gap-semi-large">	
+			<div class="sub-home">CO2 Emission Total</div>
+			<div class="carbon-count-2">
+				{#if carbon_data}
+					{carbon_data.carbon_total} Kg CO2
+				{/if}
+			</div>
+			<div class="sub-home">Emission Level : 
+			{#if carbon_data}
+				{#if carbon_data.carbon_level == "Low"}
+					<span class="carbon-level-low">
 						{carbon_data.carbon_level}
-					{/if}
-				</span></div>
+					</span>
+				{:else if carbon_data.carbon_level == "Average"}
+					<span class="carbon-level-average">
+						{carbon_data.carbon_level}
+					</span>
+				{:else}
+					<span class="carbon-level-high">
+						{carbon_data.carbon_level}
+					</span>
+				{/if}
+			{/if}
 			</div>
+		</div>
 		{/if}
 	</div>
 </section>

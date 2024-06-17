@@ -20,17 +20,9 @@
 	let vehicle_fuel = null;
 	let meat_consumption = null;
 	let vegetable_consumption = null;
-	let water_usage = null;
+	let grains_consumption = null;
 	let garbage_disposal = null;
 	let airplane_flight = null;
-	let real_home_electricity = null;
-	let real_kitchen_gas = null;
-	let real_vehicle_fuel = null;
-	let real_meat_consumption = null;
-	let real_vegetable_consumption = null;
-	let real_water_usage = null;
-	let real_garbage_disposal = null;
-	let real_airplane_flight = null;
 	let carbon_total = null;
 	let carbon_level = null;
 	let messageModal = 0;
@@ -62,21 +54,18 @@
 	    percentage_carbon_data[2] = ((carbon_data.vehicle_fuel / carbon_data.carbon_total) * 100).toFixed(1)
 	    percentage_carbon_data[3] = ((carbon_data.meat_consumption / carbon_data.carbon_total) * 100).toFixed(1)
 	    percentage_carbon_data[4] = ((carbon_data.vegetable_consumption / carbon_data.carbon_total) * 100).toFixed(1)
-	    percentage_carbon_data[5] = ((carbon_data.water_usage / carbon_data.carbon_total) * 100).toFixed(1)
+	    percentage_carbon_data[5] = ((carbon_data.grains_consumption / carbon_data.carbon_total) * 100).toFixed(1)
 	    percentage_carbon_data[6] = ((carbon_data.garbage_disposal / carbon_data.carbon_total) * 100).toFixed(1)
 	    percentage_carbon_data[7] = ((carbon_data.airplane_flight / carbon_data.carbon_total) * 100).toFixed(1)
+	    console.log(carbon_data)
 	    document.querySelector("#home-electricity").style.width = percentage_carbon_data[0]+"%";
 	    document.querySelector("#kitchen-gas").style.width = percentage_carbon_data[1]+"%";
 	    document.querySelector("#vehicle-fuel").style.width = percentage_carbon_data[2]+"%";
 	    document.querySelector("#meat-consumption").style.width = percentage_carbon_data[3]+"%";
 	    document.querySelector("#vegetable-consumption").style.width = percentage_carbon_data[4]+"%";
-	    document.querySelector("#water-usage").style.width = percentage_carbon_data[5]+"%";
+	    document.querySelector("#grains-consumption").style.width = percentage_carbon_data[5]+"%";
 	    document.querySelector("#garbage").style.width = percentage_carbon_data[6]+"%";
 	    document.querySelector("#airplane-flight").style.width = percentage_carbon_data[7]+"%";
-	}
-
-	const goToCarbonResult = () => {
-		window.location.href = '/carbon-emission/carbon-calculator/carbon-result'
 	}
 
 	onMount(async() => {
@@ -243,20 +232,17 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="flex flex-direction-col flex-gap-semi-large">
-			<div class="sub-title-emission">Water Consumption</div>
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="accent-title-emission">Water Usage</div>
+				<div class="accent-title-emission">Grains Consumption</div>
 			</div>
 			<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 				<div class="carbon-level-bar">
-					<div class="carbon-bar-count" id="water-usage"></div>
+					<div class="carbon-bar-count" id="grains-consumption"></div>
 				</div>
 				<div class="flex flex-between-horizontal">
 					<div class="carbon-percentage">
 						{#if carbon_data}
-							{carbon_data.water_usage} Kg CO2
+							{carbon_data.grains_consumption} Kg CO2
 						{/if}
 					</div>
 					<div class="carbon-percentage">
@@ -320,11 +306,23 @@
 					{carbon_data.carbon_total} Kg CO2
 				{/if}
 			</div>
-			<div class="sub-home">Emission Level : <span class="carbon-level">
-				{#if carbon_data}
-					{carbon_data.carbon_level}
+			<div class="sub-home">Emission Level : 
+			{#if carbon_data}
+				{#if carbon_data.carbon_level == "Low"}
+					<span class="carbon-level-low">
+						{carbon_data.carbon_level}
+					</span>
+				{:else if carbon_data.carbon_level == "Average"}
+					<span class="carbon-level-average">
+						{carbon_data.carbon_level}
+					</span>
+				{:else}
+					<span class="carbon-level-high">
+						{carbon_data.carbon_level}
+					</span>
 				{/if}
-			</span></div>
+			{/if}
+			</div>
 		</div>
 	</div>
 </section>

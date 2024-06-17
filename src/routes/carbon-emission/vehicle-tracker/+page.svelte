@@ -7,7 +7,7 @@
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
 	import {frdb} from "$lib/firebaseConfig.js";
-	import {doc, setDoc, getDocs, collection } from "firebase/firestore"; 
+	import {doc, setDoc, getDocs, collection, getDoc, updateDoc } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition'
 
 	let hidden_state = 0;
@@ -32,7 +32,9 @@
 	// let real_garbage_disposal = null;
 	// let real_airplane_flight = null;
 	// let carbon_total = null;
-	// let carbon_level = null;
+	let keysCarbonData = null;
+	let carbon_data = null;
+	let carbon_level = null;
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
@@ -49,12 +51,12 @@
 	// let email_list = [];
 	let vehicle_state = "Car"
 	let track_state = "stop"
-	// let dateObj = new Date();
-	// let month = dateObj.getUTCMonth();
-	// let day = dateObj.getUTCDate();
-	// let year = dateObj.getUTCFullYear();
-	// let month_year_list = [];
-	// let month_year_avail = false;
+	let dateObj = new Date();
+	let month = dateObj.getUTCMonth();
+	let day = dateObj.getUTCDate();
+	let year = dateObj.getUTCFullYear();
+	let month_year_list = [];
+	let month_year_avail = false;
 
 
 	function isOverflowY(element) {
@@ -104,21 +106,21 @@
 	    }
 	}
 
-	// // access the db collection
-	// const getUserMonthYear = async () => {
-	//     const querySnapshot1 = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
-	//     querySnapshot1.forEach((doc) => 
-	//     	month_year_list.push(doc.id)
-	//     );
-	//     for (var i = 0; i < month_year_list.length; i++) {
-	//     	if (month_year_list[i] == monthNames[month]+"-"+year) {
-	//     		month_year_avail = true;
-	//     		break;
-	//     	} else {
-	//     		month_year_avail = false;
-	//     	}
-	//     }
-	// }
+	const getUserMonthYear = async () => {
+	    const querySnapshot1 = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
+	    querySnapshot1.forEach((doc) => 
+	    	month_year_list.push(doc.id)
+	    );
+	    for (var i = 0; i < month_year_list.length; i++) {
+	    	if (month_year_list[i] == monthNames[month]+"-"+year) {
+	    		month_year_avail = true;
+	    		break;
+	    	} else {
+	    		month_year_avail = false;
+	    	}
+	    }
+	    console.log(month_year_avail)
+	}
 
 	// const setCarbonData = async (electricity, gas, fuel, meat, vegetable, water, garbage, flight, total, level) => {
 	// 	try {
@@ -138,13 +140,60 @@
 	// 	}
 	// }
 
+	const setCarbonTrackData = async (carbon) => {
+		if (month_year_avail == false) {
+			try {
+				await setDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year), {
+				  vehicle_fuel : parseFloat(carbon),
+				  carbon_total : parseFloat(carbon),
+				  carbon_level : "Low",
+				  home_electricity : 0,
+				  kitchen_gas : 0,
+				  meat_consumption : 0,
+				  vegetable_consumption : 0,
+				  grains_consumption : 0,
+				  garbage_disposal : 0,
+				  airplane_flight : 0,
+				  is_calculator : "no"
+				});
+				getUserMonthYear();
+			} catch(error) {
+				console.log(error)
+			}
+		} else {
+			try {
+				const querySnapshot1 = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record", monthNames[month]+"-"+year));
+			    carbon_data = querySnapshot1.data();
+			    carbon_data.vehicle_fuel = parseFloat(carbon_data.vehicle_fuel);
+			    carbon_data.carbon_total = parseFloat(carbon_data.carbon_total);
+			    carbon = parseFloat(carbon)
+			    carbon_data.vehicle_fuel += carbon
+			    carbon_data.carbon_total += carbon
+			    if (carbon_data.carbon_total < 1000) {
+					carbon_data.carbon_level = "Low"
+				} else if (carbon_data.carbon_total >= 1000 && carbon_data.carbon_total <= 2000) {
+					carbon_data.carbon_level = "Average"
+				} else {
+					carbon_data.carbon_level = "High"
+				}
+				updateDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record", monthNames[month]+"-"+year), {
+					vehicle_fuel : parseFloat(carbon_data.vehicle_fuel.toFixed(1)),
+				  	carbon_total : parseFloat(carbon_data.carbon_total.toFixed(1)),
+				  	carbon_level : carbon_data.carbon_level
+				})
+			} catch(error) {
+				console.log(error)
+			}
+		}
+	} 
+
 	// const goToCarbonResult = () => {
 	// 	window.location.href = '/carbon-emission/emission-calculator/carbon-result'
 	// }
 
 	onMount(async() => {
-		// getUserMonthYear();
-		// console.log(monthNames[month]+"-"+year)
+		getUserMonthYear();
+		console.log(monthNames[month]+"-"+year)
 
 	})
 
@@ -184,14 +233,11 @@
 {#if messageModalSuccess == 1}
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
-			<div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
-				<div class="flex flex-direction-col flex-gap-large">
-					<div class="head-input-primary text-center">{messagePayload}</div>
-					<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
-						<div class="loading-text text-center">Please wait a moment</div>
-						<img src="{loading}" class="w-30">
-					</div>
-				</div>
+			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<button class="btn-modal w-100" on:click={() => {
+					messageModal = 0
+				}}>Close</button>
 			</div>
 		</div>
 	</div>
@@ -217,6 +263,9 @@
 					track_state = "stop"
 					endTime = new Date().toLocaleTimeString('it-IT');
 					navigator.geolocation.clearWatch(watchId);
+					setCarbonTrackData(totalEmissions.toFixed(1))
+					messagePayload = "Carbon data has been saved"
+					messageModal = 1;
 				}}>Stop</button>	
 			{:else}
 				<button class="btn-track w-50" on:click={() => {
@@ -224,6 +273,7 @@
 					startTime = new Date().toLocaleTimeString('it-IT');
 					totalDistance = 0; 
 					totalEmissions = 0; 
+					endTime = "-";
 				    previousPosition = null; 
 				    watchId = navigator.geolocation.watchPosition(updatePosition, showError, { enableHighAccuracy: true });
 				}}>Start</button>
