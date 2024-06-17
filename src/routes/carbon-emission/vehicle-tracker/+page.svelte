@@ -66,9 +66,11 @@
 	    const { latitude, longitude } = position.coords;
 	    if (previousPosition) {
 	        const distance = calculateDistance(previousPosition.latitude, previousPosition.longitude, latitude, longitude);
-	        totalDistance += distance.toFixed(2);
+	        totalDistance += distance;
 	        const emissions = calculateEmissions(distance, vehicle_state);
-        	totalEmissions += emissions.toFixed(2);
+        	totalEmissions += emissions;
+        	console.log(totalDistance)
+        	console.log(totalEmissions)
 	    }
 	    previousPosition = { latitude, longitude };
 	}
@@ -241,11 +243,11 @@
 			<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
 				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
 					<div class="sub-track">Distance</div>
-					<div class="time-track">{totalDistance}</div>
+					<div class="time-track">{totalDistance.toFixed(1)}</div>
 				</div>
 				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
 					<div class="sub-track">CO<sub>2</sub></div>
-					<div class="time-track">{totalEmissions} KGs</div>
+					<div class="time-track">{totalEmissions.toFixed(1)} KGs</div>
 				</div>
 			</div>
 		</div>
