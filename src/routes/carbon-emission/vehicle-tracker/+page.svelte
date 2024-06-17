@@ -243,7 +243,7 @@
 			<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
 				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
 					<div class="sub-track">Distance</div>
-					<div class="time-track">{totalDistance.toFixed(1)}</div>
+					<div class="time-track">{totalDistance.toFixed(1)} KM</div>
 				</div>
 				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
 					<div class="sub-track">CO<sub>2</sub></div>
