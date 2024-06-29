@@ -6,12 +6,10 @@
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
 	import { frdb } from "$lib/firebaseConfig.js";
-	import { doc, setDoc, getDocs, collection, getDoc, query, where, deleteDoc, updateDoc, increment, orderBy } from "firebase/firestore"; 
+	import { doc, setDoc, getDocs, collection, query, orderBy, where, deleteDoc, updateDoc, increment } from "firebase/firestore"; 
 	import { fly, scale } from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
 
-	let likes = 0;
-	let hasLiked = false;
 	let hidden_state = 0;
 	let overflow = null;
 	let email = null;
@@ -29,11 +27,11 @@
 
 	const getAllPosts = async () => {
 		const postsCollection = collection(frdb, 'posts');
-		const postsQuery = query(postsCollection, orderBy('timestamp', 'desc'));
-		const snapshot = await getDocs(postsQuery);
-		posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+	    const postsQuery = query(postsCollection, where('user_id', '==', localStorage.getItem("username")), orderBy('timestamp', 'desc'));
+	    const snapshot = await getDocs(postsQuery);
+	    posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-		for (let post of posts) {
+	    for (let post of posts) {
 			const likesCollection = collection(frdb, 'likes');
 			const likeQuery = query(likesCollection, where('post_id', '==', post.id.split("_")[1]), where('user_id', '==', localStorage.getItem("username")));
 			const likeSnapshot = await getDocs(likeQuery);
@@ -76,7 +74,7 @@
 		post.has_liked = !post.has_liked;
 
 		// Trigger reactivity for the specific post
-		posts_real = posts_real.map(p => p.id === post.id ? { ...post } : p);
+		posts = posts.map(p => p.id === post.id ? { ...post } : p);
 	}
 
 	onMount(async () => {
@@ -123,7 +121,7 @@
 {/if}
 
 <section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-	<Navbar pagePointer="eco-community"/>
+	<Navbar pagePointer="profile"/>
 	<div class="vw-100 h-10 flex flex-direction-col page-top">
 		<div class="flex flex-between-horizontal flex-center-vertical">
 			<i class="fa-solid fa-bell arrow-back"></i>
@@ -131,16 +129,16 @@
 		</div>
 	</div>
 	<div class="vw-100 vh-15 flex flex-center-vertical flex-between-horizontal carbon-status-home">
-		<div class="title-page-sh">Community</div>
+		<div class="title-page-sh">My Posts</div>
 		<a href="/eco-community/add-post" class="btn-add no-decoration">
 			<i class="fa-solid fa-plus"></i>
 		</a>
 	</div>
 
-	<div class="bg-primary {posts_loaded == true && posts_real.length != 0 ? "h-fit" : "vh-75"} card-bg template-home-bg flex flex-direction-col flex-gap-large flex-center-vertical {posts_loaded == false ? "flex-center-horizontal" : "flex-center-vertical"}" id="bg-posts">
+	<div class="bg-primary {posts_loaded == true && posts_real.length != 0 ? "h-fit" : "vh-75"} card-bg template-home-bg flex flex-direction-col flex-gap-large flex-center-vertical {posts_loaded == false ? "flex-center-horizontal" : "flex-center-vertical"}">
 		{#if posts_loaded}
 			{#if posts_real != 0}
-				{#each posts_real as post (post.id)}
+				{#each posts_real as post, index}
 					<div class="card-post w-100">
 						<a href="/eco-community/{post.id.split('_')[1]}" class="no-decoration">
 							<img src="{post.photo}" class="w-100 image-post">

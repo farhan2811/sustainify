@@ -14,9 +14,11 @@
 	let overflow = null;
 	let email = null;
 	let password = null;
+	let profile_pic = null;
 	let emails_list = [];
 	let passwords_list = [];
 	let usernames_list = [];
+	let profile_pic_list = [];
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
@@ -30,6 +32,7 @@
 	    const querySnapshot1 = await getDocs(collection(frdb, "users"));
 	    const querySnapshot2 = await getDocs(collection(frdb, "users"));
 	    const querySnapshot3 = await getDocs(collection(frdb, "users"));
+	    const querySnapshot4 = await getDocs(collection(frdb, "users"));
 	    querySnapshot1.forEach((doc) => 
 	    	emails_list.push(doc.data().email)
 	    );
@@ -38,6 +41,9 @@
 	    );
 	    querySnapshot3.forEach((doc) => 
 	    	usernames_list.push(doc.id)
+	    );
+	    querySnapshot4.forEach((doc) => 
+	    	profile_pic_list.push(doc.data().profile_picture)
 	    );
 	}
 
@@ -122,6 +128,7 @@
 							if (passwords_list[i] == password) {
 								localStorage.setItem("email", email);
 								localStorage.setItem("username", usernames_list[i]);
+								localStorage.setItem("profile_pic", profile_pic_list[i]);
 								messageModalSuccess = 1;
 								messagePayload = "Login successful";
 								setTimeout(goToHome, 3000);

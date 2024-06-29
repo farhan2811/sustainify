@@ -53,6 +53,10 @@ html,body {
 	height: 30vh;
 }
 
+.vh-27 {
+	height: 27vh;
+}
+
 .vh-25 {
 	height: 25vh;
 }
@@ -285,10 +289,18 @@ html,body {
 	background: #105157;
 }
 
+.missions-home {
+	z-index: 0;
+}
+
 .bg-card-profile {
 	background: url('card-ornament2.svg') !important;
 	background-size: cover !important;
 	background-position: top;
+}
+
+.mt-no-posts {
+	margin-top: 5vh !important;
 }
 
 .points-show{
@@ -314,6 +326,10 @@ border-radius: 10px;
 
 .rounded-image {
 	border-radius: 100px;
+}
+
+.rounded-20 {
+	border-radius: 20px;
 }
 
 .modal-backdrop {
@@ -384,9 +400,14 @@ border-radius: 10px;
 	padding: 3.90vh 7.246vw 5.58vh 7.246vw;
 }
 
+.pad-change-pic {
+	padding-top: 2vh;
+}
+
 .template-home-bg {
 	border-radius: 40px 40px 0px 0px;
 	padding: 3.90vh 7.246vw 13vh 7.246vw;
+	box-shadow: inset 0px 10px 20px rgba(0, 0, 0, 0.5);
 }
 
 .template-post-bg {
@@ -400,6 +421,10 @@ border-radius: 10px;
 
 .mh-75 {
 	min-height: 75vh;
+}
+
+.disabled-card {
+	filter: grayscale(100%);	
 }
 
 .mh-90 {
@@ -421,6 +446,7 @@ border-radius: 10px;
 	background: #F8FDDF;
 	bottom: 0;
 	filter: drop-shadow(0px 10px 50px #105157);
+	z-index: 1;
 }
 
 .comment-input {
@@ -524,7 +550,7 @@ border-radius: 10px;
 }
 
 .carbon-status-home {
-	padding: 4.4vh 7.246vw 5.8vh 7.246vw;
+	padding: 4.4vh 7.246vw 4.4vh 7.246vw;
 }
 
 .card-bg {
@@ -1061,6 +1087,11 @@ border-radius: 10px;
 	background-size: cover;
 	color: #105157;
 	border-radius: 20px;
+}
+
+.image-post {
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
 }
 
 .card-2 {

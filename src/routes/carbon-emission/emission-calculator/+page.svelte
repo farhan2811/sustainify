@@ -59,7 +59,7 @@
 
 	// access the db collection
 	const getUserMonthYear = async () => {
-	    const querySnapshot1 = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
+	    const querySnapshot1 = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year));
 	    querySnapshot1.forEach((doc) => 
 	    	month_year_list.push(doc.id)
 	    );

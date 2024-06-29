@@ -7,14 +7,14 @@
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
 	import {frdb} from "$lib/firebaseConfig.js";
-	import {doc, setDoc, getDocs, collection, deleteDoc, getDoc } from "firebase/firestore"; 
+	import {doc, setDoc, getDocs, collection, deleteDoc, getDoc, updateDoc } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition'
 
 	let hidden_state = 0;
 	let overflow = null;
-	let old_username = null;
-	let new_username = null;
-	let confirm_username = null;
+	let old_email = null;
+	let new_email = null;
+	let confirm_email = null;
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
@@ -27,18 +27,12 @@
 		window.location.href = '/profile'
 	}
 
-	const setUserData = async (username) => {
+	const setUserData = async (email) => {
 		try {
-			const oldDocRef = doc(frdb, "users", localStorage.getItem("username"));
-  			const newDocRef = doc(frdb, "users", username);
-  			const docSnapshot = await getDoc(oldDocRef);
-		    const data = docSnapshot.data();
-	
-		    await setDoc(newDocRef, data);
-		  
-		    await deleteDoc(oldDocRef);
-
-		    await localStorage.setItem("username", username)
+			await updateDoc(doc(frdb, "users", localStorage.getItem("username")), {
+				email: email
+			})
+			await localStorage.setItem("email", email)
 		} catch(error) {
 			console.log(error)
 		}
@@ -47,8 +41,8 @@
 </script>
 
 <svelte:head>
-	<title>Edit Username</title>
-	<meta name="description" content="Edit Username Page" />
+	<title>Edit Email</title>
+	<meta name="description" content="Edit Email Page" />
 </svelte:head>
 
 {#if messageModal == 1}
@@ -90,39 +84,39 @@
 	<div class="vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
 		<div class="flex flex-direction-col flex-gap-semi-large">
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-primary">Enter Old Username</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input old username.." bind:value={old_username}>
+				<div class="head-input-primary">Enter Old Email</div>
+				<input type="email" name="" class="input-field w-100" placeholder="input old email.." bind:value={old_email}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-primary">Enter New Username</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input new username.." bind:value={new_username}>
+				<div class="head-input-primary">Enter New Email</div>
+				<input type="email" name="" class="input-field w-100" placeholder="input new email.." bind:value={new_email}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-primary">Confirm New Username</div>
-				<input type="text" name="" class="input-field w-100" placeholder="confirm new username.." bind:value={confirm_username}>
+				<div class="head-input-primary">Confirm New Email</div>
+				<input type="email" name="" class="input-field w-100" placeholder="confirm new email.." bind:value={confirm_email}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
 				<button class="btn-primary w-100" on:click={() => {
-					if (old_username == "" || old_username == null) {
+					if (old_email == "" || old_email == null) {
 						messageModal = 1;
-						messagePayload = "Please fill your old username";
-					} else if(new_username == "" || new_username == null) {
+						messagePayload = "Please fill your old email";
+					} else if(new_email == "" || new_email == null) {
 						messageModal = 1;
-						messagePayload = "Please fill your new username";
-					} else if(confirm_username == "" || confirm_username == null) {
+						messagePayload = "Please fill your new email";
+					} else if(confirm_email == "" || confirm_email == null) {
 						messageModal = 1;
-						messagePayload = "Please confirm your username";
+						messagePayload = "Please confirm your email";
 					} else {
-						if (old_username != localStorage.getItem("username")) {
+						if (old_email != localStorage.getItem("email")) {
 							messageModal = 1;
-							messagePayload = "Your old username is wrong";
-						} else if(new_username != confirm_username) {
+							messagePayload = "Your old email is wrong";
+						} else if(new_email != confirm_email) {
 							messageModal = 1;
-							messagePayload = "Your new username doesn't match";
+							messagePayload = "Your new email doesn't match";
 						} else {
-							setUserData(new_username);
+							setUserData(new_email);
 							messageModalSuccess = 1;
-							messagePayload = "Update username successful";
+							messagePayload = "Update email successful";
 							setTimeout(goToProfile, 3000);
 						}
 					}
