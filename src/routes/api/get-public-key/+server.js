@@ -10,7 +10,7 @@ dotenvConfig();
 export async function GET({request}) {	
 try {
     return json({
-      publicKey: process.env.VITE_VAPID_PUBLIC_KEY
+      publicKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
     });
   } catch (error) {
     console.error('Error checking updates:', error);
