@@ -95,25 +95,25 @@
 	// 	window.location.href = '/'
 	// }
 
-	const requestPermission = () => {
-		Notification.requestPermission().then((result)=>{
-			if (result === "denied") {
-	          console.log("not allowed.");
-	          return;
-	        } else if (result === "default") {
-	          console.error("dialog closed.");
-	          return;
-	        }
+	// const requestPermission = () => {
+	// 	Notification.requestPermission().then((result)=>{
+	// 		if (result === "denied") {
+	//           console.log("not allowed.");
+	//           return;
+	//         } else if (result === "default") {
+	//           console.error("dialog closed.");
+	//           return;
+	//         }
 	        
-	        new Notification("allowed.")
-			})
-	}
+	//         new Notification("allowed.")
+	// 		})
+	// }
 
 	onMount(async() => {
 		
-		if("Notification" in window){
-			requestPermission();
-		}
+		// if("Notification" in window){
+		// 	requestPermission();
+		// }
 		// getUserIds();
 		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
 			window.location.href = '/'
