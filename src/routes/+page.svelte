@@ -60,7 +60,7 @@
 
 	        const publicKey = response.data.publicKey;
 
-	        console.log(publicKey)
+	        console.log(response)
 
 	        // if ('serviceWorker' in navigator && 'PushManager' in window) {
 	        //     const registration = await navigator.serviceWorker.getRegistration('/service-worker.js');
