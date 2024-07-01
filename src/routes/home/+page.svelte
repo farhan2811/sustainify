@@ -7,6 +7,7 @@
 	import {doc, setDoc, getDocs, getDoc, collection } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
+	import ApiController from '../../ApiController'
 	// import webpush from 'web-push'
 	// import {publicKey, privateKey} from '$lib/keysProduction.js'
 	let month_year_list = [];
@@ -26,6 +27,7 @@
 	let missions_list = [];
 	let missions_list_sorted = [];
 	let missions_loaded = false;
+	let subscription_credentials;
 
 	function isOverflowY(element) {
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
@@ -109,6 +111,60 @@
 	// 		})
 	// }
 
+	const subscribeNotif = async (user_id) => {
+	    try {
+	        const response = await ApiController({
+	            method: "GET",
+	            endpoint: `api/get-public-key`
+	        });
+
+	        const publicKey = response.data.publicKey;
+
+	        console.log(response)
+
+	        if ('serviceWorker' in navigator && 'PushManager' in window) {
+	            const registration = await navigator.serviceWorker.getRegistration('/service-worker.js');
+
+	            if (registration) {
+	                const subscription = await registration.pushManager.subscribe({
+	                    userVisibleOnly: true,
+	                    applicationServerKey: urlBase64ToUint8Array(publicKey)
+	                });
+	                subscription_credentials = JSON.stringify(subscription)
+	                await ApiController({
+	                	method: "POST",
+	                	endpoint: "api/subscription",
+	                	datas: {subscription_credentials, user_id:user_id}
+	                }).then((resp) => {
+	                	console.log(resp)
+	                })
+	            } else {
+	                console.warn('Service worker registration not found.');
+	            }
+	        } else {
+	            console.warn('Push notifications or service workers are not supported.');
+	        }
+	    } catch (error) {
+	        console.error('Error subscribing to push notifications:', error);
+	    }
+	};
+
+
+	function urlBase64ToUint8Array(base64String) {
+	    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+	    const base64 = (base64String + padding)
+	      .replace(/-/g, '+')
+	      .replace(/_/g, '/');
+
+	    const rawData = window.atob(base64);
+	    const outputArray = new Uint8Array(rawData.length);
+
+	    for (let i = 0; i < rawData.length; ++i) {
+	      outputArray[i] = rawData.charCodeAt(i);
+	    }
+	    return outputArray;
+	}
+
 	onMount(async() => {
 		
 		// if("Notification" in window){
@@ -120,6 +176,7 @@
 		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
 			window.location.href = '/'
 		}
+		await subscribeNotif(localStorage.getItem("username"))
 		await getUserMonthYear()
 		await getMissions();
 	})

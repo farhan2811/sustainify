@@ -24,8 +24,6 @@
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
-	let publicKey;
-	let subscription_credentials;
 
 	function isOverflowY(element) {
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
@@ -51,60 +49,6 @@
 	    );
 	}
 
-	const subscribeNotif = async (user_id) => {
-	    try {
-	        const response = await ApiController({
-	            method: "GET",
-	            endpoint: `api/get-public-key`
-	        });
-
-	        const publicKey = response.data.publicKey;
-
-	        console.log(response)
-
-	        if ('serviceWorker' in navigator && 'PushManager' in window) {
-	            const registration = await navigator.serviceWorker.getRegistration('/service-worker.js');
-
-	            if (registration) {
-	                const subscription = await registration.pushManager.subscribe({
-	                    userVisibleOnly: true,
-	                    applicationServerKey: urlBase64ToUint8Array(publicKey)
-	                });
-	                subscription_credentials = JSON.stringify(subscription)
-	                await ApiController({
-	                	method: "POST",
-	                	endpoint: "api/subscription",
-	                	datas: {subscription_credentials, user_id:user_id}
-	                }).then((resp) => {
-	                	console.log(resp)
-	                })
-	            } else {
-	                console.warn('Service worker registration not found.');
-	            }
-	        } else {
-	            console.warn('Push notifications or service workers are not supported.');
-	        }
-	    } catch (error) {
-	        console.error('Error subscribing to push notifications:', error);
-	    }
-	};
-
-
-	function urlBase64ToUint8Array(base64String) {
-	    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-	    const base64 = (base64String + padding)
-	      .replace(/-/g, '+')
-	      .replace(/_/g, '/');
-
-	    const rawData = window.atob(base64);
-	    const outputArray = new Uint8Array(rawData.length);
-
-	    for (let i = 0; i < rawData.length; ++i) {
-	      outputArray[i] = rawData.charCodeAt(i);
-	    }
-	    return outputArray;
-	}
-
 	const goToHome = () => {
 		window.location.href = '/home'
 	}
@@ -124,7 +68,6 @@
 						localStorage.setItem("email", email);
 						localStorage.setItem("username", usernames_list[i]);
 						localStorage.setItem("profile_pic", profile_pic_list[i]);
-						subscribeNotif(usernames_list[i]);
 						messageModalSuccess = 1;
 						messagePayload = "Login successful";
 						setTimeout(goToHome, 3000);
