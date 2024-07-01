@@ -97,6 +97,18 @@ worker.addEventListener('fetch', (event) => {
 	}
 });
 
+self.addEventListener('push', function(event) {
+  const payload = event.data.json();
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: '/favicon.png',
+  	  badge: '/favicon.png'
+    })
+  );
+});
+
 // // Firebase Messaging background message handler
 // onBackgroundMessage(messaging, (payload) => {
 //   console.log('Received background message:', payload);

@@ -165,6 +165,23 @@
 	    return outputArray;
 	}
 
+	const sendNotif = async () => {
+		const ref = doc(frdb, "users", "farahmzahra")
+		const docSnap = await getDoc(ref)
+		if (docSnap.exists()) {
+	      await ApiController({
+	        	method: "POST",
+	        	endpoint: "api/sendNotif",
+	        	datas: {endpoint: docSnap.data().endpoint, keys : {auth: docSnap.data().keys.auth, p256dh: docSnap.data().keys.p256dh}}
+	        }).then((resp) => {
+	        	console.log(resp)
+	        })
+	    } else {
+	      console.log('No such document!');
+	      return null;
+	    }
+	}
+
 	onMount(async() => {
 		
 		// if("Notification" in window){
@@ -224,6 +241,7 @@
 		{/if}
 	</div>
 	<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large missions-home">
+		<button on:click={sendNotif}>test send notif</button>
 		<div class="title-card-home">
 			Monthly Missions 
 		</div>
