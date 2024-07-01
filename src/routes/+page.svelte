@@ -123,9 +123,9 @@
 						localStorage.setItem("username", usernames_list[i]);
 						localStorage.setItem("profile_pic", profile_pic_list[i]);
 						subscribeNotif(usernames_list[i]);
-						messageModalSuccess = 1;
-						messagePayload = "Login successful";
-						setTimeout(goToHome, 3000);
+						// messageModalSuccess = 1;
+						// messagePayload = "Login successful";
+						// setTimeout(goToHome, 3000);
 						break;
 					} else {
 						messageModal = 1;
