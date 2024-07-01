@@ -9,6 +9,7 @@
 	import { doc, setDoc, getDocs, collection, getDoc, query, where, deleteDoc, updateDoc, increment, orderBy } from "firebase/firestore"; 
 	import { fly, scale } from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
+	import ApiController from "../../ApiController"
 
 	let likes = 0;
 	let hasLiked = false;
@@ -63,6 +64,15 @@
 				like_count: increment(1)
 			});
 			post.like_count++;
+
+			// if (post.user_id != localStorage.getItem("username")) {
+			// 	await ApiController({
+			// 		method: "GET",
+			// 		endpoint: `like-check?user_id=${localStorage.getItem("username")}`
+			// 	}).then(response => {
+			// 		console.log(response)
+			// 	})
+			// }
 		} else {
 			// Remove like
 			await deleteDoc(likeSnapshot.docs[0].ref);

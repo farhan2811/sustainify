@@ -8,7 +8,9 @@
 	import { onMount } from 'svelte';
 	import {frdb} from "$lib/firebaseConfig.js";
 	import {doc, setDoc, getDocs, collection } from "firebase/firestore"; 
-	import {fly, scale} from 'svelte/transition'
+	import {fly, scale} from 'svelte/transition';
+	import { username } from '$lib/stores/user';
+	import ApiController from '../ApiController'
 
 	let hidden_state = 0;
 	let overflow = null;
@@ -22,6 +24,8 @@
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
+	let publicKey;
+	let subscription_credentials;
 
 	function isOverflowY(element) {
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
@@ -47,8 +51,92 @@
 	    );
 	}
 
+	const subscribeNotif = async (user_id) => {
+	    try {
+	        const response = await ApiController({
+	            method: "GET",
+	            endpoint: `api/get-public-key`
+	        });
+
+	        const publicKey = response.data.publicKey;
+
+	        if ('serviceWorker' in navigator && 'PushManager' in window) {
+	            const registration = await navigator.serviceWorker.getRegistration('/service-worker.js');
+
+	            if (registration) {
+	                const subscription = await registration.pushManager.subscribe({
+	                    userVisibleOnly: true,
+	                    applicationServerKey: urlBase64ToUint8Array(publicKey)
+	                });
+	                subscription_credentials = JSON.stringify(subscription)
+	                await ApiController({
+	                	method: "POST",
+	                	endpoint: "api/subscription",
+	                	datas: {subscription_credentials, user_id:user_id}
+	                }).then((resp) => {
+	                	console.log(resp)
+	                })
+	            } else {
+	                console.warn('Service worker registration not found.');
+	            }
+	        } else {
+	            console.warn('Push notifications or service workers are not supported.');
+	        }
+	    } catch (error) {
+	        console.error('Error subscribing to push notifications:', error);
+	    }
+	};
+
+
+	function urlBase64ToUint8Array(base64String) {
+	    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+	    const base64 = (base64String + padding)
+	      .replace(/-/g, '+')
+	      .replace(/_/g, '/');
+
+	    const rawData = window.atob(base64);
+	    const outputArray = new Uint8Array(rawData.length);
+
+	    for (let i = 0; i < rawData.length; ++i) {
+	      outputArray[i] = rawData.charCodeAt(i);
+	    }
+	    return outputArray;
+	}
+
 	const goToHome = () => {
 		window.location.href = '/home'
+	}
+
+	const loginFlow = () => {
+		console.log("coba")
+		if (email == "" || email == null) {
+			messageModal = 1;
+			messagePayload = "Please fill your email";
+		} else if(password == "" || password == null) {
+			messageModal = 1;
+			messagePayload = "Please fill your password";
+		} else {
+			for (var i = 0; i < emails_list.length; i++) {
+				if (emails_list[i] == email) {
+					if (passwords_list[i] == password) {
+						localStorage.setItem("email", email);
+						localStorage.setItem("username", usernames_list[i]);
+						localStorage.setItem("profile_pic", profile_pic_list[i]);
+						subscribeNotif(usernames_list[i]);
+						messageModalSuccess = 1;
+						messagePayload = "Login successful";
+						setTimeout(goToHome, 3000);
+						break;
+					} else {
+						messageModal = 1;
+						messagePayload = "Your email/password doesn't match";
+					}
+				} else {
+					messageModal = 1;
+					messagePayload = "Your email/password doesn't match";
+				}
+			}
+		}
 	}
 
 	onMount(() => {
@@ -107,43 +195,15 @@
 		<div class="flex flex-direction-col flex-gap-semi-large">
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="head-input-primary">Email</div>
-				<input type="email" name="" class="input-field w-100" placeholder="input email.." bind:value={email}>
+				<input type="email" name="" class="input-field w-100" placeholder="input email.." bind:value={email} on:keypress={(e) => { if (e.key === 'Enter') loginFlow(); }}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="head-input-primary">Password</div>
-				<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={password}>
+				<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={password} on:keypress={(e) => { if (e.key === 'Enter') loginFlow(); }}>
 			</div>
 		</div>
 		<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
-			<button class="btn-primary w-100" on:click={() => {
-				if (email == "" || email == null) {
-					messageModal = 1;
-					messagePayload = "Please fill your email";
-				} else if(password == "" || password == null) {
-					messageModal = 1;
-					messagePayload = "Please fill your password";
-				} else {
-					for (var i = 0; i < emails_list.length; i++) {
-						if (emails_list[i] == email) {
-							if (passwords_list[i] == password) {
-								localStorage.setItem("email", email);
-								localStorage.setItem("username", usernames_list[i]);
-								localStorage.setItem("profile_pic", profile_pic_list[i]);
-								messageModalSuccess = 1;
-								messagePayload = "Login successful";
-								setTimeout(goToHome, 3000);
-								break;
-							} else {
-								messageModal = 1;
-								messagePayload = "Your email/password doesn't match";
-							}
-						} else {
-							messageModal = 1;
-							messagePayload = "Your email/password doesn't match";
-						}
-					}
-				}
-			}}>Log In</button>
+			<button class="btn-primary w-100" on:click={() => {loginFlow()}}>Log In</button>
 			<div class="flex flex-between-horizontal">
 				<a href="/register" class="link-login">Sign Up</a>
 				<a href="" class="link-login">Forgot Password</a>

@@ -7,6 +7,8 @@
 	import {doc, setDoc, getDocs, getDoc, collection } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
+	// import webpush from 'web-push'
+	// import {publicKey, privateKey} from '$lib/keysProduction.js'
 	let month_year_list = [];
 	const monthNames = ["January", "February", "March", "April", "May", "June",
 	  "July", "August", "September", "October", "November", "December"
@@ -93,7 +95,25 @@
 	// 	window.location.href = '/'
 	// }
 
+	const requestPermission = () => {
+		Notification.requestPermission().then((result)=>{
+			if (result === "denied") {
+	          console.log("not allowed.");
+	          return;
+	        } else if (result === "default") {
+	          console.error("dialog closed.");
+	          return;
+	        }
+	        
+	        new Notification("allowed.")
+			})
+	}
+
 	onMount(async() => {
+		
+		if("Notification" in window){
+			requestPermission();
+		}
 		// getUserIds();
 		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
 			window.location.href = '/'

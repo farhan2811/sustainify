@@ -2,6 +2,23 @@
 /// <reference lib="webworker" />
 
 import { build, files, version } from '$service-worker';
+// import { initializeApp } from 'firebase/app';
+// import { getMessaging, onBackgroundMessage } from 'firebase/messaging';
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAC_6CZcn61_i0DZ4fFKWMkOPRqItvNswQ",
+//   authDomain: "sustainify-67c1e.firebaseapp.com",
+//   databaseURL: "https://sustainify-67c1e-default-rtdb.asia-southeast1.firebasedatabase.app",
+//   projectId: "sustainify-67c1e",
+//   storageBucket: "sustainify-67c1e.appspot.com",
+//   messagingSenderId: "673118394696",
+//   appId: "1:673118394696:web:4ce9922d360167fe8a7b7d",
+//   measurementId: "G-FFMBQER2WZ"
+// };
+
+// initializeApp(firebaseConfig);
+// const messaging = getMessaging();
+
 
 const worker = (self as unknown) as ServiceWorkerGlobalScope;
 const FILES = `cache${version}`;
@@ -79,3 +96,28 @@ worker.addEventListener('fetch', (event) => {
 		);
 	}
 });
+
+// // Firebase Messaging background message handler
+// onBackgroundMessage(messaging, (payload) => {
+//   console.log('Received background message:', payload);
+
+//   const { title, body, icon } = payload.data;
+//   self.registration.showNotification(title, {
+//     body: body,
+//     icon: icon,
+//   });
+// });
+
+// self.addEventListener('notificationclick', (event) => {
+//   const notification = event.notification;
+//   const action = event.action;
+
+//   if (action === 'close') {
+//     notification.close();
+//   } else {
+//     event.waitUntil(
+//       clients.openWindow('https://sustainify.vercel.app')
+//     );
+//     notification.close();
+//   }
+// });

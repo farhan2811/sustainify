@@ -6,7 +6,7 @@
 	import logo from '$lib/images/logo-sustainify.png';
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
-	import {frdb, strg} from "$lib/firebaseConfig.js";
+	import {frdb, strg, messaging} from "$lib/firebaseConfig.js";
 	import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 	import {doc, setDoc, getDocs, collection } from "firebase/firestore"; 
 	import { writable } from 'svelte/store';
@@ -101,6 +101,7 @@
 		await setDoc(doc(frdb, "users", username, "missions", "mission_2"), missions[1])
 		await setDoc(doc(frdb, "users", username, "missions", "mission_3"), missions[2])
 		await setDoc(doc(frdb, "users", username, "missions", "mission_4"), missions[3])
+		
 	}
 
 	const goToLogin = () => {
