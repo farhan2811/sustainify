@@ -123,6 +123,7 @@
 	        console.log(response)
 
 	        if ('serviceWorker' in navigator && 'PushManager' in window) {
+	        	alert("service worker is there")
 	            const registration = await navigator.serviceWorker.getRegistration('/service-worker.js');
 
 	            if (registration) {
@@ -140,6 +141,7 @@
 	                })
 	            } else {
 	                console.warn('Service worker registration not found.');
+	                alert("service worker is not there")
 	            }
 	        } else {
 	            console.warn('Push notifications or service workers are not supported.');
@@ -166,7 +168,7 @@
 	}
 
 	const sendNotif = async () => {
-		const ref = doc(frdb, "users", "farahmzahra")
+		const ref = doc(frdb, "users", "cobadulu")
 		const docSnap = await getDoc(ref)
 		if (docSnap.exists()) {
 	      await ApiController({
