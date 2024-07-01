@@ -60,28 +60,30 @@
 
 	        const publicKey = response.data.publicKey;
 
-	        if ('serviceWorker' in navigator && 'PushManager' in window) {
-	            const registration = await navigator.serviceWorker.getRegistration('/service-worker.js');
+	        console.log(publicKey)
 
-	            if (registration) {
-	                const subscription = await registration.pushManager.subscribe({
-	                    userVisibleOnly: true,
-	                    applicationServerKey: urlBase64ToUint8Array(publicKey)
-	                });
-	                subscription_credentials = JSON.stringify(subscription)
-	                await ApiController({
-	                	method: "POST",
-	                	endpoint: "api/subscription",
-	                	datas: {subscription_credentials, user_id:user_id}
-	                }).then((resp) => {
-	                	console.log(resp)
-	                })
-	            } else {
-	                console.warn('Service worker registration not found.');
-	            }
-	        } else {
-	            console.warn('Push notifications or service workers are not supported.');
-	        }
+	        // if ('serviceWorker' in navigator && 'PushManager' in window) {
+	        //     const registration = await navigator.serviceWorker.getRegistration('/service-worker.js');
+
+	        //     if (registration) {
+	        //         const subscription = await registration.pushManager.subscribe({
+	        //             userVisibleOnly: true,
+	        //             applicationServerKey: urlBase64ToUint8Array(publicKey)
+	        //         });
+	        //         subscription_credentials = JSON.stringify(subscription)
+	        //         await ApiController({
+	        //         	method: "POST",
+	        //         	endpoint: "api/subscription",
+	        //         	datas: {subscription_credentials, user_id:user_id}
+	        //         }).then((resp) => {
+	        //         	console.log(resp)
+	        //         })
+	        //     } else {
+	        //         console.warn('Service worker registration not found.');
+	        //     }
+	        // } else {
+	        //     console.warn('Push notifications or service workers are not supported.');
+	        // }
 	    } catch (error) {
 	        console.error('Error subscribing to push notifications:', error);
 	    }
