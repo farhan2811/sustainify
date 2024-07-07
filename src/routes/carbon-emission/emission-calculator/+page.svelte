@@ -59,7 +59,7 @@
 
 	// access the db collection
 	const getUserMonthYear = async () => {
-	    const querySnapshot1 = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year));
+	    const querySnapshot1 = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
 	    querySnapshot1.forEach((doc) => 
 	    	month_year_list.push(doc.id)
 	    );
@@ -134,6 +134,11 @@
 	}
 
 	onMount(async() => {
+		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
+			window.location.href = '/'
+		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
+			window.location.href = '/'
+		}
 		getUserMonthYear();
 		console.log(monthNames[month]+"-"+year)
 	})

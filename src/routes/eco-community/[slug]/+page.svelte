@@ -7,6 +7,7 @@
   import { fly } from 'svelte/transition';
   import profile_pic from '$lib/images/profile-pic-post.svg';
   import profile_pic_comment from '$lib/images/profile-pic-comment.svg';
+  import ApiController from "../../../ApiController"
 
   export let data;
 
@@ -72,7 +73,7 @@
     post_detail_loaded = true;
   }
 
-  async function handleLike() {
+  async function handleLike(post) {
     const postRef = doc(frdb, 'posts', "post_" + postId);
     const likesCollection = collection(frdb, 'likes');
     const likeQuery = query(likesCollection, where('post_id', '==', postId), where('user_id', '==', localStorage.getItem("username")));
@@ -88,6 +89,9 @@
         like_count: increment(1)
       });
       post.like_count++;
+      if (post.user_id != localStorage.getItem("username")) {
+        sendNotifLike(post.user_id)
+      }
     } else {
       await deleteDoc(likeSnapshot.docs[0].ref);
       await updateDoc(postRef, {
@@ -109,9 +113,15 @@
       timestamp: new Date()
     });
     const postRef = doc(frdb, 'posts', "post_"+postId);
+    const postDoc = await getDoc(postRef);
+    const user_ts = postDoc.data().user_id;
     await updateDoc(postRef, {
       comment_count: increment(1)
     });
+    if (user_ts != localStorage.getItem("username")) {
+      await sendNotifComment(user_ts);
+      await checkCommentCount();
+    }
     newComment = '';
     await getDetailPost();
     post.comment_count = comments.length;
@@ -134,9 +144,14 @@
     	console.log(e)
     }
     const postRef = doc(frdb, 'posts', "post_"+postId);
+    const postDoc = await getDoc(postRef);
+    const user_ts = postDoc.data().user_id;
     await updateDoc(postRef, {
       comment_count: increment(1)
     });
+    if (user_ts != localStorage.getItem("username")) {
+      sendNotifComment(user_ts)
+    }
     newComment = '';
     await getDetailPost();
     post.comment_count = comments.length;
@@ -145,9 +160,81 @@
     newReply = '';
   }
 
+  const sendNotifComment = async (user_id) => {
+    const ref = doc(frdb, "users", user_id)
+    const docSnap = await getDoc(ref)
+    if (docSnap.exists()) {
+        await ApiController({
+            method: "POST",
+            endpoint: "api/send-notif-comment",
+            datas: {endpoint: docSnap.data().endpoint, keys : {auth: docSnap.data().keys.auth, p256dh: docSnap.data().keys.p256dh}}
+          }).then((resp) => {
+            console.log(resp)
+          })
+      } else {
+        console.log('No such document!');
+        return null;
+      }
+  }
+
+  const sendNotifMissionComment = async (user_id) => {
+    const ref = doc(frdb, "users", user_id)
+    const docSnap = await getDoc(ref)
+    if (docSnap.exists()) {
+        await ApiController({
+            method: "POST",
+            endpoint: "api/send-notif-mission-comment",
+            datas: {endpoint: docSnap.data().endpoint, keys : {auth: docSnap.data().keys.auth, p256dh: docSnap.data().keys.p256dh}}
+          }).then((resp) => {
+            console.log(resp)
+          })
+      } else {
+        console.log('No such document!');
+        return null;
+      }
+  }
+
+  const sendNotifLike = async (user_id) => {
+    const ref = doc(frdb, "users", user_id)
+    const docSnap = await getDoc(ref)
+    if (docSnap.exists()) {
+        await ApiController({
+            method: "POST",
+            endpoint: "api/send-notif-like",
+            datas: {endpoint: docSnap.data().endpoint, keys : {auth: docSnap.data().keys.auth, p256dh: docSnap.data().keys.p256dh}}
+          }).then((resp) => {
+            console.log(resp)
+          })
+      } else {
+        console.log('No such document!');
+        return null;
+      }
+  }
+
+  const checkCommentCount = async () => {
+    const userRef = await doc(frdb, 'users', localStorage.getItem("username"));
+    await updateDoc(userRef, {
+      comment_count: increment(1)
+    });
+    const getDataUser = await getDoc(userRef);
+    const missionRef = await doc(frdb, 'users', localStorage.getItem("username"), "missions", "mission_4");
+    const getDataMission = await getDoc(missionRef);
+    if (getDataUser.data().comment_count == getDataMission.data().goal) {
+      await updateDoc(userRef, {
+        points: increment(getDataMission.data().points)
+      });
+      await updateDoc(missionRef, {
+        state: "finished"
+      });
+      await sendNotifComment(localStorage.getItem("username"))
+    }
+  }
+
   onMount(async () => {
-    if (!localStorage.getItem("email") || !localStorage.getItem("username")) {
-      window.location.href = '/';
+    if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
+      window.location.href = '/'
+    } else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
+      window.location.href = '/'
     }
     await getDetailPost();
     overflow = isOverflowY(document.getElementById("form-login"))
@@ -230,7 +317,7 @@
 	      <div class="title-card-content">{post.title}</div>
 	      <div class="content-card-detail">{post.caption}</div>
 	      <div class="flex flex-gap-regular">
-	        <div class="flex flex-center-vertical" on:click={handleLike}>
+	        <div class="flex flex-center-vertical" on:click={()=>{handleLike(post)}}>
 	          {#if hasLiked}
 	            <i class="fa-solid fa-heart icon-detail-post"></i>
 	            <div class="text-icon-detail-post">{post.like_count}</div>
@@ -272,7 +359,7 @@
 	                    class="input-field w-70"
 	                    placeholder="Reply to @{comment.user_id}.."
 	                    bind:value={newReply}
-	                    on:keypress={(e) => { if (e.key === 'Enter') addReply(comment.id); }}
+	                    on:keypress={(e) => { if (e.key === 'Enter') addReply(comment.id, post); }}
 	                  >
 	                  <button class="btn-add-comment no-decoration w-30" on:click={() => addReply(comment.id)}>
 	                    <i class="fa-solid fa-paper-plane"></i>

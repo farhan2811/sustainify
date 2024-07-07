@@ -77,6 +77,11 @@
 	}
 
 	onMount(async() => {
+		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
+			window.location.href = '/'
+		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
+			window.location.href = '/'
+		}
 		realButton = document.querySelector("#add-device-pic");
     	copyButton = document.querySelector("#btn-device-pic");
     	if (copyButton) {

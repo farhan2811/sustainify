@@ -60,8 +60,15 @@
 		querySnapshot1.forEach((doc) => 
 	    	missions_list.push(doc.data())
 	    );
+	    console.log(missions_list)
 	    missions_list_sorted = missions_list.sort((a,b)=>{
-	    	a.state.localeCompare(b.state)
+	    	if ( a.state < b.state ){
+			    return -1;
+			}
+			if ( a.state > b.state ){
+			    return 1;
+			}
+			return 0;
 	    })
 
 	    // for (var i = 0; i < missions_list.length; i++) {
@@ -123,7 +130,6 @@
 	        console.log(response)
 
 	        if ('serviceWorker' in navigator && 'PushManager' in window) {
-	        	alert("service worker is there")
 	            const registration = await navigator.serviceWorker.getRegistration('/service-worker.js');
 
 	            if (registration) {
@@ -141,7 +147,6 @@
 	                })
 	            } else {
 	                console.warn('Service worker registration not found.');
-	                alert("service worker is not there")
 	            }
 	        } else {
 	            console.warn('Push notifications or service workers are not supported.');
@@ -243,7 +248,6 @@
 		{/if}
 	</div>
 	<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large missions-home">
-		<button on:click={sendNotif}>test send notif</button>
 		<div class="title-card-home">
 			Monthly Missions 
 		</div>

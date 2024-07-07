@@ -65,14 +65,9 @@
 			});
 			post.like_count++;
 
-			// if (post.user_id != localStorage.getItem("username")) {
-			// 	await ApiController({
-			// 		method: "GET",
-			// 		endpoint: `like-check?user_id=${localStorage.getItem("username")}`
-			// 	}).then(response => {
-			// 		console.log(response)
-			// 	})
-			// }
+			if (post.user_id != localStorage.getItem("username")) {
+				sendNotif(post.user_id)
+			}
 		} else {
 			// Remove like
 			await deleteDoc(likeSnapshot.docs[0].ref);
@@ -87,6 +82,23 @@
 
 		// Trigger reactivity for the specific post
 		posts_real = posts_real.map(p => p.id === post.id ? { ...post } : p);
+	}
+
+	const sendNotif = async (user_id) => {
+		const ref = doc(frdb, "users", user_id)
+		const docSnap = await getDoc(ref)
+		if (docSnap.exists()) {
+	      await ApiController({
+	        	method: "POST",
+	        	endpoint: "api/send-notif-like",
+	        	datas: {endpoint: docSnap.data().endpoint, keys : {auth: docSnap.data().keys.auth, p256dh: docSnap.data().keys.p256dh}}
+	        }).then((resp) => {
+	        	console.log(resp)
+	        })
+	    } else {
+	      console.log('No such document!');
+	      return null;
+	    }
 	}
 
 	onMount(async () => {

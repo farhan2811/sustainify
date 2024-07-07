@@ -109,27 +109,17 @@ self.addEventListener('push', function(event) {
   );
 });
 
-// // Firebase Messaging background message handler
-// onBackgroundMessage(messaging, (payload) => {
-//   console.log('Received background message:', payload);
 
-//   const { title, body, icon } = payload.data;
-//   self.registration.showNotification(title, {
-//     body: body,
-//     icon: icon,
-//   });
-// });
+self.addEventListener('notificationclick', (event) => {
+  const notification = event.notification;
+  const action = event.action;
 
-// self.addEventListener('notificationclick', (event) => {
-//   const notification = event.notification;
-//   const action = event.action;
-
-//   if (action === 'close') {
-//     notification.close();
-//   } else {
-//     event.waitUntil(
-//       clients.openWindow('https://sustainify.vercel.app')
-//     );
-//     notification.close();
-//   }
-// });
+  if (action === 'close') {
+    notification.close();
+  } else {
+    event.waitUntil(
+      clients.openWindow('https://sustainify.vercel.app')
+    );
+    notification.close();
+  }
+});

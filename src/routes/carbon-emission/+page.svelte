@@ -49,7 +49,7 @@
 	    for (var i = 0; i < monthNames.length; i++) {
 	    	 for (var j = 0; j < month_year_list.length; j++) {
 	    	 	if (month_year_list[j] == monthNames[i]+"-"+year) {
-		    		const carbon_data_snapshot = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year));
+		    		const carbon_data_snapshot = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[i]+"-"+year));
 		    		carbon_bundle[i] = carbon_data_snapshot.data().carbon_total	
 		    	} else {
 		    		carbon_bundle[i] = "0"
@@ -138,7 +138,8 @@
 	      datasets: [{
 	        label: '# of Carbon Emission (kg)',
 	        data: carbon_bundle,
-	        borderWidth: 1
+	        borderWidth: 1,
+	        backgroundColor : "#105157"
 	      }]
 	    },
 	    options: {

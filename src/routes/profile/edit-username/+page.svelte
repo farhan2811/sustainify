@@ -44,6 +44,14 @@
 		}
 	}
 
+	onMount(async()=>{
+		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
+			window.location.href = '/'
+		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
+			window.location.href = '/'
+		}
+	})
+
 </script>
 
 <svelte:head>

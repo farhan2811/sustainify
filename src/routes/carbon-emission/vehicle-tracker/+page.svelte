@@ -192,6 +192,11 @@
 	// }
 
 	onMount(async() => {
+		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
+			window.location.href = '/'
+		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
+			window.location.href = '/'
+		}
 		getUserMonthYear();
 		console.log(monthNames[month]+"-"+year)
 

@@ -21,7 +21,7 @@ export async function POST({ request }) {
       vapidKeys.publicKey,
       vapidKeys.privateKey
     );
-    const payload = JSON.stringify({ title: 'Hai ayang', body: 'Mwa :3' });
+    const payload = JSON.stringify({ title: 'New Comment!', body: 'You got yourself a new comment on one of your post!' });
     webPush.sendNotification(subscription, payload).then(response => {
       console.log('Push notification sent:', response);   
     }).catch(error => {
