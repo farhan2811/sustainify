@@ -7,10 +7,8 @@
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
 	import {frdb} from "$lib/firebaseConfig.js";
-	import {doc, setDoc, getDocs, collection } from "firebase/firestore"; 
+	import {doc, getDocs, collection } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition';
-	import { username } from '$lib/stores/user';
-	import ApiController from '../ApiController'
 
 	let hidden_state = 0;
 	let overflow = null;
@@ -149,7 +147,7 @@
 		</div>
 		<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
 			<button class="btn-primary w-100" on:click={() => {loginFlow()}}>Log In</button>
-			<div class="flex flex-between-horizontal">
+			<div class="flex flex-center-horizontal">
 				<a href="/register" class="link-login">Sign Up</a>
 				<!-- <a href="" class="link-login">Forgot Password</a> -->
 			</div>
