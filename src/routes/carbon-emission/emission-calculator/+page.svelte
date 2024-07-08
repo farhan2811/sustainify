@@ -203,6 +203,9 @@
 	</div>
 	<div class="bg-primary vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
 		<div class="flex flex-direction-col flex-gap-semi-large">
+			<div class="flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+				<div class="form-note w-100">You can only fill this form once a month!</div>
+			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="head-input-secondary">Home Electricity Usage (Kwh)</div>
 				<input type="email" name="" class="input-field w-100" placeholder="input home electricity usage.." bind:value={home_electricity}>

@@ -149,9 +149,9 @@
 			<a href="/profile/edit-profile-picture/" class="no-decoration">
 				<button class="btn-secondary w-100 flex flex-gap-regular flex-center-vertical flex-center-horizontal">Edit Profile Picture</button>
 			</a>
-			<a href="/carbon-emission/vehicle-tracker/" class="no-decoration">
+			<!-- <a href="/carbon-emission/vehicle-tracker/" class="no-decoration">
 				<button class="btn-secondary w-100 flex flex-gap-regular flex-center-vertical flex-center-horizontal">Exchange Sustain Points</button>
-			</a>	
+			</a>	 -->
 		</div>
 		<div class="flex flex-direction-col flex-gap-semi-large flex-end-vertical">
 			<button class="btn-secondary w-50 flex flex-gap-regular flex-center-vertical flex-center-horizontal" on:click={logOut}>Log Out</button>

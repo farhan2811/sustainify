@@ -151,7 +151,7 @@
 			<button class="btn-primary w-100" on:click={() => {loginFlow()}}>Log In</button>
 			<div class="flex flex-between-horizontal">
 				<a href="/register" class="link-login">Sign Up</a>
-				<a href="" class="link-login">Forgot Password</a>
+				<!-- <a href="" class="link-login">Forgot Password</a> -->
 			</div>
 		</div>
 	</div>
