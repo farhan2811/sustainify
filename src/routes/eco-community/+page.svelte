@@ -137,7 +137,7 @@
 				<div class="head-input-primary text-center">{messagePayload}</div>
 				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
 					<div class="loading-text text-center">Please wait a moment</div>
-					<img src="{loading}" class="w-30">
+					<img src="{loading}" class="w-30" alt="">
 				</div>
 			</div>
 		</div>
@@ -149,12 +149,12 @@
 	<div class="vw-100 h-10 flex flex-direction-col page-top">
 		<div class="flex flex-between-horizontal flex-center-vertical">
 			<i class="fa-solid fa-bell arrow-back"></i>
-			<img src="{logo}" alt="" class="w-50">
+			<img src="{logo}" alt="" class="w-50" alt="	">
 		</div>
 	</div>
 	<div class="vw-100 vh-15 flex flex-center-vertical flex-between-horizontal carbon-status-home">
 		<div class="title-page-sh">Community</div>
-		<a href="/eco-community/add-post" class="btn-add no-decoration">
+		<a href="/eco-community/add-post" class="btn-add no-decoration" aria-role="Add Button">
 			<i class="fa-solid fa-plus"></i>
 		</a>
 	</div>
@@ -164,8 +164,8 @@
 			{#if posts_real != 0}
 				{#each posts_real as post (post.id)}
 					<div class="card-post w-100">
-						<a href="/eco-community/{post.id.split('_')[1]}" class="no-decoration">
-							<img src="{post.photo}" class="w-100 image-post">
+						<a href="/eco-community/{post.id.split('_')[1]}" class="no-decoration" aria-role="Link Post">
+							<img src="{post.photo}" class="w-100 image-post" alt="">
 						</a>
 						<div class="card-body flex flex-direction-col flex-gap-semi-small">
 							<div class="title-card">{post.title}</div>
@@ -194,7 +194,7 @@
 				</div>
 			{/if}
 		{:else}
-			<img src="{loading}" class="w-30">
+			<img src="{loading}" class="w-30" alt="">
 		{/if}
 	</div>
 </section>
