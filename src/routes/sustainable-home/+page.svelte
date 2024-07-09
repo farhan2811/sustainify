@@ -88,7 +88,7 @@
 	<div class="vw-100 h-10 flex flex-direction-col page-top">
 		<div class="flex flex-between-horizontal flex-center-vertical">
 			<i class="fa-solid fa-bell arrow-back"></i>
-			<img src="{logo}" alt="" class="w-50" alt="">
+			<img src="{logo}" class="w-50" alt="">
 		</div>
 	</div>
 	<div class="vw-100 vh-25 flex flex-center-vertical flex-between-horizontal carbon-status-home">
