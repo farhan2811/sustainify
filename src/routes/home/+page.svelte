@@ -8,8 +8,6 @@
 	import {fly, scale} from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
 	import ApiController from '../../ApiController'
-	// import webpush from 'web-push'
-	// import {publicKey, privateKey} from '$lib/keysProduction.js'
 	let month_year_list = [];
 	const monthNames = ["January", "February", "March", "April", "May", "June",
 	  "July", "August", "September", "October", "November", "December"
@@ -70,53 +68,9 @@
 			}
 			return 0;
 	    })
-
-	    // for (var i = 0; i < missions_list.length; i++) {
-	    // 	if (missions_list[i].state == "unfinished") {
-	    // 		missions_list.unshift(missions_list[i])
-	    // 	}
-	    // }
 	    missions_list_sorted.reverse()
 	    missions_loaded = true;
 	}
-
-	// // access the db collection
-	// const getUserIds = async () => {
-	//     const querySnapshot1 = await getDocs(collection(frdb, "users"));
-	//     const querySnapshot2 = await getDocs(collection(frdb, "users"));
-	//     querySnapshot1.forEach((doc) => 
-	//     	username_list.push(doc.id)
-	//     );
-	//     querySnapshot2.forEach((doc) => 
-	//     	email_list.push(doc.data().email)
-	//     );
-	// }
-
-	// const setUserData = async (email, full_name, username, password) => {
-	// 	await setDoc(doc(frdb, "users", username), {
-	// 	  email: email,
-	// 	  full_name: full_name,
-	// 	  password: password
-	// 	});
-	// }
-
-	// const goToLogin = () => {
-	// 	window.location.href = '/'
-	// }
-
-	// const requestPermission = () => {
-	// 	Notification.requestPermission().then((result)=>{
-	// 		if (result === "denied") {
-	//           console.log("not allowed.");
-	//           return;
-	//         } else if (result === "default") {
-	//           console.error("dialog closed.");
-	//           return;
-	//         }
-	        
-	//         new Notification("allowed.")
-	// 		})
-	// }
 
 	const subscribeNotif = async (user_id) => {
 	    try {
@@ -190,11 +144,6 @@
 	}
 
 	onMount(async() => {
-		
-		// if("Notification" in window){
-		// 	requestPermission();
-		// }
-		// getUserIds();
 		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
 			window.location.href = '/'
 		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
@@ -244,7 +193,7 @@
 				{/if}
 			</div>
 		{:else}
-			<img src="{loading}" class="w-30">
+			<img src="{loading}" class="w-30" alt="">
 		{/if}
 	</div>
 	<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large missions-home">
@@ -265,7 +214,7 @@
 					</div>
 				{/each}
 			{:else}
-				<img src="{loading}" class="w-30">
+				<img src="{loading}" class="w-30" alt="">
 			{/if}
 		</div>
 	</div>
