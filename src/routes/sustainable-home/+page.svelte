@@ -34,30 +34,6 @@
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
 	}
 
-	// // access the db collection
-	// const getUserIds = async () => {
-	//     const querySnapshot1 = await getDocs(collection(frdb, "users"));
-	//     const querySnapshot2 = await getDocs(collection(frdb, "users"));
-	//     querySnapshot1.forEach((doc) => 
-	//     	username_list.push(doc.id)
-	//     );
-	//     querySnapshot2.forEach((doc) => 
-	//     	email_list.push(doc.data().email)
-	//     );
-	// }
-
-	// const setUserData = async (email, full_name, username, password) => {
-	// 	await setDoc(doc(frdb, "users", username), {
-	// 	  email: email,
-	// 	  full_name: full_name,
-	// 	  password: password
-	// 	});
-	// }
-
-	// const goToLogin = () => {
-	// 	window.location.href = '/'
-	// }
-
 	onMount(async() => {
 		// getUserIds();
 		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
@@ -100,7 +76,7 @@
 				<div class="head-input-primary text-center">{messagePayload}</div>
 				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
 					<div class="loading-text text-center">Please wait a moment</div>
-					<img src="{loading}" class="w-30">
+					<img src="{loading}" class="w-30" alt="">
 				</div>
 			</div>
 		</div>
@@ -112,12 +88,12 @@
 	<div class="vw-100 h-10 flex flex-direction-col page-top">
 		<div class="flex flex-between-horizontal flex-center-vertical">
 			<i class="fa-solid fa-bell arrow-back"></i>
-			<img src="{logo}" alt="" class="w-50">
+			<img src="{logo}" alt="" class="w-50" alt="">
 		</div>
 	</div>
 	<div class="vw-100 vh-25 flex flex-center-vertical flex-between-horizontal carbon-status-home">
 		<div class="title-page-sh">Sustainable Home</div>
-		<a href="/sustainable-home/add-device" class="btn-add no-decoration">
+		<a href="/sustainable-home/add-device" class="btn-add no-decoration" aria-label="Add Button">
 			<i class="fa-solid fa-plus"></i>
 		</a>
 	</div>
@@ -131,7 +107,7 @@
 		<div class="flex w-100 flex-between-horizontal flex-gap-semi-large">
 			<div class="card flex flex-direction-col card-mission card-device w-100 flex-gap-regular">
 				<div class="flex flex-center-vertical flex-center-horizontal">
-					<img src="{lamp}" class="w-30">
+					<img src="{lamp}" class="w-30" alt="">
 				</div>
 				<div class="title-device">Lampu Teras</div>
 				<div class="flex flex-between-horizontal">
@@ -171,7 +147,7 @@
 			</div>
 			<div class="card flex flex-direction-col card-mission card-device w-100 flex-gap-regular">
 				<div class="flex flex-center-vertical flex-center-horizontal">
-					<img src="{lamp}" class="w-30">
+					<img src="{lamp}" class="w-30" alt="">
 				</div>
 				<div class="title-device">Lampu RT</div>
 				<div class="flex flex-between-horizontal">
@@ -216,7 +192,7 @@
 		<div class="flex w-100 flex-between-horizontal flex-gap-semi-large">
 			<div class="card flex flex-direction-col card-mission card-device w-100 flex-gap-regular">
 				<div class="flex flex-center-vertical flex-center-horizontal">
-					<img src="{lamp}" class="w-30">
+					<img src="{lamp}" class="w-30" alt="">
 				</div>
 				<div class="title-device">Lampu KT1</div>
 				<div class="flex flex-between-horizontal">
@@ -256,7 +232,7 @@
 			</div>
 			<div class="card flex flex-direction-col card-mission card-device w-100 flex-gap-regular">
 				<div class="flex flex-center-vertical flex-center-horizontal">
-					<img src="{lamp}" class="w-30">
+					<img src="{lamp}" class="w-30" alt="">
 				</div>
 				<div class="title-device">Lampu KT2</div>
 				<div class="flex flex-between-horizontal">
