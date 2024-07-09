@@ -154,7 +154,7 @@
 	</div>
 	<div class="vw-100 vh-15 flex flex-center-vertical flex-between-horizontal carbon-status-home">
 		<div class="title-page-sh">Community</div>
-		<a href="/eco-community/add-post" class="btn-add no-decoration" aria-role="Add Button">
+		<a href="/eco-community/add-post" class="btn-add no-decoration" aria-label="Add Button">
 			<i class="fa-solid fa-plus"></i>
 		</a>
 	</div>
@@ -164,7 +164,7 @@
 			{#if posts_real != 0}
 				{#each posts_real as post (post.id)}
 					<div class="card-post w-100">
-						<a href="/eco-community/{post.id.split('_')[1]}" class="no-decoration" aria-role="Link Post">
+						<a href="/eco-community/{post.id.split('_')[1]}" class="no-decoration" aria-label="Link Post">
 							<img src="{post.photo}" class="w-100 image-post" alt="">
 						</a>
 						<div class="card-body flex flex-direction-col flex-gap-semi-small">
