@@ -5,8 +5,9 @@
 	import lamp from '$lib/images/lamp-example.png';
 	import loading from '$lib/images/loading.gif';
 	import { onMount, afterUpdate } from 'svelte';
-	import {frdb} from "$lib/firebaseConfig.js";
-	import {doc, setDoc, getDocs, collection } from "firebase/firestore"; 
+	import {rldb, strg} from "$lib/firebaseConfig.js"; 
+	import { ref as ref_storage, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+	import { getDatabase, ref as ref_database , push, set, onValue } from 'firebase/database';
 	import {fly, scale} from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
 
@@ -15,42 +16,101 @@
 	let device_name = null;
 	let device_category = "Priority";
 	let device_picture = null;
-	let lamp_state = 0;
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
 	let realButton = null;
     let copyButton = null;
     let imgReal = null;
+    let devices = [];
+    let uploadProgress = 0;	
+    let uploaded = 0;
+    let done_all_progress = 0;
+    let discover_device = 0;
+    let device_found = 0;
+    let device_max = 0;
 
 
 	function isOverflowY(element) {
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
 	}
 
-	// // access the db collection
-	// const getUserIds = async () => {
-	//     const querySnapshot1 = await getDocs(collection(frdb, "users"));
-	//     const querySnapshot2 = await getDocs(collection(frdb, "users"));
-	//     querySnapshot1.forEach((doc) => 
-	//     	username_list.push(doc.id)
-	//     );
-	//     querySnapshot2.forEach((doc) => 
-	//     	email_list.push(doc.data().email)
-	//     );
-	// }
+	let getAllDevice = async () => {
+		const refList = ref_database(rldb, `devices/${localStorage.getItem("username")}`);
+		onValue(refList, (snapshot) => {
+			const data = snapshot.val();
+			if (data != null) {
+				devices = Object.keys(data)
+			}
+		})
+	}
 
-	// const setUserData = async (email, full_name, username, password) => {
-	// 	await setDoc(doc(frdb, "users", username), {
-	// 	  email: email,
-	// 	  full_name: full_name,
-	// 	  password: password
-	// 	});
-	// }
+	let addDevice = (device_name,device_category,device_picture,user_id) => {
+		uploaded = 1;
+		discover_device = 1;	
+		const storageRef = ref_storage(strg, `device_images/${device_picture.name}`);
+    	const uploadTask = uploadBytesResumable(storageRef, device_picture);
+		const message = 
+				  'M-SEARCH * HTTP/1.1\r\n' +
+				  'HOST: 239.255.255.250:1982\r\n' +
+				  'MAN: "ssdp:discover"\r\n' +
+				  'ST: wifi_bulb\r\n';
+        // const socket = new WebSocket('wss://sustainify-ws.glitch.me');
+  		const socket = new WebSocket('ws://localhost:3000');
+	    socket.onopen = () => {
+	      socket.send(message);
+	    };
 
-	// const goToLogin = () => {
-	// 	window.location.href = '/'
-	// }
+	    socket.onmessage = async (event) => {
+	      const message = event.data;
+	      if (message.includes('yeelight')) {
+	      	discover_device = 0;
+	        const lampId = message.match(/id:\s*(0x[0-9a-fA-F]+)/)[1];
+	        const ip = message.match(/Location: yeelight:\/\/([\d.]+):(\d+)/)[1];
+	        const port = message.match(/Location: yeelight:\/\/([\d.]+):(\d+)/)[2];
+	        
+	        if (!devices.includes(lampId)) {
+	        	if (devices.length < 10) {
+	        		try {
+						uploadTask.on(
+					      'state_changed',
+					      (snapshot) => {
+					        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+					        uploadProgress = progress
+					      },
+					      (error) => {
+					        console.error('Upload failed', error);
+					    },
+					    async () => {
+							getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+								await set(ref_database(rldb, `devices/${user_id}/${lampId}`), {
+						            ip: ip,
+						            port: port,
+						            name: device_name,
+						            category: device_category,
+						            image: downloadURL,
+						            state: 'off'
+						          });
+						          devices.push(lampId);
+							done_all_progress = 1;
+					        });
+						})
+					} catch(error) {
+						console.log(error)
+					}
+	        	} else {
+	        		device_max = 1;
+	        	}
+	        } else {
+	        	device_found = 1;
+	        }
+	      }
+	    };
+
+	    socket.onerror = (error) => {
+	      console.error('WebSocket Error:', error);
+	    };
+	}
 
 	function readURLA(input) {
 	    if (input.files && input.files[0]) {
@@ -61,6 +121,10 @@
 
 	        reader.readAsDataURL(input.files[0]);
 	    }
+	}
+
+	const goToSustainableHome = () => {
+		window.location.href = '/sustainable-home'
 	}
 
 	onMount(async() => {
@@ -77,8 +141,21 @@
 		      realButton.click();
 		    })
 	 	}
+	 	await getAllDevice();
 	})
 
+	$: progress = uploadProgress;
+	$: if (uploaded == 1 && discover_device == 1) messageModalSuccess = 1
+	$: if (uploaded == 1 && discover_device == 1) messagePayload = "Discovering Device"
+	$: if (progress != 100 && uploaded == 1 && discover_device == 0) messagePayload = "Adding Device"
+	$: if (uploaded == 1 && discover_device == 0 && device_found == 1) messageModal = 1
+	$: if (uploaded == 1 && discover_device == 0 && device_found == 1) messageModalSuccess = 0
+	$: if (uploaded == 1 && discover_device == 0 && device_found == 1) messagePayload = "Device was already added before"
+	$: if (uploaded == 1 && discover_device == 0 && device_max == 1) messageModal = 1
+	$: if (uploaded == 1 && discover_device == 0 && device_max == 1) messageModalSuccess = 0
+	$: if (uploaded == 1 && discover_device == 0 && device_max == 1) messagePayload = "Maximum number of devices has been reached (10)"
+	$: if (progress == 100 && uploaded == 1 && discover_device == 0) messagePayload = "Device added succesfully"
+	$: if (progress == 100 && uploaded == 1 && done_all_progress == 1 && discover_device == 0) goToSustainableHome();
 </script>
 
 <svelte:head>
@@ -124,7 +201,7 @@
 			<img src="{logo}" alt="" class="w-50">
 		</div>
 	</div>
-	<div class="bg-primary vw-100 {overflow == true ? "h-fit" : "vh-100"} template-home-bg flex flex-direction-col flex-gap-large" id="form-login">
+	<div class="bg-primary vw-100 h-fit template-home-bg flex flex-direction-col flex-gap-large" id="form-login">
 		<div class="flex flex-direction-col flex-gap-semi-large">
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="head-input-secondary">Device Name</div>
@@ -139,7 +216,9 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
 				<div class="head-input-secondary">Device Picture</div>
-				<input type="file" hidden="hidden" name="" id="add-device-pic" on:change={() => {
+				<div class="head-input-accent padding-accent">Please input landscape picture</div>
+				<input type="file" hidden="hidden" name="" id="add-device-pic" on:change={(e) => {
+					device_picture = e.target.files[0]
        				 readURLA(realButton);
        				 overflow = isOverflowY(document.getElementById("form-login"))
 					console.log(overflow)
@@ -148,7 +227,20 @@
 				<img src="{placeholder}" class="w-100 img-device-preview" id="img-device-preview">
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
-				<button class="btn-secondary w-100">Add Device</button>
+				<button class="btn-secondary w-100" on:click={() => {
+					if (device_name == "" || device_name == null) {
+						messageModal = 1;
+						messagePayload = "Please fill the device name";
+					} else if (device_category == "" || device_category == null) {
+						messageModal = 1;
+						messagePayload = "Please fill your caption";
+					} else if (device_picture == "" || device_picture == null) {
+						messageModal = 1;
+						messagePayload = "Please insert device picture";
+					} else {
+						addDevice(device_name,device_category,device_picture,localStorage.getItem("username"));
+					}
+				}}>Add Device</button>
 			</div>
 		</div>
 	</div>

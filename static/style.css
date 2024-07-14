@@ -359,6 +359,19 @@ border-radius: 10px;
 	margin-top: 3px;
 }
 
+.no-device {
+	font-family: Montserrat;
+	font-size: 4vw;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+	margin-top: 3px;
+	color: #D1E987;
+	border-radius: 10px;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
 .title-card-profile {
 	color: #D1E987;
 	font-family: Montserrat;
@@ -542,6 +555,10 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
+}
+
+.padding-accent{
+	padding-bottom: 10px;
 }
 
 .head-input-accent {
@@ -844,8 +861,15 @@ border-radius: 10px;
 }
 
 .card-device {
-	background: url('bg-card-device.svg') !important;
-	background-size: cover !important;
+	background: #f7fdde;
+	background-size: cover;
+	color: #105157;
+	border-radius: 20px;
+}
+
+.break {
+  flex-basis: 100%;
+  height: 0;
 }
 
 .select-1 {
@@ -1103,6 +1127,11 @@ border-radius: 10px;
 }
 
 .image-post {
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+}
+
+.image-device {
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
 }
