@@ -56,7 +56,7 @@
 				  'MAN: "ssdp:discover"\r\n' +
 				  'ST: wifi_bulb\r\n';
         // const socket = new WebSocket('wss://sustainify-ws.glitch.me');
-  		const socket = new WebSocket('ws://localhost:3000');
+  		const socket = new WebSocket('wss://4f94-158-140-162-183.ngrok-free.app/');
 	    socket.onopen = () => {
 	      socket.send(message);
 	    };
