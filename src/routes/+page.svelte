@@ -147,9 +147,9 @@
 		</div>
 		<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
 			<button class="btn-primary w-100" on:click={() => {loginFlow()}}>Log In</button>
-			<div class="flex flex-center-horizontal">
+			<div class="flex flex-between-horizontal">
 				<a href="/register" class="link-login">Sign Up</a>
-				<!-- <a href="" class="link-login">Forgot Password</a> -->
+				<a href="/forgot-password" class="link-login">Forgot Password</a>
 			</div>
 		</div>
 	</div>

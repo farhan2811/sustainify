@@ -15,11 +15,8 @@
 
 	let hidden_state = 0;
 	let overflow = null;
-	let email = null;
-	let full_name = null;
-	let username = null;
-	let password = null;
-	let confirm_password = null;
+	let new_password = null;
+	let confirm_new_password = null;
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
@@ -31,45 +28,6 @@
 	let year = dateObj.getUTCFullYear();
 	const monthNames = ["January", "February", "March", "April", "May", "June",
 	  "July", "August", "September", "October", "November", "December"
-	];
-	const create_user_state = {}
-	const missions = [
-	  {
-	    id: 'reduce_electricity',
-	    title: 'Reduce Electricity by 5%',
-	    description: 'Reduce your home electricity usage by 5% this month compared to last month.',
-	    category: 'Energy Efficiency',
-	    points: 50,
-	    goal: 0,
-	    state: "finished"
-	  },
-	  {
-	    id: 'reduce_vehicle_mileage',
-	    title: 'Reduce Vehicle Mileage by 5%',
-	    description: 'Reduce your vehicle mileage by 5% this month compared to last month.',
-	    category: 'Transportation',
-	    points: 50,
-	    goal: 0,
-	    state: "finished"
-	  },
-	  {
-	    id: 'make_posts',
-	    title: 'Make 3 Posts in Community',
-	    description: 'Make 2 posts in the community this month.',
-	    category: 'Community Engagement',
-	    points: 30,
-	    goal: 3,
-	    state: "unfinished"
-	  },
-	  {
-	    id: 'comment_on_posts',
-	    title: 'Comment on 5 Other People Posts',
-	    description: 'Comment on 5 posts from other people in the community this month.',
-	    category: 'Community Engagement',
-	    points: 25,
-	    goal: 5,
-	    state: "unfinished"
-	  }
 	];
 
 	function isOverflowY(element) {
@@ -118,8 +76,8 @@
 </script>
 
 <svelte:head>
-	<title>Register</title>
-	<meta name="description" content="Register Page" />
+	<title>Verification Confirmed</title>
+	<meta name="description" content="Verification Confirmed Page" />
 </svelte:head>
 
 {#if messageModal == 1}
@@ -151,80 +109,22 @@
 
 <section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
 	<div class="vw-100 h-10 flex flex-center-vertical page-top">
-		<div class="flex flex-between-horizontal flex-center-vertical">
-			<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
-				history.back();
-			}}></i>
+		<div class="flex flex-end-horizontal flex-center-vertical">
 			<img src="{logo}" alt="" class="w-50">
 		</div>
 	</div>
-	<div class="bg-primary vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+	<div class="bg-primary vw-100 vh-100 template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
 		<div class="flex flex-direction-col flex-gap-semi-large">
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Email</div>
-				<input type="email" name="" class="input-field w-100" placeholder="input email.." bind:value={email}>
+				<div class="head-input-secondary">New Password</div>
+				<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={new_password}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Full Name</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input full name.." bind:value={full_name}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Username</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input username.." bind:value={username}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Password</div>
-				<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={password}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Confirm Password</div>
-				<input type="password" name="" class="input-field w-100" placeholder="input confirm password.." bind:value={confirm_password}>
+				<div class="head-input-secondary">Confirm New Password</div>
+				<input type="password" name="" class="input-field w-100" placeholder="input confirm password.." bind:value={confirm_new_password}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
-				<button class="btn-secondary w-100" on:click={() => {
-					if (email == "" || email == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your email";
-					} else if(full_name == "" || full_name == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your full name";
-					} else if(username == "" || username == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your username";
-					} else if(password == "" || password == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your password";
-					} else if(confirm_password == "" || confirm_password == null) {
-						messageModal = 1;
-						messagePayload = "Please confirm your password";
-					} else {
-						if (password != confirm_password) {
-							messageModal = 1;
-							messagePayload = "Your password doesn't match";
-						} else {
-							for (var i = 0; i < username_list.length; i++) {
-								if (username_list[i] == username) {
-									messageModal = 1;
-									messagePayload = "The username has been taken";
-									break;
-								} else if(i == username_list.length - 1) {
-									for (var i = 0; i < email_list.length; i++) {
-										if (email_list[i] == email) {
-											messageModal = 1;
-											messagePayload = "The email has been registered";
-											break;
-										} else if(i == email_list.length - 1) {
-											setUserData(email, full_name, username, password);
-											messageModalSuccess = 1;
-											messagePayload = "Registration successful";
-											setTimeout(goToLogin, 3000);
-										}
-									}
-								}
-							}
-						}
-					}
-				}}>Sign Up</button>
+				<button class="btn-secondary w-100">Change Password</button>
 			</div>
 		</div>
 	</div>

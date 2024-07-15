@@ -28,54 +28,7 @@
 		username = localStorage.getItem("username")
 		points = querySnapshot3.data().points;
 		profile_pic = localStorage.getItem("profile_pic");
-	    // const querySnapshot1 = await getDocs(collection(frdb, "users"));
-	    // querySnapshot1.forEach((doc) => 
-	    // 	users.push(doc.id)
-	    // );
-	    // for (var i = 0; i < users.length; i++) {
-	    // 	if (users[i] == localStorage.getItem("username")) {
-	    // 		const querySnapshot2 = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record",  monthNames[month]+"-"+year));
-	    // 	}
-	    // }
-	    // for (var i = 0; i < month_year_list.length; i++) {
-	    // 	if (month_year_list[i] == monthNames[month]+"-"+year) {
-	    // 		month_year_avail = true;
-	    // 		const querySnapshot2 = await getDoc(doc(frdb, "users", localStorage.getItem("username"), "carbon-record", monthNames[month]+"-"+year));
-	    // 		if (querySnapshot2.data().is_calculator == "no") {
-	    // 			done_calculate = "no";
-	    // 		} else {
-	    // 			done_calculate = "yes"
-	    // 		}
-	    // 		break;
-	    // 	} else {
-	    // 		month_year_avail = false;
-	    // 	}
-	    // }
 	}
-
-	// // access the db collection
-	// const getUserIds = async () => {
-	//     const querySnapshot1 = await getDocs(collection(frdb, "users"));
-	//     const querySnapshot2 = await getDocs(collection(frdb, "users"));
-	//     querySnapshot1.forEach((doc) => 
-	//     	username_list.push(doc.id)
-	//     );
-	//     querySnapshot2.forEach((doc) => 
-	//     	email_list.push(doc.data().email)
-	//     );
-	// }
-
-	// const setUserData = async (email, full_name, username, password) => {
-	// 	await setDoc(doc(frdb, "users", username), {
-	// 	  email: email,
-	// 	  full_name: full_name,
-	// 	  password: password
-	// 	});
-	// }
-
-	// const goToLogin = () => {
-	// 	window.location.href = '/'
-	// }
 
 	let logOut = () => {
 			localStorage.removeItem("email");
@@ -149,9 +102,9 @@
 			<a href="/profile/edit-profile-picture/" class="no-decoration">
 				<button class="btn-secondary w-100 flex flex-gap-regular flex-center-vertical flex-center-horizontal">Edit Profile Picture</button>
 			</a>
-			<!-- <a href="/carbon-emission/vehicle-tracker/" class="no-decoration">
+			<a href="/profile/exchange-point/" class="no-decoration">
 				<button class="btn-secondary w-100 flex flex-gap-regular flex-center-vertical flex-center-horizontal">Exchange Sustain Points</button>
-			</a>	 -->
+			</a>	
 		</div>
 		<div class="flex flex-direction-col flex-gap-semi-large flex-end-vertical">
 			<button class="btn-secondary w-50 flex flex-gap-regular flex-center-vertical flex-center-horizontal" on:click={logOut}>Log Out</button>

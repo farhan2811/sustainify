@@ -475,6 +475,19 @@ border-radius: 10px;
 	text-align: center;
 }
 
+.form-notice {
+	border-radius: 15px;
+	line-height: 25px;
+	background: #dc3545;
+	padding: 15px;
+	font-size: 13px;
+	color: #fff;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+
 .comment-input {
 	position: fixed;
 	padding: 25px;
@@ -720,6 +733,32 @@ border-radius: 10px;
 	color: #D1E987;
 	font-family: Montserrat;
 	font-size: 4.831vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
+.btn-schedule-item {
+	border: none;
+	border-radius: 10px;
+	background: #105157;
+	padding: 10px;
+	color: #D1E987;
+	font-family: Montserrat;
+	font-size: 3vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
+
+.btn-schedule-item-danger {
+	border: none;
+	border-radius: 10px;
+	background: #dc3545;
+	padding: 10px;
+	color: #fff;
+	font-family: Montserrat;
+	font-size: 3vw;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
@@ -1201,7 +1240,7 @@ border-radius: 10px;
 	font-family: 'Montserrat';
 	font-style: normal;
 	font-weight: 600;
-	font-size: 25px;
+	c
 	line-height: 30px;
 	color: #105157;	
 }
@@ -1216,7 +1255,26 @@ border-radius: 10px;
 	color: #105157;
 }
 
+.red-icon {
+	color: #dc3545;
+}
 
+.blue-icon {
+	color: #007bff;
+}
+
+.label-restrict {
+	border: none;
+	border-radius: 10px;
+	background: #dc3545;
+	padding: 10px;
+	color: #fff;
+	font-family: Montserrat;
+	font-size: 3vw;
+	font-style: normal;
+	font-weight: 600;
+	line-height: normal;
+}
 
 
 

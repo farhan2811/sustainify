@@ -89,7 +89,7 @@
 						            name: device_name,
 						            category: device_category,
 						            image: downloadURL,
-						            state: 'off'
+						            state: 'on'
 						          });
 						          devices.push(lampId);
 							done_all_progress = 1;
@@ -211,7 +211,7 @@
 				<div class="head-input-secondary">Device Category</div>
 				<select class="select-1" bind:value={device_category}>
 					<option>Priority</option>
-					<option>Non-Priority</option>
+					<option>Non Priority</option>
 				</select>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">

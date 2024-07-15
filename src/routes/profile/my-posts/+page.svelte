@@ -1,4 +1,4 @@
-t<script>
+<script>
 	import vector_login from '$lib/images/vector-login.png';
 	import logo from '$lib/images/logo-sustainify.png';
 	import example from '$lib/images/example.svg';

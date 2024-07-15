@@ -6,8 +6,9 @@
 	import logo from '$lib/images/logo-sustainify.png';
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
-	import {frdb} from "$lib/firebaseConfig.js";
+	import {frdb, rldb} from "$lib/firebaseConfig.js";
 	import {doc, setDoc, getDoc, getDocs, collection } from "firebase/firestore"; 
+	import { getDatabase, ref , update, set, onValue, remove } from 'firebase/database';
 	import {fly, scale} from 'svelte/transition'
 
 	let hidden_state = 0;
@@ -39,6 +40,7 @@
 	let percentage_carbon_data = [];
 	let month_year_avail = false;
 	let options = {duration: 1000}
+	const update_user_status = {};
 
 
 	function isOverflowY(element) {
@@ -66,6 +68,18 @@
 	    document.querySelector("#grains-consumption").style.width = percentage_carbon_data[5]+"%";
 	    document.querySelector("#garbage").style.width = percentage_carbon_data[6]+"%";
 	    document.querySelector("#airplane-flight").style.width = percentage_carbon_data[7]+"%";
+	    if (percentage_carbon_data[0] > 50) {
+	    	const refList = ref(rldb, `devices/${localStorage.getItem("username")}`);
+	    	onValue(refList, (snapshot) => {
+	    		const data = snapshot.val();
+	    		console.log(data)
+	    	})
+	    	update_user_status[`devices/${localStorage.getItem("username")}/status`] = "suspended";
+			update(ref(rldb), update_user_status)
+	    } else {
+	    	update_user_status[`devices/${localStorage.getItem("username")}/status`] = "unsuspended";
+			update(ref(rldb), update_user_status)
+	    }
 	}
 
 	onMount(async() => {
