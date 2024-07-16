@@ -24,9 +24,8 @@
 	let previousPosition = null;
 	let totalDistance = 0;
 	let totalEmissions = 0;
-	const carEmissionFactor = 2.31; // kg CO2 per liter of gasoline
-	const motorcycleEmissionFactor = 0.103; // kg CO2 per km
-	const averageFuelEfficiencyCar = 12; // km per liter
+	const carEmissionFactor = 0.17; // kg CO2 per liter of gasoline
+	const motorcycleEmissionFactor = 0.114; // kg CO2 per km
 	let vehicle_state = "Car"
 	let track_state = "stop"
 	let dateObj = new Date();
@@ -76,7 +75,7 @@
 
 	function calculateEmissions(distance, vehicleType) {
 	    if (vehicleType === "Car") {
-	        return distance * (carEmissionFactor / averageFuelEfficiencyCar);
+	        return distance * carEmissionFactor;
 	    } else if (vehicleType === "Motorcycle") {
 	        return distance * motorcycleEmissionFactor;
 	    } else {

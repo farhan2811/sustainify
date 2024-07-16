@@ -31,11 +31,11 @@
 	let real_airplane_flight = null;
 	let home_electricity_emission_factor = 0.233;
     let kitchen_gas_emission_factor= 2.95;
-    let meat_consumption_emission_factor = 27;
-    let vegetable_consumption_emission_factor = 2;
-    let grains_consumption_emission_factor = 1.2;
+    let meat_consumption_emission_factor = 99.48;
+    let vegetable_consumption_emission_factor = 0.43;
+    let grains_consumption_emission_factor = 4.45;
     let garbage_disposal_emission_factor = 0.45;
-    let airplane_flight_emission_factor = 0.15;
+    let airplane_flight_emission_factor = 0.246;
 	let carbon_total = null;
 	let carbon_level = null;
 	let messageModal = 0;

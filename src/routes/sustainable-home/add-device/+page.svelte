@@ -183,7 +183,7 @@
 				<div class="head-input-primary text-center">{messagePayload}</div>
 				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
 					<div class="loading-text text-center">Please wait a moment</div>
-					<img src="{loading}" class="w-30">
+					<img src="{loading}" class="w-30" alt="">
 				</div>
 			</div>
 		</div>
@@ -208,8 +208,8 @@
 				<input type="text" name="" class="input-field w-100" placeholder="input device name.." bind:value={device_name}>
 			</div>
 			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Device Category</div>
-				<select class="select-1" bind:value={device_category}>
+				<div class="head-input-secondary"><label for="device-category">Device Category</label></div>
+				<select class="select-1" bind:value={device_category} id="device-category">
 					<option>Priority</option>
 					<option>Non Priority</option>
 				</select>
@@ -224,7 +224,7 @@
 					console.log(overflow)
 				}}>
 				<button class="btn-secondary w-100" id="btn-device-pic">Add Media</button>
-				<img src="{placeholder}" class="w-100 img-device-preview" id="img-device-preview">
+				<img src="{placeholder}" class="w-100 img-device-preview" id="img-device-preview" alt="">
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
 				<button class="btn-secondary w-100" on:click={() => {
