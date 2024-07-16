@@ -113,7 +113,7 @@
 				<div class="head-input-primary text-center">{messagePayload}</div>
 				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
 					<div class="loading-text text-center">Please wait a moment</div>
-					<img src="{loading}" class="w-30">
+					<img src="{loading}" class="w-30" alt="">
 				</div>
 			</div>
 		</div>
@@ -141,7 +141,7 @@
 				{#each posts_real as post, index}
 					<div class="card-post w-100">
 						<a href="/eco-community/{post.id.split('_')[1]}" class="no-decoration">
-							<img src="{post.photo}" class="w-100 image-post">
+							<img src="{post.photo}" class="w-100 image-post" alt="">
 						</a>
 						<div class="card-body flex flex-direction-col flex-gap-semi-small">
 							<div class="title-card">{post.title}</div>
@@ -170,7 +170,7 @@
 				</div>
 			{/if}
 		{:else}
-			<img src="{loading}" class="w-30">
+			<img src="{loading}" class="w-30" alt="">
 		{/if}
 	</div>
 </section>
