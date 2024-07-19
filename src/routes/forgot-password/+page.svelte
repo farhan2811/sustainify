@@ -26,7 +26,7 @@
         		 if (i != documentsLengthUser-1) {
         		 	if (email == user_datas.email) {
 	        		 	let templateParams = {
-						  link_recovery: `http://localhost:5173/verification-confirmed?username=${username}`,
+						  link_recovery: `https://sustainify.vercel.app/verification-confirmed?username=${username}`,
 						  user_email: email,
 						  reply_to: 'sustainify.auto@gmail.com'
 						};
