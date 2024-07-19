@@ -5,9 +5,10 @@
 	import lamp from '$lib/images/lamp-example.png';
 	import loading from '$lib/images/loading.gif';
 	import { onMount, afterUpdate } from 'svelte';
-	import {rldb, strg} from "$lib/firebaseConfig.js"; 
+	import {rldb, strg, frdb} from "$lib/firebaseConfig.js"; 
+	import {doc, setDoc, getDocs, collection, deleteDoc, getDoc, updateDoc } from "firebase/firestore"; 
 	import { ref as ref_storage, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-	import { getDatabase, ref as ref_database , push, set, onValue } from 'firebase/database';
+	import { getDatabase, ref as ref_database , push, set, onValue, update } from 'firebase/database';
 	import {fly, scale} from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
 
@@ -31,6 +32,15 @@
     let discover_device = 0;
     let device_found = 0;
     let device_max = 0;
+    const update_user_status = {};
+    let month_year_list = [];
+	const monthNames = ["January", "February", "March", "April", "May", "June",
+	  "July", "August", "September", "October", "November", "December"
+	];
+	let dateObj = new Date();
+	let month = dateObj.getUTCMonth();
+	let day = dateObj.getUTCDate();
+	let year = dateObj.getUTCFullYear();
 
 
 	function isOverflowY(element) {
@@ -93,7 +103,37 @@
 						            image: downloadURL,
 						            state: 'on'
 						          });
-						          devices.push(lampId);
+								const queryCarbon = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
+								const documentsCarbon = queryCarbon.docs;
+          						const documentsLengthCarbon = documentsCarbon.length;
+								if (documentsLengthCarbon == 0) {
+									update_user_status[`devices/${localStorage.getItem("username")}/status`] = "unsuspended";
+									update(ref_database(rldb), update_user_status)
+								} else if(documentsLengthCarbon == 1){
+						          	 for (var x = 0; x < documentsLengthCarbon; x++) {
+						          	 	let param = ((documentsCarbon[x].data().home_electricity / documentsCarbon[x].data().carbon_total) * 100).toFixed(1)
+						              	if (param > 50) {
+						              		update_user_status[`devices/${localStorage.getItem("username")}/status`] = "suspended";
+											update(ref_database(rldb), update_user_status)
+						              	} else {
+						              		update_user_status[`devices/${localStorage.getItem("username")}/status`] = "unsuspended";
+											update(ref_database(rldb), update_user_status)
+						              	}
+							         }
+								} else {
+									const getDataCarbonOld = await getDoc(collection(frdb, "users", username, "carbon-record", monthNames[month-1]+"-"+year));
+									const getDataCarbonNew = await getDoc(collection(frdb, "users", username, "carbon-record", monthNames[month]+"-"+year));
+									let param1 = ((getDataCarbonOld.data().home_electricity / getDataCarbonOld.data().carbon_total) * 100).toFixed(1)
+									let param2 = ((getDataCarbonNew.data().home_electricity / getDataCarbonNew.data().carbon_total) * 100).toFixed(1)
+									if (param1 > 50 || param2 > 50) {
+					              		update_user_status[`devices/${localStorage.getItem("username")}/status`] = "suspended";
+										update(ref_database(rldb), update_user_status)
+					              	} else {
+					              		update_user_status[`devices/${localStorage.getItem("username")}/status`] = "unsuspended";
+										update(ref_database(rldb), update_user_status)
+					              	}
+								}
+							devices.push(lampId);
 							done_all_progress = 1;
 					        });
 						})

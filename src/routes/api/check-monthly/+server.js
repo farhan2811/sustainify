@@ -53,7 +53,6 @@ export async function GET({ request }) {
               goal: 0
             });
           } else if (documentsLengthCarbon == 1){
-            console.log("masuk")
             for (var x = 0; x < documentsLengthCarbon; x++) {
               let carbon_data = documentsCarbon[x].data();
               await updateDoc(missionRef, {
