@@ -3,10 +3,9 @@
 	import './styles.css';*/
 </script>
 
-<div class="app">
+<div class="app h-100">
 	<!-- <Header /> -->
-
-	<main>
+	<main class="h-100">
 		<slot />
 	</main>
 

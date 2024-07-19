@@ -23,6 +23,8 @@
 	let messagePayload = null;
 	let realButton = null;
     let copyButton = null;
+    let realButton2 = null;
+    let copyButton2 = null;
     let imgReal = null;
     let file;
     let uploadProgress = 0;	
@@ -38,6 +40,16 @@
 	        var reader = new FileReader();
 	        reader.onload = function (e) {
 	            window.$('#img-device-preview').attr('src', e.target.result);
+	        }
+	        reader.readAsDataURL(input.files[0]);
+	    }
+	}
+
+	function readURLB(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function (e) {
+	            window.$('#img-device-preview2').attr('src', e.target.result);
 	        }
 	        reader.readAsDataURL(input.files[0]);
 	    }
@@ -89,6 +101,14 @@
 		      realButton.click();
 		    })
 	 	}
+
+	 	realButton2 = document.querySelector("#add-device-pic2");
+    	copyButton2 = document.querySelector("#btn-device-pic2");
+    	if (copyButton) {
+		     copyButton2.addEventListener("click", function(event) {
+		      realButton2.click();
+		    })
+	 	}
 	})
 
 	$: progress = uploadProgress;
@@ -104,6 +124,7 @@
 </svelte:head>
 
 {#if messageModal == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -114,9 +135,23 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<button class="btn-modal w-100" on:click={() => {
+					messageModal = 0
+				}}>Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if messageModalSuccess == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
@@ -128,40 +163,95 @@
 			</div>
 		</div>
 	</div>
-{/if}
-
-<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-	<div class="vw-100 h-10 flex flex-center-vertical page-top">
-		<div class="flex flex-between-horizontal flex-center-vertical">
-			<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
-				history.back();
-			}}></i>
-			<img src="{logo}" alt="" class="w-50">
-		</div>
-	</div>
-	<div class="vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large pad-change-pic" id="form-login">
-		<div class="flex flex-direction-col flex-gap-semi-large">
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-primary">Change Profile Picture</div>
-				<input type="file" hidden="hidden" name="" id="add-device-pic" on:change={(e) => {
-					 file = e.target.files[0]
-       				 readURLA(realButton);
-       				 overflow = isOverflowY(document.getElementById("form-login"))
-					console.log(overflow)
-				}}>
-				<button class="btn-primary w-100" id="btn-device-pic">Add Media</button>
-				<img src="{placeholder}" class="w-100 img-device-preview" id="img-device-preview">
-			</div>	
-			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
-				<button class="btn-primary w-100" on:click={() => {
-					if (file == "" || file == null) {
-						messageModal = 1;
-						messagePayload = "Please insert your image";
-					} else {
-						setUserData(file);
-					}
-				}}>Update</button>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+					<div class="loading-text text-center">Please wait a moment</div>
+					<img src="{loading}" class="w-30">
+				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>
+{/if}
+
+<div class="mobile">
+	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
+		<div class="vw-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<div class="vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large pad-change-pic" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-primary">Change Profile Picture</div>
+					<input type="file" hidden="hidden" name="" id="add-device-pic" on:change={(e) => {
+						 file = e.target.files[0]
+	       				 readURLA(realButton);
+	       				 overflow = isOverflowY(document.getElementById("form-login"))
+						console.log(overflow)
+					}}>
+					<button class="btn-primary w-100" id="btn-device-pic">Add Media</button>
+					<img src="{placeholder}" class="w-100 img-device-preview" id="img-device-preview">
+				</div>	
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-primary w-100" on:click={() => {
+						if (file == "" || file == null) {
+							messageModal = 1;
+							messagePayload = "Please insert your image";
+						} else {
+							setUserData(file);
+						}
+					}}>Update</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<div class="desktop flex flex-center-horizontal">
+	<section class="bg-secondary w-30 vh-100 flex flex-direction-col page-pad">
+		<div class="w-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<div class="w-100 h-fit template-form-bg flex flex-direction-col flex-gap-large pad-change-pic" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-primary">Change Profile Picture</div>
+					<input type="file" hidden="hidden" name="" id="add-device-pic2" on:change={(e) => {
+						 file = e.target.files[0]
+	       				 readURLB(realButton2);
+	       				 overflow = isOverflowY(document.getElementById("form-login"))
+						console.log(overflow)
+					}}>
+					<button class="btn-primary w-100" id="btn-device-pic2">Add Media</button>
+					<img src="{placeholder}" class="w-100 img-device-preview" id="img-device-preview2">
+				</div>	
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-primary w-100" on:click={() => {
+						if (file == "" || file == null) {
+							messageModal = 1;
+							messagePayload = "Please insert your image";
+						} else {
+							setUserData(file);
+						}
+					}}>Update</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+

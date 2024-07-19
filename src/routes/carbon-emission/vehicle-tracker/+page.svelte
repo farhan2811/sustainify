@@ -162,10 +162,11 @@
 
 <svelte:head>
 	<title>Vehicle Tracker</title>
-	<meta name="description" content="Emission Calculator Page" />
+	<meta name="description" content="Vehicle Tracker Page" />
 </svelte:head>
 
 {#if messageModal == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -176,78 +177,172 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<button class="btn-modal w-100" on:click={() => {
+					messageModal = 0
+				}}>Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if messageModalSuccess == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
-			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+			<div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
 				<div class="head-input-primary text-center">{messagePayload}</div>
-				<button class="btn-modal w-100" on:click={() => {
-					messageModal = 0
-				}}>Close</button>
+				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+					<div class="loading-text text-center">Please wait a moment</div>
+					<img src="{loading}" class="w-30">
+				</div>
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+					<div class="loading-text text-center">Please wait a moment</div>
+					<img src="{loading}" class="w-30">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
-<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-	<div class="vw-100 h-10 flex flex-center-vertical page-top">
-		<div class="flex flex-between-horizontal flex-center-vertical">
-			<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
-				history.back();
-			}}></i>
-			<img src="{logo}" alt="" class="w-50">
-		</div>
-	</div>
-	<div class="vw-100 h-fit flex flex-direction-col flex-center-vertical page-top flex-gap-extra-large-double">
-		<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
-			<select class="select-track w-50" bind:value={vehicle_state}>
-				<option>Car</option>
-				<option>Motorcycle</option>
-			</select>
-			{#if track_state == "start"}
-				<button class="btn-stop-track w-50" on:click={() => {
-					track_state = "stop"
-					endTime = new Date().toLocaleTimeString('it-IT');
-					navigator.geolocation.clearWatch(watchId);
-					setCarbonTrackData(totalEmissions.toFixed(1))
-					messagePayload = "Carbon data has been saved"
-					messageModal = 1;
-				}}>Stop</button>	
-			{:else}
-				<button class="btn-track w-50" on:click={() => {
-					track_state = "start"
-					startTime = new Date().toLocaleTimeString('it-IT');
-					totalDistance = 0; 
-					totalEmissions = 0; 
-					endTime = "-";
-				    previousPosition = null; 
-				    watchId = navigator.geolocation.watchPosition(updatePosition, showError, { enableHighAccuracy: true });
-				}}>Start</button>
-			{/if}
-		</div>
-		<div class="flex flex-direction-col flex-gap-extra-large-double w-100 bg-primary card-track">
-			<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
-				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
-					<div class="sub-track">Start Time</div>
-					<div class="time-track">{startTime}</div>
-				</div>
-				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
-					<div class="sub-track">End Time</div>
-					<div class="time-track">{endTime}</div>
-				</div>
-			</div>
-			<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
-				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
-					<div class="sub-track">Distance</div>
-					<div class="time-track">{totalDistance.toFixed(1)} KM</div>
-				</div>
-				<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
-					<div class="sub-track">CO<sub>2</sub></div>
-					<div class="time-track">{totalEmissions.toFixed(1)} KGs</div>
-				</div>
+<div class="mobile">
+	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
+		<div class="vw-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
 			</div>
 		</div>
-	</div>
-</section>
+		<div class="vw-100 h-fit flex flex-direction-col flex-center-vertical page-top flex-gap-extra-large-double">
+			<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
+				<select class="select-track w-50" bind:value={vehicle_state}>
+					<option>Car</option>
+					<option>Motorcycle</option>
+				</select>
+				{#if track_state == "start"}
+					<button class="btn-stop-track w-50" on:click={() => {
+						track_state = "stop"
+						endTime = new Date().toLocaleTimeString('it-IT');
+						navigator.geolocation.clearWatch(watchId);
+						setCarbonTrackData(totalEmissions.toFixed(1))
+						messagePayload = "Carbon data has been saved"
+						messageModal = 1;
+					}}>Stop</button>	
+				{:else}
+					<button class="btn-track w-50" on:click={() => {
+						track_state = "start"
+						startTime = new Date().toLocaleTimeString('it-IT');
+						totalDistance = 0; 
+						totalEmissions = 0; 
+						endTime = "-";
+					    previousPosition = null; 
+					    watchId = navigator.geolocation.watchPosition(updatePosition, showError, { enableHighAccuracy: true });
+					}}>Start</button>
+				{/if}
+			</div>
+			<div class="flex flex-direction-col flex-gap-extra-large-double w-100 bg-primary card-track">
+				<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
+					<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+						<div class="sub-track">Start Time</div>
+						<div class="time-track">{startTime}</div>
+					</div>
+					<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+						<div class="sub-track">End Time</div>
+						<div class="time-track">{endTime}</div>
+					</div>
+				</div>
+				<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
+					<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+						<div class="sub-track">Distance</div>
+						<div class="time-track">{totalDistance.toFixed(1)} KM</div>
+					</div>
+					<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+						<div class="sub-track">CO<sub>2</sub></div>
+						<div class="time-track">{totalEmissions.toFixed(1)} KGs</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<div class="desktop flex flex-center-horizontal">
+	<section class="bg-secondary w-30 h-100 flex flex-direction-col page-pad relative">
+		<div class="w-100 h-10 flex flex-center-vertical page-top missions-home">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<div class="w-100 h-fit flex flex-direction-col flex-center-vertical page-top flex-gap-extra-large-double missions-home">
+			<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
+				<select class="select-track w-50" bind:value={vehicle_state}>
+					<option>Car</option>
+					<option>Motorcycle</option>
+				</select>
+				{#if track_state == "start"}
+					<button class="btn-stop-track w-50" on:click={() => {
+						track_state = "stop"
+						endTime = new Date().toLocaleTimeString('it-IT');
+						navigator.geolocation.clearWatch(watchId);
+						setCarbonTrackData(totalEmissions.toFixed(1))
+						messagePayload = "Carbon data has been saved"
+						messageModal = 1;
+					}}>Stop</button>	
+				{:else}
+					<button class="btn-track w-50" on:click={() => {
+						track_state = "start"
+						startTime = new Date().toLocaleTimeString('it-IT');
+						totalDistance = 0; 
+						totalEmissions = 0; 
+						endTime = "-";
+					    previousPosition = null; 
+					    watchId = navigator.geolocation.watchPosition(updatePosition, showError, { enableHighAccuracy: true });
+					}}>Start</button>
+				{/if}
+			</div>
+			<div class="flex flex-direction-col flex-gap-extra-large-double w-100 bg-primary card-track">
+				<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
+					<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+						<div class="sub-track">Start Time</div>
+						<div class="time-track">{startTime}</div>
+					</div>
+					<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+						<div class="sub-track">End Time</div>
+						<div class="time-track">{endTime}</div>
+					</div>
+				</div>
+				<div class="flex w-100 flex-between-horizontal flex-center-vertical flex-gap-regular">
+					<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+						<div class="sub-track">Distance</div>
+						<div class="time-track">{totalDistance.toFixed(1)} KM</div>
+					</div>
+					<div class="flex w-50 flex-direction-col flex-gap-small flex-center-vertical">
+						<div class="sub-track">CO<sub>2</sub></div>
+						<div class="time-track">{totalEmissions.toFixed(1)} KGs</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>

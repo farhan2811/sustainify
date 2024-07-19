@@ -21,6 +21,8 @@
 	let messagePayload = null;
 	let realButton = null;
     let copyButton = null;
+    let realButton2 = null;
+    let copyButton2 = null;
     let imgReal = null;
     let devices = [];
     let uploadProgress = 0;	
@@ -123,6 +125,17 @@
 	    }
 	}
 
+	function readURLB(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function (e) {
+	            window.$('#img-device-preview2').attr('src', e.target.result);
+	        }
+
+	        reader.readAsDataURL(input.files[0]);
+	    }
+	}
+
 	const goToSustainableHome = () => {
 		window.location.href = '/sustainable-home'
 	}
@@ -139,6 +152,13 @@
     	if (copyButton) {
 		     copyButton.addEventListener("click", function(event) {
 		      realButton.click();
+		    })
+	 	}
+	 	realButton2 = document.querySelector("#add-device-pic2");
+    	copyButton2 = document.querySelector("#btn-device-pic2");
+    	if (copyButton2) {
+		     copyButton2.addEventListener("click", function(event) {
+		      realButton2.click();
 		    })
 	 	}
 	 	await getAllDevice();
@@ -164,6 +184,7 @@
 </svelte:head>
 
 {#if messageModal == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -174,74 +195,159 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<button class="btn-modal w-100" on:click={() => {
+					messageModal = 0
+				}}>Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if messageModalSuccess == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
 				<div class="head-input-primary text-center">{messagePayload}</div>
 				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
 					<div class="loading-text text-center">Please wait a moment</div>
-					<img src="{loading}" class="w-30" alt="">
+					<img src="{loading}" class="w-30">
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+					<div class="loading-text text-center">Please wait a moment</div>
+					<img src="{loading}" class="w-30">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
-<Navbar pagePointer="sustainable-home"/>
-
-<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-	<div class="vw-100 h-10 flex flex-center-vertical page-top">
-		<div class="flex flex-between-horizontal flex-center-vertical">
-			<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
-				history.back();
-			}}></i>
-			<img src="{logo}" alt="" class="w-50">
-		</div>
-	</div>
-	<div class="bg-primary vw-100 h-fit template-home-bg flex flex-direction-col flex-gap-large" id="form-login">
-		<div class="flex flex-direction-col flex-gap-semi-large">
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Device Name</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input device name.." bind:value={device_name}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary"><label for="device-category">Device Category</label></div>
-				<select class="select-1" bind:value={device_category} id="device-category">
-					<option>Priority</option>
-					<option>Non Priority</option>
-				</select>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Device Picture</div>
-				<div class="head-input-accent padding-accent">Please input landscape picture</div>
-				<input type="file" hidden="hidden" name="" id="add-device-pic" on:change={(e) => {
-					device_picture = e.target.files[0]
-       				 readURLA(realButton);
-       				 overflow = isOverflowY(document.getElementById("form-login"))
-					console.log(overflow)
-				}}>
-				<button class="btn-secondary w-100" id="btn-device-pic">Add Media</button>
-				<img src="{placeholder}" class="w-100 img-device-preview" id="img-device-preview" alt="">
-			</div>
-			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
-				<button class="btn-secondary w-100" on:click={() => {
-					if (device_name == "" || device_name == null) {
-						messageModal = 1;
-						messagePayload = "Please fill the device name";
-					} else if (device_category == "" || device_category == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your caption";
-					} else if (device_picture == "" || device_picture == null) {
-						messageModal = 1;
-						messagePayload = "Please insert device picture";
-					} else {
-						addDevice(device_name,device_category,device_picture,localStorage.getItem("username"));
-					}
-				}}>Add Device</button>
+<div class="mobile">
+	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
+		<Navbar pagePointer="sustainable-home"/>
+		<div class="vw-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
 			</div>
 		</div>
-	</div>
-</section>
+		<div class="bg-primary vw-100 h-fit template-home-bg flex flex-direction-col flex-gap-large" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Device Name</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input device name.." bind:value={device_name}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary"><label for="device-category">Device Category</label></div>
+					<select class="select-1" bind:value={device_category} id="device-category">
+						<option>Priority</option>
+						<option>Non Priority</option>
+					</select>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Device Picture</div>
+					<div class="head-input-accent padding-accent">Please input landscape picture</div>
+					<input type="file" hidden="hidden" name="" id="add-device-pic" on:change={(e) => {
+						device_picture = e.target.files[0]
+	       				 readURLA(realButton);
+	       				 overflow = isOverflowY(document.getElementById("form-login"))
+						console.log(overflow)
+					}}>
+					<button class="btn-secondary w-100" id="btn-device-pic">Add Media</button>
+					<img src="{placeholder}" class="w-100 img-device-preview" id="img-device-preview" alt="">
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-secondary w-100" on:click={() => {
+						if (device_name == "" || device_name == null) {
+							messageModal = 1;
+							messagePayload = "Please fill the device name";
+						} else if (device_category == "" || device_category == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your caption";
+						} else if (device_picture == "" || device_picture == null) {
+							messageModal = 1;
+							messagePayload = "Please insert device picture";
+						} else {
+							addDevice(device_name,device_category,device_picture,localStorage.getItem("username"));
+						}
+					}}>Add Device</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+<div class="desktop flex flex-center-horizontal">
+	<section class="bg-secondary w-30 h-100 flex flex-direction-col page-pad relative">
+		<Navbar pagePointer="sustainable-home"/>
+		<div class="w-100 h-10 flex flex-center-vertical page-top missions-home">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<div class="bg-primary w-100 h-90 template-home-bg flex flex-direction-col flex-gap-large missions-home" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Device Name</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input device name.." bind:value={device_name}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary"><label for="device-category">Device Category</label></div>
+					<select class="select-1" bind:value={device_category} id="device-category">
+						<option>Priority</option>
+						<option>Non Priority</option>
+					</select>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Device Picture</div>
+					<div class="head-input-accent padding-accent">Please input landscape picture</div>
+					<input type="file" hidden="hidden" name="" id="add-device-pic2" on:change={(e) => {
+						device_picture = e.target.files[0]
+	       				 readURLB(realButton2);
+	       				 overflow = isOverflowY(document.getElementById("form-login"))
+						console.log(overflow)
+					}}>
+					<button class="btn-secondary w-100" id="btn-device-pic2">Add Media</button>
+					<img src="{placeholder}" class="w-100 img-device-preview" id="img-device-preview2" alt="">
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-secondary w-100" on:click={() => {
+						if (device_name == "" || device_name == null) {
+							messageModal = 1;
+							messagePayload = "Please fill the device name";
+						} else if (device_category == "" || device_category == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your caption";
+						} else if (device_picture == "" || device_picture == null) {
+							messageModal = 1;
+							messagePayload = "Please insert device picture";
+						} else {
+							addDevice(device_name,device_category,device_picture,localStorage.getItem("username"));
+						}
+					}}>Add Device</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>

@@ -4,8 +4,8 @@
 	import lamp from '$lib/images/lamp-example.png';
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
-	import {rldb} from "$lib/firebaseConfig.js";
-	import {doc, setDoc, getDocs, collection,} from "firebase/firestore"; 
+	import {rldb, frdb} from "$lib/firebaseConfig.js";
+	import {doc, setDoc, getDocs, getDoc, collection, query, where, orderBy } from "firebase/firestore";
     import { getDatabase, ref , update, set, onValue, remove } from 'firebase/database';
 	import {fly, scale} from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
@@ -30,6 +30,35 @@
 	const reset_schedule = {};
 	let device_id;
 	let user_state;
+	let notifModal = 0;
+	let new_notif_count = 0
+	let old_notif_count = 0
+	let notifList = [];
+	let device_switcher = 0;
+
+	const getNotificationCount = async () => {
+		const userRef = await doc(frdb, 'users', localStorage.getItem("username"));
+	    const getDataUser = await getDoc(userRef);
+	    old_notif_count = localStorage.getItem("notification_count");
+	    new_notif_count = getDataUser.data().notification_count;
+	} 
+
+	const getNotificationList = async() => {
+		const notifCollection = collection(frdb, 'notifications');
+	    const notifQuery = query(notifCollection, where('user_id', '==', localStorage.getItem("username")), orderBy('timestamp', 'desc'));
+	    const snapshot = await getDocs(notifQuery);
+	    notifList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+	    console.log(notifList)
+	}
+
+	const setNotifCount = async () => {
+		localStorage.setItem("notification_count", new_notif_count);
+		if (device_switcher == 0) {
+			document.getElementById("red-dot1").style.display = "none"
+		} else {
+			document.getElementById("red-dot1").style.display = "none"
+		}
+	}
 
 	let getAllDevice = async () => {
 		const refList = ref(rldb, `devices/${localStorage.getItem("username")}`);
@@ -87,6 +116,8 @@
 		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
 			window.location.href = '/'
 		}
+		await getNotificationCount();
+		await getNotificationList();
 		await getAllDevice()
 	})
 </script>
@@ -96,8 +127,60 @@
 	<meta name="description" content="Sustainable Home Page" />
 </svelte:head>
 
+{#if notifModal == 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						notifModal = 0
+					}}></i>
+					<div class="title-notif">Notifications</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular h-90 notif-scroll">
+					{#each notifList as item, index}
+						<a href="{item.page_url}" class="no-decoration">
+							<div class="flex flex-direction-col flex-gap-small notif-border">
+								<div class="notif-message">{item.message}</div>
+								<div class="notif-timestamp">{item.timestamp}</div>
+							</div>
+						</a>
+					{/each}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						notifModal = 0
+					}}></i>
+					<div class="title-notif">Notifications</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular h-90 notif-scroll">
+					{#each notifList as item, index}
+						<a href="{item.page_url}" class="no-decoration">
+							<div class="flex flex-direction-col flex-gap-small notif-border">
+								<div class="notif-message">{item.message}</div>
+								<div class="notif-timestamp">{item.timestamp}</div>
+							</div>
+						</a>
+					{/each}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
 
 {#if messageModalDeleteDevice == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -122,9 +205,37 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-gap-regular w-100">
+					<button class="btn-modal w-50" on:click={() => {
+					messageModalDeleteDevice = 0
+					}}>No</button>
+					<button class="btn-modal-danger w-50" on:click={() => {
+					delete_device[`devices/${localStorage.getItem("username")}/${device_id}`] = null
+					update(ref(rldb), delete_device)
+					let ind_1 = priority_devices.findIndex(obj => obj.keys === device_id);
+					let ind_2 = nonpriority_devices.findIndex(obj => obj.keys === device_id);
+					if (ind_1 !== -1) {
+					    priority_devices.splice(ind_1, 1);
+					} else if(ind_2 !== -1){
+						nonpriority_devices.splice(ind_2, 1);
+					}
+					messageModalDeleteDevice = 0
+					}}>Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if messageModalResetSchedule == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -144,9 +255,32 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-gap-regular w-100">
+					<button class="btn-modal w-50" on:click={() => {
+					messageModalResetSchedule = 0
+					}}>No</button>
+					<button class="btn-modal-danger w-50" on:click={() => {
+					reset_schedule[`devices/${localStorage.getItem("username")}/${device_id}/on_hour`] = null
+					update(ref(rldb), reset_schedule)
+					reset_schedule[`devices/${localStorage.getItem("username")}/${device_id}/off_hour`] = null
+					update(ref(rldb), reset_schedule)
+					messageModalResetSchedule = 0
+					}}>Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if messageModalPriority == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -168,9 +302,34 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-gap-regular w-100">
+					<button class="btn-modal-danger w-50" on:click={() => {
+					messageModalPriority = 0
+					}}>No</button>
+					<button class="btn-modal w-50" on:click={() => {
+					priority_state[`devices/${localStorage.getItem("username")}/${device_id}/category`] = "Non Priority"
+					update(ref(rldb), priority_state)
+					let ind = priority_devices.findIndex(obj => obj.keys === device_id);
+					if (ind !== -1) {
+					    priority_devices.splice(ind, 1);
+					}
+					messageModalPriority = 0
+					}}>Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if messageModalNonPriority == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -192,109 +351,100 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-gap-regular w-100">
+					<button class="btn-modal-danger w-50" on:click={() => {
+					messageModalNonPriority = 0
+					}}>No</button>
+					<button class="btn-modal w-50" on:click={() => {
+					priority_state[`devices/${localStorage.getItem("username")}/${device_id}/category`] = "Priority"
+					update(ref(rldb), priority_state)
+					let ind = nonpriority_devices.findIndex(obj => obj.keys === device_id);
+					if (ind !== -1) {
+					    nonpriority_devices.splice(ind, 1);
+					}
+					messageModalNonPriority = 0
+					}}>Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if messageModalSuccess == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
 				<div class="head-input-primary text-center">{messagePayload}</div>
 				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
 					<div class="loading-text text-center">Please wait a moment</div>
-					<img src="{loading}" class="w-30" alt="">
+					<img src="{loading}" class="w-30">
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+					<div class="loading-text text-center">Please wait a moment</div>
+					<img src="{loading}" class="w-30">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
-<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad" >
-	<Navbar pagePointer="sustainable-home"/>
-	<div class="vw-100 h-10 flex flex-direction-col page-top">
-		<div class="flex flex-between-horizontal flex-center-vertical">
-			<i class="fa-solid fa-bell arrow-back"></i>
-			<img src="{logo}" class="w-50" alt="">
+<div class="mobile">
+	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
+		<Navbar pagePointer="sustainable-home"/>
+		<div class="vw-100 h-10 flex flex-direction-col page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<div class="notif-icon flex flex-center-vertical" on:click={() => {
+					if (notifModal == 0) {
+						notifModal = 1
+						device_switcher = 0;
+						setNotifCount();
+					} else {
+						notifModal = 0
+					}
+				}}>
+					<i class="fa-solid fa-bell arrow-back"></i>
+					{#if old_notif_count < new_notif_count}
+						<div class="small-red-dot"  id="red-dot1"></div>
+					{/if}
+				</div>
+				<img src="{logo}" class="w-50" alt="">
+			</div>
 		</div>
-	</div>
-	<div class="vw-100 vh-25 flex flex-center-vertical flex-between-horizontal carbon-status-home">
-		<div class="title-page-sh">Sustainable Home</div>
-		<a href="/sustainable-home/add-device" class="btn-add no-decoration" aria-label="Add Button">
-			<i class="fa-solid fa-plus"></i>
-		</a>
-	</div>
-	<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large">
-		<a href="/sustainable-home/schedule-device">
-			<button class="btn-secondary w-100">Scheduling</button>
-		</a>
-		<div class="title-card-home">
-			Priority Device
+		<div class="vw-100 vh-25 flex flex-center-vertical flex-between-horizontal carbon-status-home">
+			<div class="title-page-sh">Sustainable Home</div>
+			<a href="/sustainable-home/add-device" class="btn-add no-decoration" aria-label="Add Button">
+				<i class="fa-solid fa-plus"></i>
+			</a>
 		</div>
-		<div class="flex flex-direction-col flex-gap-regular {priority_loaded == 0  ? "flex-center-vertical" : ""}">
-			{#if priority_loaded == 1}
-				{#if priority_devices.length > 0}
-					{#each priority_devices as item, index}
-						<div class="flex flex-direction-col card-device w-100">
-							<div class="flex flex-center-vertical flex-center-horizontal">
-								<img src="{item.image}" class="w-100 image-device" alt="">
-							</div>
-							<div class="card-body flex flex-direction-col flex-gap-regular">
-								<div class="title-device">{item.name}</div>
-								<div class="flex flex-between-horizontal">
-									<div class="switch-button flex">
-										<div class="on-button {item.state == "on" ? "on-button-active" : "on-button-inactive"} w-50 flex flex-center-vertical h-100" on:click={() => {
-											toggle[`devices/${localStorage.getItem("username")}/${item.keys}/state`] = "on"
-											update(ref(rldb), toggle)
-										}}>
-											<div class="icon-on"></div>
-										</div>
-										<div class="off-button {item.state == "off" ? "off-button-active" : "off-button-inactive"} w-50 flex flex-center-vertical flex-end-horizontal h-100" on:click={() => {
-											toggle[`devices/${localStorage.getItem("username")}/${item.keys}/state`] = "off"
-											update(ref(rldb), toggle)
-										}}>
-											<div class="icon-off"></div>
-										</div>
-									</div>
-									<div class="padding-right-setting flex flex-gap-regular">
-										<i class="fa-solid fa-clock-rotate-left settings-device blue-icon" on:click={() => {
-											device_id = item.keys
-											messageModalResetSchedule = 1;
-											messagePayload = "Do you want to delete the schedule on this device?"
-										}}></i>
-										<i class="fa-solid fa-trash settings-device red-icon" on:click={() => {
-											device_id = item.keys
-											messageModalDeleteDevice = 1;
-											messagePayload = "Do you want to delete this device?"
-										}}></i>
-										<i class="fa-solid fa-ellipsis-vertical settings-device" on:click={() => {
-											device_id = item.keys
-											messageModalPriority = 1;
-											messagePayload = "Do you want to change this device to non-priority?"
-										}}></i>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- {#if index % 2 == 0}
-							<div class="break"> </div>
-						{/if} -->
-					{/each}
-				{:else}
-					<div class="no-device text-center">
-						No device yet
-					</div>
-				{/if}
-			{:else}
-				<img src="{loading}" class="w-30">
-			{/if}
-		</div>
-		<div class="title-card-home">
-			Non-Priority Device
-		</div>
-		<div class="flex flex-direction-col flex-gap-regular {nonpriority_loaded == 0  ? "flex-center-vertical" : ""}">
-			{#if nonpriority_loaded == 1}
-				{#if nonpriority_devices.length > 0}
-					{#if user_state != "suspended"}
-						{#each nonpriority_devices as item, index}
+		<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large">
+			<a href="/sustainable-home/schedule-device">
+				<button class="btn-secondary w-100">Scheduling</button>
+			</a>
+			<div class="title-card-home">
+				Priority Device
+			</div>
+			<div class="flex flex-direction-col flex-gap-regular {priority_loaded == 0  ? "flex-center-vertical" : ""}">
+				{#if priority_loaded == 1}
+					{#if priority_devices.length > 0}
+						{#each priority_devices as item, index}
 							<div class="flex flex-direction-col card-device w-100">
 								<div class="flex flex-center-vertical flex-center-horizontal">
 									<img src="{item.image}" class="w-100 image-device" alt="">
@@ -341,16 +491,176 @@
 							{/if} -->
 						{/each}
 					{:else}
-						{#each nonpriority_devices as item, index}
+						<div class="no-device text-center">
+							No device yet
+						</div>
+					{/if}
+				{:else}
+					<img src="{loading}" class="w-30">
+				{/if}
+			</div>
+			<div class="title-card-home">
+				Non-Priority Device
+			</div>
+			<div class="flex flex-direction-col flex-gap-regular {nonpriority_loaded == 0  ? "flex-center-vertical" : ""}">
+				{#if nonpriority_loaded == 1}
+					{#if nonpriority_devices.length > 0}
+						{#if user_state != "suspended"}
+							{#each nonpriority_devices as item, index}
+								<div class="flex flex-direction-col card-device w-100">
+									<div class="flex flex-center-vertical flex-center-horizontal">
+										<img src="{item.image}" class="w-100 image-device" alt="">
+									</div>
+									<div class="card-body flex flex-direction-col flex-gap-regular">
+										<div class="title-device">{item.name}</div>
+										<div class="flex flex-between-horizontal">
+											<div class="switch-button flex">
+												<div class="on-button {item.state == "on" ? "on-button-active" : "on-button-inactive"} w-50 flex flex-center-vertical h-100" on:click={() => {
+													toggle[`devices/${localStorage.getItem("username")}/${item.keys}/state`] = "on"
+													update(ref(rldb), toggle)
+												}}>
+													<div class="icon-on"></div>
+												</div>
+												<div class="off-button {item.state == "off" ? "off-button-active" : "off-button-inactive"} w-50 flex flex-center-vertical flex-end-horizontal h-100" on:click={() => {
+													toggle[`devices/${localStorage.getItem("username")}/${item.keys}/state`] = "off"
+													update(ref(rldb), toggle)
+												}}>
+													<div class="icon-off"></div>
+												</div>
+											</div>
+											<div class="padding-right-setting flex flex-gap-regular">
+												<i class="fa-solid fa-clock-rotate-left settings-device blue-icon" on:click={() => {
+													device_id = item.keys
+													messageModalResetSchedule = 1;
+													messagePayload = "Do you want to delete the schedule on this device?"
+												}}></i>
+												<i class="fa-solid fa-trash settings-device red-icon" on:click={() => {
+													device_id = item.keys
+													messageModalDeleteDevice = 1;
+													messagePayload = "Do you want to delete this device?"
+												}}></i>
+												<i class="fa-solid fa-ellipsis-vertical settings-device" on:click={() => {
+													device_id = item.keys
+													messageModalPriority = 1;
+													messagePayload = "Do you want to change this device to non-priority?"
+												}}></i>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- {#if index % 2 == 0}
+									<div class="break"> </div>
+								{/if} -->
+							{/each}
+						{:else}
+							{#each nonpriority_devices as item, index}
+								<div class="flex flex-direction-col card-device w-100">
+									<div class="flex flex-center-vertical flex-center-horizontal">
+										<img src="{item.image}" class="w-100 image-device" alt="">
+									</div>
+									<div class="card-body flex flex-direction-col flex-gap-regular">
+										<div class="title-device">{item.name}</div>
+										<div class="flex flex-between-horizontal flex-center-vertical">
+											<div class="label-restrict">Control not allowed</div>
+											<div class="padding-right-setting flex flex-gap-semi-small">
+												<i class="fa-solid fa-trash settings-device red-icon" on:click={() => {
+													device_id = item.keys
+													messageModalDeleteDevice = 1;
+													messagePayload = "Do you want to delete this device?"
+												}}></i>
+												<i class="fa-solid fa-ellipsis-vertical settings-device" on:click={() => {
+													device_id = item.keys
+													messageModalNonPriority = 1;
+													messagePayload = "Do you want to change this device to priority?"
+												}}></i>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- {#if index % 2 == 0}
+									<div class="break"> </div>
+								{/if} -->
+							{/each}
+						{/if}
+					{:else}
+						<div class="no-device text-center">
+							No device yet
+						</div>
+					{/if}
+				{:else}
+					<img src="{loading}" class="w-30">
+				{/if}
+			</div>
+		</div>
+	</section>
+</div>
+
+<div class="desktop flex flex-center-horizontal">
+	<section class="bg-secondary w-30 h-100 flex flex-direction-col page-pad relative" >
+		<Navbar pagePointer="sustainable-home"/>
+		<div class="w-100 h-10 flex flex-direction-col page-top missions-home">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<div class="notif-icon flex flex-center-vertical" on:click={() => {
+					if (notifModal == 0) {
+						notifModal = 1
+						device_switcher = 1;
+						setNotifCount();
+					} else {
+						notifModal = 0
+					}
+				}}>
+					<i class="fa-solid fa-bell arrow-back"></i>
+					{#if old_notif_count < new_notif_count}
+						<div class="small-red-dot"  id="red-dot1"></div>
+					{/if}
+				</div>
+				<img src="{logo}" class="w-50" alt="">
+			</div>
+		</div>
+		<div class="w-100 h-25 flex flex-center-vertical flex-between-horizontal carbon-status-home missions-home">
+			<div class="title-page-sh">Sustainable Home</div>
+			<a href="/sustainable-home/add-device" class="btn-add no-decoration" aria-label="Add Button">
+				<i class="fa-solid fa-plus"></i>
+			</a>
+		</div>
+		<div class="bg-primary w-100 card-bg template-home-bg flex flex-direction-col flex-gap-large missions-home">
+			<a href="/sustainable-home/schedule-device">
+				<button class="btn-secondary w-100">Scheduling</button>
+			</a>
+			<div class="title-card-home">
+				Priority Device
+			</div>
+			<div class="flex flex-direction-col flex-gap-regular {priority_loaded == 0  ? "flex-center-vertical" : ""}">
+				{#if priority_loaded == 1}
+					{#if priority_devices.length > 0}
+						{#each priority_devices as item, index}
 							<div class="flex flex-direction-col card-device w-100">
 								<div class="flex flex-center-vertical flex-center-horizontal">
 									<img src="{item.image}" class="w-100 image-device" alt="">
 								</div>
 								<div class="card-body flex flex-direction-col flex-gap-regular">
 									<div class="title-device">{item.name}</div>
-									<div class="flex flex-between-horizontal flex-center-vertical">
-										<div class="label-restrict">Control not allowed</div>
-										<div class="padding-right-setting flex flex-gap-semi-small">
+									<div class="flex flex-between-horizontal">
+										<div class="switch-button flex">
+											<div class="on-button {item.state == "on" ? "on-button-active" : "on-button-inactive"} w-50 flex flex-center-vertical h-100" on:click={() => {
+												toggle[`devices/${localStorage.getItem("username")}/${item.keys}/state`] = "on"
+												update(ref(rldb), toggle)
+											}}>
+												<div class="icon-on"></div>
+											</div>
+											<div class="off-button {item.state == "off" ? "off-button-active" : "off-button-inactive"} w-50 flex flex-center-vertical flex-end-horizontal h-100" on:click={() => {
+												toggle[`devices/${localStorage.getItem("username")}/${item.keys}/state`] = "off"
+												update(ref(rldb), toggle)
+											}}>
+												<div class="icon-off"></div>
+											</div>
+										</div>
+										<div class="padding-right-setting flex flex-gap-regular">
+											<i class="fa-solid fa-clock-rotate-left settings-device blue-icon" on:click={() => {
+												device_id = item.keys
+												messageModalResetSchedule = 1;
+												messagePayload = "Do you want to delete the schedule on this device?"
+											}}></i>
 											<i class="fa-solid fa-trash settings-device red-icon" on:click={() => {
 												device_id = item.keys
 												messageModalDeleteDevice = 1;
@@ -358,8 +668,8 @@
 											}}></i>
 											<i class="fa-solid fa-ellipsis-vertical settings-device" on:click={() => {
 												device_id = item.keys
-												messageModalNonPriority = 1;
-												messagePayload = "Do you want to change this device to priority?"
+												messageModalPriority = 1;
+												messagePayload = "Do you want to change this device to non-priority?"
 											}}></i>
 										</div>
 									</div>
@@ -369,15 +679,107 @@
 								<div class="break"> </div>
 							{/if} -->
 						{/each}
+					{:else}
+						<div class="no-device text-center">
+							No device yet
+						</div>
 					{/if}
 				{:else}
-					<div class="no-device text-center">
-						No device yet
-					</div>
+					<img src="{loading}" class="w-30">
 				{/if}
-			{:else}
-				<img src="{loading}" class="w-30">
-			{/if}
+			</div>
+			<div class="title-card-home">
+				Non-Priority Device
+			</div>
+			<div class="flex flex-direction-col flex-gap-regular {nonpriority_loaded == 0  ? "flex-center-vertical" : ""}">
+				{#if nonpriority_loaded == 1}
+					{#if nonpriority_devices.length > 0}
+						{#if user_state != "suspended"}
+							{#each nonpriority_devices as item, index}
+								<div class="flex flex-direction-col card-device w-100">
+									<div class="flex flex-center-vertical flex-center-horizontal">
+										<img src="{item.image}" class="w-100 image-device" alt="">
+									</div>
+									<div class="card-body flex flex-direction-col flex-gap-regular">
+										<div class="title-device">{item.name}</div>
+										<div class="flex flex-between-horizontal">
+											<div class="switch-button flex">
+												<div class="on-button {item.state == "on" ? "on-button-active" : "on-button-inactive"} w-50 flex flex-center-vertical h-100" on:click={() => {
+													toggle[`devices/${localStorage.getItem("username")}/${item.keys}/state`] = "on"
+													update(ref(rldb), toggle)
+												}}>
+													<div class="icon-on"></div>
+												</div>
+												<div class="off-button {item.state == "off" ? "off-button-active" : "off-button-inactive"} w-50 flex flex-center-vertical flex-end-horizontal h-100" on:click={() => {
+													toggle[`devices/${localStorage.getItem("username")}/${item.keys}/state`] = "off"
+													update(ref(rldb), toggle)
+												}}>
+													<div class="icon-off"></div>
+												</div>
+											</div>
+											<div class="padding-right-setting flex flex-gap-regular">
+												<i class="fa-solid fa-clock-rotate-left settings-device blue-icon" on:click={() => {
+													device_id = item.keys
+													messageModalResetSchedule = 1;
+													messagePayload = "Do you want to delete the schedule on this device?"
+												}}></i>
+												<i class="fa-solid fa-trash settings-device red-icon" on:click={() => {
+													device_id = item.keys
+													messageModalDeleteDevice = 1;
+													messagePayload = "Do you want to delete this device?"
+												}}></i>
+												<i class="fa-solid fa-ellipsis-vertical settings-device" on:click={() => {
+													device_id = item.keys
+													messageModalPriority = 1;
+													messagePayload = "Do you want to change this device to non-priority?"
+												}}></i>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- {#if index % 2 == 0}
+									<div class="break"> </div>
+								{/if} -->
+							{/each}
+						{:else}
+							{#each nonpriority_devices as item, index}
+								<div class="flex flex-direction-col card-device w-100">
+									<div class="flex flex-center-vertical flex-center-horizontal">
+										<img src="{item.image}" class="w-100 image-device" alt="">
+									</div>
+									<div class="card-body flex flex-direction-col flex-gap-regular">
+										<div class="title-device">{item.name}</div>
+										<div class="flex flex-between-horizontal flex-center-vertical">
+											<div class="label-restrict">Control not allowed</div>
+											<div class="padding-right-setting flex flex-gap-semi-small">
+												<i class="fa-solid fa-trash settings-device red-icon" on:click={() => {
+													device_id = item.keys
+													messageModalDeleteDevice = 1;
+													messagePayload = "Do you want to delete this device?"
+												}}></i>
+												<i class="fa-solid fa-ellipsis-vertical settings-device" on:click={() => {
+													device_id = item.keys
+													messageModalNonPriority = 1;
+													messagePayload = "Do you want to change this device to priority?"
+												}}></i>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- {#if index % 2 == 0}
+									<div class="break"> </div>
+								{/if} -->
+							{/each}
+						{/if}
+					{:else}
+						<div class="no-device text-center">
+							No device yet
+						</div>
+					{/if}
+				{:else}
+					<img src="{loading}" class="w-30">
+				{/if}
+			</div>
 		</div>
-	</div>
-</section>
+	</section>
+</div>

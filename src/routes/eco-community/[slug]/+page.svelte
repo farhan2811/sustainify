@@ -16,6 +16,7 @@
   let comments = [];
   let currentUser;
   let profile_pic_ts = null;
+  let profile_pic_ts2 = null;
   let newComment = '';
   let newReply = '';
   let likes = 0;
@@ -40,6 +41,7 @@
     const profilePicRef = doc(frdb, 'users', post.user_id);
     const profilePicDoc = await getDoc(profilePicRef);
     profile_pic_ts = profilePicDoc.data().profile_picture;
+    profile_pic_ts2 = profilePicDoc.data().profile_picture;
 
     const commentsCollection = collection(frdb, 'comments');
     const commentsQuery = query(commentsCollection, where('post_id', '==', postId), orderBy('timestamp', 'desc'));
@@ -91,6 +93,18 @@
       post.like_count++;
       if (post.user_id != localStorage.getItem("username")) {
         sendNotifLike(post.user_id)
+        const notifCollection = collection(frdb, 'notifications');
+        const notifId = doc(notifCollection).id;
+        await setDoc(doc(notifCollection, notifId), {
+          user_id: post.user_id,
+          message: `${localStorage.getItem("username")} liked your post!`,
+          page_url: window.location.href,
+          timestamp : `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`
+        });
+        const userRef = await doc(frdb, 'users', post.user_id);
+        await updateDoc(userRef, {
+          notification_count: increment(1)
+        });
       }
     } else {
       await deleteDoc(likeSnapshot.docs[0].ref);
@@ -121,6 +135,18 @@
     if (user_ts != localStorage.getItem("username")) {
       await sendNotifComment(user_ts);
       await checkCommentCount();
+      const notifCollection = collection(frdb, 'notifications');
+      const notifId = doc(notifCollection).id;
+      await setDoc(doc(notifCollection, notifId), {
+        user_id: user_ts,
+        message: `${localStorage.getItem("username")} commented on your post!`,
+        page_url: window.location.href,
+        timestamp : `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`
+      });
+      const userRef = await doc(frdb, 'users', user_ts);
+      await updateDoc(userRef, {
+        notification_count: increment(1)
+      });
     }
     newComment = '';
     await getDetailPost();
@@ -151,6 +177,19 @@
     });
     if (user_ts != localStorage.getItem("username")) {
       sendNotifComment(user_ts)
+      await checkCommentCount();
+      const notifCollection = collection(frdb, 'notifications');
+      const notifId = doc(notifCollection).id;
+      await setDoc(doc(notifCollection, notifId), {
+        user_id: user_ts,
+        message: `${localStorage.getItem("username")} commented on your post!`,
+        page_url: window.location.href,
+        timestamp : `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`
+      });
+      const userRef = await doc(frdb, 'users', user_ts);
+      await updateDoc(userRef, {
+        notification_count: increment(1)
+      });
     }
     newComment = '';
     await getDetailPost();
@@ -226,7 +265,18 @@
       await updateDoc(missionRef, {
         state: "finished"
       });
-      await sendNotifComment(localStorage.getItem("username"))
+      const notifCollection = collection(frdb, 'notifications');
+      const notifId = doc(notifCollection).id;
+      await sendNotifMissionComment(localStorage.getItem("username"))
+      await setDoc(doc(notifCollection, notifId), {
+        user_id: localStorage.getItem("username"),
+        message: `You just completed one of your missions!`,
+        page_url: '/home',
+        timestamp : `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`
+      });
+      await updateDoc(userRef, {
+        notification_count: increment(1)
+      });
     }
   }
 
@@ -239,6 +289,7 @@
     await getDetailPost();
     overflow = isOverflowY(document.getElementById("form-login"))
     document.getElementById("profilePhoto").style.backgroundImage = `url(${profile_pic_ts})`;
+    document.getElementById("profilePhoto2").style.backgroundImage = `url(${profile_pic_ts})`;
   });
 </script>
 
@@ -246,28 +297,53 @@
   <title>Post Detail</title>
   <meta name="description" content="Post Detail Page" />
   <style type="text/css">
-    .profilePhoto {
-      width: 37px;
-      height: 37px;
-      background-size: cover;
+    @media screen and (min-width: 1001px) {
+      .profilePhoto {
+        width: 27px;
+        height: 25px;
+        background-size: cover;
+      }
+    }
+
+    @media screen and (max-width: 1001px) {
+      .profilePhoto {
+        width: 37px;
+        height: 37px;
+        background-size: cover;
+      }
     }
   </style>
 </svelte:head>
 
 {#if messageModal == 1}
+<div class="mobile">
   <div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
     <div class="flex flex-center-vertical flex-center-horizontal h-100">
       <div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
         <div class="head-input-primary text-center">{messagePayload}</div>
         <button class="btn-modal w-100" on:click={() => {
-          messageModal = 0;
+          messageModal = 0
         }}>Close</button>
       </div>
     </div>
   </div>
+</div>
+<div class="desktop desktop-fix">
+  <div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+    <div class="flex flex-center-vertical flex-center-horizontal h-100">
+      <div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+        <div class="head-input-primary text-center">{messagePayload}</div>
+        <button class="btn-modal w-100" on:click={() => {
+          messageModal = 0
+        }}>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 {/if}
 
 {#if messageModalSuccess == 1}
+<div class="mobile">
   <div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
     <div class="flex flex-center-vertical flex-center-horizontal h-100">
       <div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
@@ -279,120 +355,253 @@
       </div>
     </div>
   </div>
-{/if}
-
-<div id="comment_space">
-  <div class="comment-input flex flex-direction-col flex-gap-regular">
-    <div class="title-comment-input">Comment</div>
-    <div class="flex flex-gap-regular w-100">
-      <input
-        type="text"
-        class="input-field w-80"
-        placeholder="input comment.."
-        bind:value={newComment}
-        on:keypress={(e) => { if (e.key === 'Enter') addComment(); }}
-      >
-      <button class="btn-add-comment no-decoration w-20" on:click={addComment}>
-        <i class="fa-solid fa-paper-plane"></i>
-      </button>
+</div>
+<div class="desktop desktop-fix">
+  <div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+    <div class="flex flex-center-vertical flex-center-horizontal h-100">
+      <div class="card w-25 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+        <div class="head-input-primary text-center">{messagePayload}</div>
+        <div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+          <div class="loading-text text-center">Please wait a moment</div>
+          <img src="{loading}" class="w-30">
+        </div>
+      </div>
     </div>
   </div>
 </div>
+{/if}
 
-<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-  <div class="vw-100 h-10 flex flex-center-vertical page-top">
-    <div class="flex flex-between-horizontal flex-center-vertical">
-      <i class="fa-solid fa-arrow-left arrow-back" on:click={() => history.back()}></i>
-      <img src="{logo}" alt="" class="w-50">
+
+<div class="mobile">
+  <section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
+    <div id="comment_space">
+    <div class="comment-input flex flex-direction-col flex-gap-regular">
+      <div class="title-comment-input">Comment</div>
+      <div class="flex flex-gap-regular w-100">
+        <input
+          type="text"
+          class="input-field w-80"
+          placeholder="input comment.."
+          bind:value={newComment}
+          on:keypress={(e) => { if (e.key === 'Enter') addComment(); }}
+        >
+        <button class="btn-add-comment no-decoration w-20" on:click={addComment}>
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
     </div>
   </div>
-  <div class="bg-primary vw-100 {post_detail_loaded == true ? "h-fit" : "mh-75"} template-post-bg flex flex-direction-col flex-gap-large {post_detail_loaded == false ? "flex-center-horizontal flex-center-vertical" : ""}" id="form-login">
-  	{#if post_detail_loaded}
-	    {#if post}
-	      <div class="flex flex-gap-regular flex-center-vertical">
-	        <div class="profilePhoto rounded-image" id="profilePhoto"></div>
-	        <div class="user-name-poster">@{post.user_id}</div>
-	      </div>
-	      <img src="{post.photo}" alt="" class="w-100 rounded-20">
-	      <div class="title-card-content">{post.title}</div>
-	      <div class="content-card-detail">{post.caption}</div>
-	      <div class="flex flex-gap-regular">
-	        <div class="flex flex-center-vertical" on:click={()=>{handleLike(post)}}>
-	          {#if hasLiked}
-	            <i class="fa-solid fa-heart icon-detail-post"></i>
-	            <div class="text-icon-detail-post">{post.like_count}</div>
-	          {:else}
-	            <i class="fa-regular fa-heart icon-detail-post"></i>
-	            <div class="text-icon-detail-post">{post.like_count}</div>
-	          {/if}
-	        </div>
-	        <div class="flex flex-center-vertical">
-	          <i class="fa-regular fa-comment icon-detail-post"></i>
-	          <div class="text-icon-detail-post">{post.comment_count}</div>
-	        </div>
-	      </div>
-	      <div class="divider"></div>
-	      {#if comments.length != 0}
-	        {#each comments as comment}
-	        {#if comment.parent_comment_id == null}
-	          <div class="flex flex-direction-col flex-gap-regular">
-	            <div class="flex flex-gap-regular flex-center-vertical w-100">
-	              <div class="profilePhoto rounded-image" style="background-image: url({comment.profile_picture})"></div>
-	              <div class="user-name-commenter w-90">@{comment.user_id}</div>
-	            </div>
-	            <div class="flex flex-gap-regular flex-center-vertical">
-	              <div class="w-10"></div>
-	              <div class="comment w-90">{comment.content}</div>
-	            </div>
-	            <div class="flex flex-gap-regular flex-center-vertical">
-	              <div class="w-10"></div>
-	              <div class="reply w-90" on:click={() => { comment.showReplyBox = !comment.showReplyBox; replyTo = comment.id; }}>
-	                Reply
-	              </div>
-	            </div>
-	            {#if replyTo === comment.id && comment.showReplyBox}
-	              <div class="flex flex-gap-regular flex-center-vertical">
-	                <div class="w-10"></div>
-	                <div class="flex flex-gap-regular w-90">
-	                  <input
-	                    type="text"
-	                    class="input-field w-70"
-	                    placeholder="Reply to @{comment.user_id}.."
-	                    bind:value={newReply}
-	                    on:keypress={(e) => { if (e.key === 'Enter') addReply(comment.id, post); }}
-	                  >
-	                  <button class="btn-add-comment no-decoration w-30" on:click={() => addReply(comment.id)}>
-	                    <i class="fa-solid fa-paper-plane"></i>
-	                  </button>
-	                </div>
-	              </div>
-	            {/if}
-	            {#each comment.replies as reply}
-	            <div class="flex flex-gap-regular flex-center-vertical" style="margin-top: 20px;">
-	            	<div class="w-10"></div>
-	            	<div class="flex flex-gap-regular flex-direction-col w-90">
-	            		<div class="flex flex-gap-regular flex-center-vertical w-100">
-			              <div class="profilePhoto rounded-image" style="background-image: url({reply.profile_picture})"></div>
-			              <div class="user-name-commenter w-90">@{reply.user_id}</div>
-			            </div>
-			            <div class="flex flex-gap-regular flex-center-vertical w-100">
-			              <div class="w-10"></div>
-			              <div class="comment w-90" style="margin-left: 10px">{reply.content}</div>
-			            </div>
-	            	</div>
-	            </div>
-	            {/each}
-	          </div>
-	          {/if}
-	        {/each}
-	      {:else}
-	        <div class="flex flex-center-horizontal w-100">
-	          <div class="content-card-detail">No comments yet</div>
-	        </div>
-	      {/if}
-	    {/if}
-	{:else}
-		<img src="{loading}" class="w-30">
-	{/if}
+    <div class="vw-100 h-10 flex flex-center-vertical page-top">
+      <div class="flex flex-between-horizontal flex-center-vertical">
+        <i class="fa-solid fa-arrow-left arrow-back" on:click={() => history.back()}></i>
+        <img src="{logo}" alt="" class="w-50">
+      </div>
+    </div>
+    <div class="bg-primary vw-100 {post_detail_loaded == true ? "h-fit" : "mh-75"} template-post-bg flex flex-direction-col flex-gap-large {post_detail_loaded == false ? "flex-center-horizontal flex-center-vertical" : ""}" id="form-login">
+      {#if post_detail_loaded}
+        {#if post}
+          <div class="flex flex-gap-regular flex-center-vertical">
+            <div class="profilePhoto rounded-image" id="profilePhoto"></div>
+            <div class="user-name-poster">@{post.user_id}</div>
+          </div>
+          <img src="{post.photo}" alt="" class="w-100 rounded-20">
+          <div class="title-card-content">{post.title}</div>
+          <div class="content-card-detail">{post.caption}</div>
+          <div class="flex flex-gap-regular">
+            <div class="flex flex-center-vertical" on:click={()=>{handleLike(post)}}>
+              {#if hasLiked}
+                <i class="fa-solid fa-heart icon-detail-post"></i>
+                <div class="text-icon-detail-post">{post.like_count}</div>
+              {:else}
+                <i class="fa-regular fa-heart icon-detail-post"></i>
+                <div class="text-icon-detail-post">{post.like_count}</div>
+              {/if}
+            </div>
+            <div class="flex flex-center-vertical">
+              <i class="fa-regular fa-comment icon-detail-post"></i>
+              <div class="text-icon-detail-post">{post.comment_count}</div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          {#if comments.length != 0}
+            {#each comments as comment}
+            {#if comment.parent_comment_id == null}
+              <div class="flex flex-direction-col flex-gap-regular">
+                <div class="flex flex-gap-regular flex-center-vertical w-100">
+                  <div class="profilePhoto rounded-image" style="background-image: url({comment.profile_picture})"></div>
+                  <div class="user-name-commenter w-90">@{comment.user_id}</div>
+                </div>
+                <div class="flex flex-gap-regular flex-center-vertical">
+                  <div class="w-10"></div>
+                  <div class="comment w-90">{comment.content}</div>
+                </div>
+                <div class="flex flex-gap-regular flex-center-vertical">
+                  <div class="w-10"></div>
+                  <div class="reply w-90" on:click={() => { comment.showReplyBox = !comment.showReplyBox; replyTo = comment.id; }}>
+                    Reply
+                  </div>
+                </div>
+                {#if replyTo === comment.id && comment.showReplyBox}
+                  <div class="flex flex-gap-regular flex-center-vertical">
+                    <div class="w-10"></div>
+                    <div class="flex flex-gap-regular w-90">
+                      <input
+                        type="text"
+                        class="input-field w-70"
+                        placeholder="Reply to @{comment.user_id}.."
+                        bind:value={newReply}
+                        on:keypress={(e) => { if (e.key === 'Enter') addReply(comment.id, post); }}
+                      >
+                      <button class="btn-add-comment no-decoration w-30" on:click={() => addReply(comment.id)}>
+                        <i class="fa-solid fa-paper-plane"></i>
+                      </button>
+                    </div>
+                  </div>
+                {/if}
+                {#each comment.replies as reply}
+                <div class="flex flex-gap-regular flex-center-vertical" style="margin-top: 20px;">
+                  <div class="w-10"></div>
+                  <div class="flex flex-gap-regular flex-direction-col w-90">
+                    <div class="flex flex-gap-regular flex-center-vertical w-100">
+                      <div class="profilePhoto rounded-image" style="background-image: url({reply.profile_picture})"></div>
+                      <div class="user-name-commenter w-90">@{reply.user_id}</div>
+                    </div>
+                    <div class="flex flex-gap-regular flex-center-vertical w-100">
+                      <div class="w-10"></div>
+                      <div class="comment w-90" style="margin-left: 10px">{reply.content}</div>
+                    </div>
+                  </div>
+                </div>
+                {/each}
+              </div>
+              {/if}
+            {/each}
+          {:else}
+            <div class="flex flex-center-horizontal w-100">
+              <div class="content-card-detail">No comments yet</div>
+            </div>
+          {/if}
+        {/if}
+    {:else}
+      <img src="{loading}" class="w-30">
+    {/if}
+    </div>
+  </section>
+</div>
+
+<div class="desktop flex flex-center-horizontal">
+  <section class="bg-secondary w-30 vh-100 flex flex-direction-col page-pad relative">
+    <div id="comment_space" class="w-100">
+    <div class="comment-input flex flex-direction-col flex-gap-regular">
+      <div class="title-comment-input">Comment</div>
+      <div class="flex flex-gap-regular w-100">
+        <input
+          type="text"
+          class="input-field w-80"
+          placeholder="input comment.."
+          bind:value={newComment}
+          on:keypress={(e) => { if (e.key === 'Enter') addComment(); }}
+        >
+        <button class="btn-add-comment no-decoration w-20" on:click={addComment}>
+          <i class="fa-solid fa-paper-plane icon-send-post"></i>
+        </button>
+      </div>
+    </div>
   </div>
-</section>
+    <div class="w-100 h-10 flex flex-center-vertical page-top">
+      <div class="flex flex-between-horizontal flex-center-vertical">
+        <i class="fa-solid fa-arrow-left arrow-back" on:click={() => history.back()}></i>
+        <img src="{logo}" alt="" class="w-50">
+      </div>
+    </div>
+    <div class="bg-primary w-100 {post_detail_loaded == true ? "h-fit" : "mh-75"} template-post-bg flex flex-direction-col flex-gap-semi-large {post_detail_loaded == false ? "flex-center-horizontal flex-center-vertical" : ""}" id="form-login">
+      {#if post_detail_loaded}
+        {#if post}
+          <div class="flex flex-gap-semi-small flex-center-vertical">
+            <div class="profilePhoto rounded-image" id="profilePhoto2"></div>
+            <div class="user-name-poster">@{post.user_id}</div>
+          </div>
+          <img src="{post.photo}" alt="" class="w-100 rounded-20">
+          <div class="title-card-content">{post.title}</div>
+          <div class="content-card-detail">{post.caption}</div>
+          <div class="flex flex-gap-regular">
+            <div class="flex flex-center-vertical" on:click={()=>{handleLike(post)}}>
+              {#if hasLiked}
+                <i class="fa-solid fa-heart icon-detail-post"></i>
+                <div class="text-icon-detail-post">{post.like_count}</div>
+              {:else}
+                <i class="fa-regular fa-heart icon-detail-post"></i>
+                <div class="text-icon-detail-post">{post.like_count}</div>
+              {/if}
+            </div>
+            <div class="flex flex-center-vertical">
+              <i class="fa-regular fa-comment icon-detail-post"></i>
+              <div class="text-icon-detail-post">{post.comment_count}</div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          {#if comments.length != 0}
+            {#each comments as comment}
+            {#if comment.parent_comment_id == null}
+              <div class="flex flex-direction-col flex-gap-regular">
+                <div class="flex flex-gap-regular flex-center-vertical w-100">
+                  <div class="profilePhoto rounded-image" style="background-image: url({comment.profile_picture})"></div>
+                  <div class="user-name-commenter w-90">@{comment.user_id}</div>
+                </div>
+                <div class="flex flex-gap-regular flex-center-vertical">
+                  <div class="w-10"></div>
+                  <div class="comment w-90">{comment.content}</div>
+                </div>
+                <div class="flex flex-gap-regular flex-center-vertical">
+                  <div class="w-10"></div>
+                  <div class="reply w-90" on:click={() => { comment.showReplyBox = !comment.showReplyBox; replyTo = comment.id; }}>
+                    Reply
+                  </div>
+                </div>
+                {#if replyTo === comment.id && comment.showReplyBox}
+                  <div class="flex flex-gap-regular flex-center-vertical">
+                    <div class="w-10"></div>
+                    <div class="flex flex-gap-regular w-90">
+                      <input
+                        type="text"
+                        class="input-field w-70"
+                        placeholder="Reply to @{comment.user_id}.."
+                        bind:value={newReply}
+                        on:keypress={(e) => { if (e.key === 'Enter') addReply(comment.id, post); }}
+                      >
+                      <button class="btn-add-comment no-decoration w-30" on:click={() => addReply(comment.id)}>
+                        <i class="fa-solid fa-paper-plane"></i>
+                      </button>
+                    </div>
+                  </div>
+                {/if}
+                {#each comment.replies as reply}
+                <div class="flex flex-gap-regular flex-center-vertical" style="margin-top: 20px;">
+                  <div class="w-10"></div>
+                  <div class="flex flex-gap-regular flex-direction-col w-90">
+                    <div class="flex flex-gap-regular flex-center-vertical w-100">
+                      <div class="profilePhoto rounded-image" style="background-image: url({reply.profile_picture})"></div>
+                      <div class="user-name-commenter w-90">@{reply.user_id}</div>
+                    </div>
+                    <div class="flex flex-gap-regular flex-center-vertical w-100">
+                      <div class="w-10"></div>
+                      <div class="comment w-90" style="margin-left: 10px">{reply.content}</div>
+                    </div>
+                  </div>
+                </div>
+                {/each}
+              </div>
+              {/if}
+            {/each}
+          {:else}
+            <div class="flex flex-center-horizontal w-100">
+              <div class="content-card-detail">No comments yet</div>
+            </div>
+          {/if}
+        {/if}
+    {:else}
+      <img src="{loading}" class="w-30">
+    {/if}
+    </div>
+  </section>
+</div>

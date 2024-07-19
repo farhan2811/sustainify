@@ -81,13 +81,15 @@
 </svelte:head>
 
 {#if messageModal == 1}
-	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
-		<div class="flex flex-center-vertical flex-center-horizontal h-100">
-			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
-				<div class="head-input-primary text-center">{messagePayload}</div>
-				<button class="btn-modal w-100" on:click={() => {
-					messageModal = 0
-				}}>Close</button>
+	<div class="mobile">
+		<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+			<div class="flex flex-center-vertical flex-center-horizontal h-100">
+				<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+					<div class="head-input-primary text-center">{messagePayload}</div>
+					<button class="btn-modal w-100" on:click={() => {
+						messageModal = 0
+					}}>Close</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -107,25 +109,52 @@
 	</div>
 {/if}
 
-<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-	<div class="vw-100 h-10 flex flex-center-vertical page-top">
-		<div class="flex flex-end-horizontal flex-center-vertical">
-			<img src="{logo}" alt="" class="w-50">
-		</div>
-	</div>
-	<div class="bg-primary vw-100 vh-100 template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
-		<div class="flex flex-direction-col flex-gap-semi-large">
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">New Password</div>
-				<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={new_password}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Confirm New Password</div>
-				<input type="password" name="" class="input-field w-100" placeholder="input confirm password.." bind:value={confirm_new_password}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
-				<button class="btn-secondary w-100">Change Password</button>
+<div class="mobile">
+	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
+		<div class="vw-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-end-horizontal flex-center-vertical">
+				<img src="{logo}" alt="" class="w-50">
 			</div>
 		</div>
-	</div>
-</section>
+		<div class="bg-primary vw-100 vh-100 template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">New Password</div>
+					<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={new_password}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Confirm New Password</div>
+					<input type="password" name="" class="input-field w-100" placeholder="input confirm password.." bind:value={confirm_new_password}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-secondary w-100">Change Password</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<div class="desktop flex flex-center-horizontal">
+	<section class="bg-secondary w-30 h-100 flex flex-direction-col page-pad">
+		<div class="w-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-end-horizontal flex-center-vertical">
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<div class="bg-primary w-100 h-100 template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">New Password</div>
+					<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={new_password}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Confirm New Password</div>
+					<input type="password" name="" class="input-field w-100" placeholder="input confirm password.." bind:value={confirm_new_password}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-secondary w-100">Change Password</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>

@@ -4,7 +4,7 @@
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
 	import {frdb} from "$lib/firebaseConfig.js";
-	import {doc, setDoc, getDocs, getDoc, collection } from "firebase/firestore"; 
+	import {doc, setDoc, getDocs, getDoc, collection, query, where, orderBy } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
 	import ApiController from '../../ApiController'
@@ -26,10 +26,40 @@
 	let missions_list_sorted = [];
 	let missions_loaded = false;
 	let subscription_credentials;
+	let notifModal = 0;
+	let new_notif_count = 0
+	let old_notif_count = 0
+	let notifList = [];
+	let device_switcher = 0;
 
 	function isOverflowY(element) {
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
 	}
+
+	const getNotificationCount = async () => {
+		const userRef = await doc(frdb, 'users', localStorage.getItem("username"));
+	    const getDataUser = await getDoc(userRef);
+	    old_notif_count = localStorage.getItem("notification_count");
+	    new_notif_count = getDataUser.data().notification_count;
+	} 
+
+	const getNotificationList = async() => {
+		const notifCollection = collection(frdb, 'notifications');
+	    const notifQuery = query(notifCollection, where('user_id', '==', localStorage.getItem("username")), orderBy('timestamp', 'desc'));
+	    const snapshot = await getDocs(notifQuery);
+	    notifList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+	    console.log(notifList)
+	}
+
+	const setNotifCount = async () => {
+		localStorage.setItem("notification_count", new_notif_count);
+		if (device_switcher == 0) {
+			document.getElementById("red-dot1").style.display = "none"
+		} else {
+			document.getElementById("red-dot1").style.display = "none"
+		}
+	}
+
 
 	const getUserMonthYear = async () => {
 	    const querySnapshot1 = await getDocs(collection(frdb, "users", localStorage.getItem("username"), "carbon-record"));
@@ -126,23 +156,6 @@
 	    return outputArray;
 	}
 
-	const sendNotif = async () => {
-		const ref = doc(frdb, "users", "cobadulu")
-		const docSnap = await getDoc(ref)
-		if (docSnap.exists()) {
-	      await ApiController({
-	        	method: "POST",
-	        	endpoint: "api/sendNotif",
-	        	datas: {endpoint: docSnap.data().endpoint, keys : {auth: docSnap.data().keys.auth, p256dh: docSnap.data().keys.p256dh}}
-	        }).then((resp) => {
-	        	console.log(resp)
-	        })
-	    } else {
-	      console.log('No such document!');
-	      return null;
-	    }
-	}
-
 	onMount(async() => {
 		if (localStorage.getItem("email") == "" || localStorage.getItem("email") == null) {
 			window.location.href = '/'
@@ -150,6 +163,8 @@
 			window.location.href = '/'
 		}
 		await subscribeNotif(localStorage.getItem("username"))
+		await getNotificationCount();
+		await getNotificationList();
 		await getUserMonthYear()
 		await getMissions();
 	})
@@ -161,61 +176,202 @@
 	<meta name="description" content="Home Page" />
 </svelte:head>
 
-<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-	<Navbar pagePointer="home"/>
-	<div class="vw-100 h-10 flex flex-direction-col page-top">
-		<div class="flex flex-between-horizontal flex-center-vertical">
-			<i class="fa-solid fa-bell arrow-back"></i>
-			<img src="{logo}" alt="" class="w-50">
-		</div>
-	</div>
-	<div class="vw-100 vh-37 flex flex-direction-col flex-center-vertical flex-gap-regular carbon-status-home">
-		{#if carbon_total && carbon_level}
-			<div class="sub-home">This Month's Carbon Footprint</div>
-			<div class="carbon-count">{carbon_total} Kg CO2</div>
-			<div class="sub-home">Emission Level : 
-				{#if carbon_level == "Low"}
-					<span class="carbon-level-low">
-						{carbon_level}
-					</span>
-				{:else if carbon_level == "Average"}
-					<span class="carbon-level-average">
-						{carbon_level}
-					</span>
-				{:else if carbon_level == "High"}
-					<span class="carbon-level-high">
-						{carbon_level}
-					</span>
-				{:else}
-					<span class="carbon-level-low">
-						None
-					</span>
-				{/if}
-			</div>
-		{:else}
-			<img src="{loading}" class="w-30" alt="">
-		{/if}
-	</div>
-	<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large missions-home">
-		<div class="title-card-home">
-			Monthly Missions 
-		</div>
-		<div class="w-100 flex flex-direction-col flex-gap-semi-large {missions_loaded == true ? "h-fit" : "vh-75"} flex-center-vertical {missions_loaded == false ? "flex-center-horizontal" : "flex-center-vertical"}">
-			{#if missions_loaded != false}
-				{#each missions_list_sorted as mission, index}
-					<div class="card card-mission w-100 {mission.state == "finished" ? "disabled-card" : ""}">
-						<div class="flex flex-center-vertical flex-gap-semi-large">
-							<i class="fa-solid fa-star star-missions"></i>
-							<div class="flex flex-direction-col flex-gap-semi-small">
-								<div class="mission-title">{mission.title}</div>
-								<div class="mission-points">{mission.points} pts</div>
+{#if notifModal == 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						notifModal = 0
+					}}></i>
+					<div class="title-notif">Notifications</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular h-90 notif-scroll">
+					{#each notifList as item, index}
+						<a href="{item.page_url}" class="no-decoration">
+							<div class="flex flex-direction-col flex-gap-small notif-border">
+								<div class="notif-message">{item.message}</div>
+								<div class="notif-timestamp">{item.timestamp}</div>
 							</div>
-						</div>
-					</div>
-				{/each}
+						</a>
+					{/each}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						notifModal = 0
+					}}></i>
+					<div class="title-notif">Notifications</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular h-90 notif-scroll">
+					{#each notifList as item, index}
+						<a href="{item.page_url}" class="no-decoration">
+							<div class="flex flex-direction-col flex-gap-small notif-border">
+								<div class="notif-message">{item.message}</div>
+								<div class="notif-timestamp">{item.timestamp}</div>
+							</div>
+						</a>
+					{/each}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+
+<div class="mobile">
+	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
+		<Navbar pagePointer="home"/>
+		<div class="vw-100 h-10 flex flex-direction-col page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<div class="notif-icon flex flex-center-vertical" on:click={() => {
+					if (notifModal == 0) {
+						notifModal = 1
+						device_switcher = 0;
+						setNotifCount();
+					} else {
+						notifModal = 0
+					}
+				}}>
+					<i class="fa-solid fa-bell arrow-back"></i>
+					{#if old_notif_count < new_notif_count}
+						<div class="small-red-dot"  id="red-dot1"></div>
+					{/if}
+				</div>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<div class="vw-100 vh-37 flex flex-direction-col flex-center-vertical flex-gap-regular carbon-status-home">
+			{#if carbon_total && carbon_level}
+				<div class="sub-home">This Month's Carbon Footprint</div>
+				<div class="carbon-count">{carbon_total} Kg CO2</div>
+				<div class="sub-home">Emission Level : 
+					{#if carbon_level == "Low"}
+						<span class="carbon-level-low">
+							{carbon_level}
+						</span>
+					{:else if carbon_level == "Average"}
+						<span class="carbon-level-average">
+							{carbon_level}
+						</span>
+					{:else if carbon_level == "High"}
+						<span class="carbon-level-high">
+							{carbon_level}
+						</span>
+					{:else}
+						<span class="carbon-level-low">
+							None
+						</span>
+					{/if}
+				</div>
 			{:else}
 				<img src="{loading}" class="w-30" alt="">
 			{/if}
 		</div>
-	</div>
-</section>
+		<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large missions-home">
+			<div class="title-card-home">
+				Monthly Missions 
+			</div>
+			<div class="w-100 flex flex-direction-col flex-gap-semi-large {missions_loaded == true ? "h-fit" : "vh-75"} flex-center-vertical {missions_loaded == false ? "flex-center-horizontal" : "flex-center-vertical"}">
+				{#if missions_loaded != false}
+					{#each missions_list_sorted as mission, index}
+						<div class="card card-mission w-100 {mission.state == "finished" ? "disabled-card" : ""}">
+							<div class="flex flex-center-vertical flex-gap-semi-large">
+								<i class="fa-solid fa-star star-missions"></i>
+								<div class="flex flex-direction-col flex-gap-semi-small">
+									<div class="mission-title">{mission.title}</div>
+									<div class="mission-points">{mission.points} pts</div>
+								</div>
+							</div>
+						</div>
+					{/each}
+				{:else}
+					<img src="{loading}" class="w-30" alt="">
+				{/if}
+			</div>
+		</div>
+	</section>
+</div>
+
+<div class="desktop flex flex-center-horizontal">
+	<section class="bg-secondary w-30 h-100 flex flex-direction-col page-pad relative">
+		<Navbar pagePointer="home"/>
+		<div class="w-100 h-10 flex flex-center-vertical page-top missions-home">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<div class="notif-icon flex flex-center-vertical" on:click={() => {
+					if (notifModal == 0) {
+						notifModal = 1
+						device_switcher = 1;
+						setNotifCount();
+					} else {
+						notifModal = 0
+					}
+				}}>
+					<i class="fa-solid fa-bell arrow-back"></i>
+					{#if old_notif_count < new_notif_count}
+						<div class="small-red-dot"  id="red-dot2"></div>
+					{/if}
+				</div>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<div class="w-100 h-37 flex flex-direction-col flex-center-vertical flex-gap-regular carbon-status-home missions-home">
+			{#if carbon_total && carbon_level}
+				<div class="sub-home">This Month's Carbon Footprint</div>
+				<div class="carbon-count">{carbon_total} Kg CO2</div>
+				<div class="sub-home">Emission Level : 
+					{#if carbon_level == "Low"}
+						<span class="carbon-level-low">
+							{carbon_level}
+						</span>
+					{:else if carbon_level == "Average"}
+						<span class="carbon-level-average">
+							{carbon_level}
+						</span>
+					{:else if carbon_level == "High"}
+						<span class="carbon-level-high">
+							{carbon_level}
+						</span>
+					{:else}
+						<span class="carbon-level-low">
+							None
+						</span>
+					{/if}
+				</div>
+			{:else}
+				<img src="{loading}" class="w-30" alt="">
+			{/if}
+		</div>
+		<div class="bg-primary w-100 card-bg template-home-bg flex flex-direction-col flex-gap-large missions-home">
+			<div class="title-card-home">
+				Monthly Missions 
+			</div>
+			<div class="w-100 flex flex-direction-col flex-gap-semi-large  {missions_loaded == true ? "h-fit" : "vh-75"} flex-center-vertical {missions_loaded == false ? "flex-center-horizontal" : "flex-center-vertical"}">
+				{#if missions_loaded != false}
+					{#each missions_list_sorted as mission, index}
+						<div class="card card-mission w-100 {mission.state == "finished" ? "disabled-card" : ""}">
+							<div class="flex flex-center-vertical flex-gap-semi-large">
+								<i class="fa-solid fa-star star-missions"></i>
+								<div class="flex flex-direction-col flex-gap-semi-small">
+									<div class="mission-title">{mission.title}</div>
+									<div class="mission-points">{mission.points} pts</div>
+								</div>
+							</div>
+						</div>
+					{/each}
+				{:else}
+					<img src="{loading}" class="w-30" alt="">
+				{/if}
+			</div>
+		</div>
+	</section>
+</div>

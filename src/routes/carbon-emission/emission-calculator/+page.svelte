@@ -151,6 +151,7 @@
 </svelte:head>
 
 {#if messageModal == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -161,9 +162,23 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<button class="btn-modal w-100" on:click={() => {
+					messageModal = 0
+				}}>Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if done_calculate == "yes"}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -174,115 +189,240 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">You've filled this month emission data</div>
+				<button class="btn-modal w-100" on:click={() => {
+					history.back();
+				}}>Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if messageModalSuccess == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
-				<div class="flex flex-direction-col flex-gap-large">
-					<div class="head-input-primary text-center">{messagePayload}</div>
-					<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
-						<div class="loading-text text-center">Please wait a moment</div>
-						<img src="{loading}" class="w-30">
-					</div>
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+					<div class="loading-text text-center">Please wait a moment</div>
+					<img src="{loading}" class="w-30">
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+					<div class="loading-text text-center">Please wait a moment</div>
+					<img src="{loading}" class="w-30">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
-<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-	<div class="vw-100 h-10 flex flex-center-vertical page-top">
-		<div class="flex flex-between-horizontal flex-center-vertical">
-			<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
-				history.back();
-			}}></i>
-			<img src="{logo}" alt="" class="w-50">
+<div class="mobile">
+	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
+		<div class="vw-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
 		</div>
-	</div>
-	<div class="bg-primary vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
-		<div class="flex flex-direction-col flex-gap-semi-large">
-			<div class="flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
-				<div class="form-note w-100">You can only fill this form once a month!</div>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Home Electricity Usage (Kwh)</div>
-				<input type="email" name="" class="input-field w-100" placeholder="input home electricity usage.." bind:value={home_electricity}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="flex flex-direction-col flex-gap-small">
-					<div class="head-input-secondary">Kitchen Gas Usage (Kg)</div>
+		<div class="bg-primary vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+					<div class="form-note w-100">You can only fill this form once a month!</div>
 				</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input kitchen gas usage.." bind:value={kitchen_gas}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Meat Consumption (Kg)</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input meat consumption.." bind:value={meat_consumption}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Vegetable Consumption (Kg)</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input vegetable consumption.." bind:value={vegetable_consumption}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Grains Consumption (Kg)</div>
-				<div class="head-input-accent">(Rice, Corn, Wheat, Quinoa, etc.)</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input grains consumption.." bind:value={grains_consumption}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Garbage/Waste Disposal (Kg)</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input garbage/waste disposal.." bind:value={garbage_disposal}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Airplane Flight (Km)</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input airplane flight.." bind:value={airplane_flight}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
-				<button class="btn-secondary w-100" on:click={() => {
-					if (home_electricity == "" || home_electricity == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your home electricity usage";
-					} else if(kitchen_gas == "" || kitchen_gas == null) {
-						messageModal = 1;
-						messagePayload = "Please fill kitchen gas usage";
-					} else if(meat_consumption == "" || meat_consumption == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your meat consumption";
-					} else if(vegetable_consumption == "" || vegetable_consumption == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your vegetable consumption";
-					} else if(grains_consumption == "" || grains_consumption == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your grains consumption";
-					} else if(garbage_disposal == "" || garbage_disposal == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your garbage disposal usage";
-					} else if(airplane_flight == "" || airplane_flight == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your airplane flight";
-					} else {
-						real_home_electricity = home_electricity * home_electricity_emission_factor;
-						real_kitchen_gas = kitchen_gas * kitchen_gas_emission_factor;
-						real_meat_consumption = meat_consumption * meat_consumption_emission_factor;
-						real_vegetable_consumption = vegetable_consumption * vegetable_consumption_emission_factor;
-						real_grains_consumption = grains_consumption * grains_consumption_emission_factor;
-						real_garbage_disposal = garbage_disposal * garbage_disposal_emission_factor;
-						real_airplane_flight = airplane_flight * airplane_flight_emission_factor;
-						carbon_total = real_home_electricity+real_kitchen_gas+real_meat_consumption+real_vegetable_consumption+real_grains_consumption+real_garbage_disposal+real_airplane_flight;
-						if (carbon_total < 1000) {
-							carbon_level = "Low"
-						} else if (carbon_total >= 1000 && carbon_total <= 2000) {
-							carbon_level = "Average"
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Home Electricity Usage (Kwh)</div>
+					<input type="email" name="" class="input-field w-100" placeholder="input home electricity usage.." bind:value={home_electricity}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="flex flex-direction-col flex-gap-small">
+						<div class="head-input-secondary">Kitchen Gas Usage (Kg)</div>
+					</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input kitchen gas usage.." bind:value={kitchen_gas}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Meat Consumption (Kg)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input meat consumption.." bind:value={meat_consumption}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Vegetable Consumption (Kg)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input vegetable consumption.." bind:value={vegetable_consumption}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Grains Consumption (Kg)</div>
+					<div class="head-input-accent">(Rice, Corn, Wheat, Quinoa, etc.)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input grains consumption.." bind:value={grains_consumption}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Garbage/Waste Disposal (Kg)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input garbage/waste disposal.." bind:value={garbage_disposal}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Airplane Flight (Km)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input airplane flight.." bind:value={airplane_flight}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-secondary w-100" on:click={() => {
+						if (home_electricity == "" || home_electricity == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your home electricity usage";
+						} else if(kitchen_gas == "" || kitchen_gas == null) {
+							messageModal = 1;
+							messagePayload = "Please fill kitchen gas usage";
+						} else if(meat_consumption == "" || meat_consumption == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your meat consumption";
+						} else if(vegetable_consumption == "" || vegetable_consumption == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your vegetable consumption";
+						} else if(grains_consumption == "" || grains_consumption == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your grains consumption";
+						} else if(garbage_disposal == "" || garbage_disposal == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your garbage disposal usage";
+						} else if(airplane_flight == "" || airplane_flight == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your airplane flight";
 						} else {
-							carbon_level = "High"
+							real_home_electricity = home_electricity * home_electricity_emission_factor;
+							real_kitchen_gas = kitchen_gas * kitchen_gas_emission_factor;
+							real_meat_consumption = meat_consumption * meat_consumption_emission_factor;
+							real_vegetable_consumption = vegetable_consumption * vegetable_consumption_emission_factor;
+							real_grains_consumption = grains_consumption * grains_consumption_emission_factor;
+							real_garbage_disposal = garbage_disposal * garbage_disposal_emission_factor;
+							real_airplane_flight = airplane_flight * airplane_flight_emission_factor;
+							carbon_total = real_home_electricity+real_kitchen_gas+real_meat_consumption+real_vegetable_consumption+real_grains_consumption+real_garbage_disposal+real_airplane_flight;
+							if (carbon_total < 1000) {
+								carbon_level = "Low"
+							} else if (carbon_total >= 1000 && carbon_total <= 2000) {
+								carbon_level = "Average"
+							} else {
+								carbon_level = "High"
+							}
+							setCarbonData(real_home_electricity, real_kitchen_gas, real_meat_consumption, real_vegetable_consumption, real_grains_consumption, real_garbage_disposal, real_airplane_flight,carbon_total,carbon_level);
+							messagePayload = "Calculating your data"
+							messageModalSuccess = 1;
+							setTimeout(goToCarbonResult, 3000);
 						}
-						setCarbonData(real_home_electricity, real_kitchen_gas, real_meat_consumption, real_vegetable_consumption, real_grains_consumption, real_garbage_disposal, real_airplane_flight,carbon_total,carbon_level);
-						messagePayload = "Calculating your data"
-						messageModalSuccess = 1;
-						setTimeout(goToCarbonResult, 3000);
-					}
-				}}>Calculate</button>
+					}}>Calculate</button>
+				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
+</div>
+
+<div class="desktop flex flex-center-horizontal">
+	<section class="bg-secondary w-30 h-100 flex flex-direction-col page-pad">
+		<div class="w-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<div class="bg-primary w-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+					<div class="form-note w-100">You can only fill this form once a month!</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Home Electricity Usage (Kwh)</div>
+					<input type="email" name="" class="input-field w-100" placeholder="input home electricity usage.." bind:value={home_electricity}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="flex flex-direction-col flex-gap-small">
+						<div class="head-input-secondary">Kitchen Gas Usage (Kg)</div>
+					</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input kitchen gas usage.." bind:value={kitchen_gas}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Meat Consumption (Kg)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input meat consumption.." bind:value={meat_consumption}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Vegetable Consumption (Kg)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input vegetable consumption.." bind:value={vegetable_consumption}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Grains Consumption (Kg)</div>
+					<div class="head-input-accent">(Rice, Corn, Wheat, Quinoa, etc.)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input grains consumption.." bind:value={grains_consumption}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Garbage/Waste Disposal (Kg)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input garbage/waste disposal.." bind:value={garbage_disposal}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Airplane Flight (Km)</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input airplane flight.." bind:value={airplane_flight}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-secondary w-100" on:click={() => {
+						if (home_electricity == "" || home_electricity == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your home electricity usage";
+						} else if(kitchen_gas == "" || kitchen_gas == null) {
+							messageModal = 1;
+							messagePayload = "Please fill kitchen gas usage";
+						} else if(meat_consumption == "" || meat_consumption == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your meat consumption";
+						} else if(vegetable_consumption == "" || vegetable_consumption == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your vegetable consumption";
+						} else if(grains_consumption == "" || grains_consumption == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your grains consumption";
+						} else if(garbage_disposal == "" || garbage_disposal == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your garbage disposal usage";
+						} else if(airplane_flight == "" || airplane_flight == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your airplane flight";
+						} else {
+							real_home_electricity = home_electricity * home_electricity_emission_factor;
+							real_kitchen_gas = kitchen_gas * kitchen_gas_emission_factor;
+							real_meat_consumption = meat_consumption * meat_consumption_emission_factor;
+							real_vegetable_consumption = vegetable_consumption * vegetable_consumption_emission_factor;
+							real_grains_consumption = grains_consumption * grains_consumption_emission_factor;
+							real_garbage_disposal = garbage_disposal * garbage_disposal_emission_factor;
+							real_airplane_flight = airplane_flight * airplane_flight_emission_factor;
+							carbon_total = real_home_electricity+real_kitchen_gas+real_meat_consumption+real_vegetable_consumption+real_grains_consumption+real_garbage_disposal+real_airplane_flight;
+							if (carbon_total < 1000) {
+								carbon_level = "Low"
+							} else if (carbon_total >= 1000 && carbon_total <= 2000) {
+								carbon_level = "Average"
+							} else {
+								carbon_level = "High"
+							}
+							setCarbonData(real_home_electricity, real_kitchen_gas, real_meat_consumption, real_vegetable_consumption, real_grains_consumption, real_garbage_disposal, real_airplane_flight,carbon_total,carbon_level);
+							messagePayload = "Calculating your data"
+							messageModalSuccess = 1;
+							setTimeout(goToCarbonResult, 3000);
+						}
+					}}>Calculate</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>

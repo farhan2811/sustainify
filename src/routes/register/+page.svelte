@@ -55,7 +55,7 @@
 	  {
 	    id: 'make_posts',
 	    title: 'Make 3 Posts in Community',
-	    description: 'Make 2 posts in the community this month.',
+	    description: 'Make 3 posts in the community this month.',
 	    category: 'Community Engagement',
 	    points: 30,
 	    goal: 3,
@@ -97,6 +97,7 @@
 		  profile_picture: "https://firebasestorage.googleapis.com/v0/b/sustainify-67c1e.appspot.com/o/profile_images%2Fdummy-profile.png?alt=media&token=954cfca5-fdbc-49cd-9477-c172b6202f62",
 		  post_count: 0,
 		  comment_count: 0,
+		  notification_count:0,
 		  previous_month: monthNames[month]+"-"+year
 		});
 		await setDoc(doc(frdb, "users", username, "missions", "mission_1"), missions[0])
@@ -123,6 +124,7 @@
 </svelte:head>
 
 {#if messageModal == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
@@ -133,9 +135,23 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-semi-large flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<button class="btn-modal w-100" on:click={() => {
+					messageModal = 0
+				}}>Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 {/if}
 
 {#if messageModalSuccess == 1}
+<div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
 			<div class="card w-80 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
@@ -147,85 +163,185 @@
 			</div>
 		</div>
 	</div>
-{/if}
-
-<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-	<div class="vw-100 h-10 flex flex-center-vertical page-top">
-		<div class="flex flex-between-horizontal flex-center-vertical">
-			<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
-				history.back();
-			}}></i>
-			<img src="{logo}" alt="" class="w-50">
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card w-25 flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+				<div class="head-input-primary text-center">{messagePayload}</div>
+				<div class="flex flex-direction-col flex-gap-semi-large flex-center-vertical">
+					<div class="loading-text text-center">Please wait a moment</div>
+					<img src="{loading}" class="w-30">
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="bg-primary vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
-		<div class="flex flex-direction-col flex-gap-semi-large">
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Email</div>
-				<input type="email" name="" class="input-field w-100" placeholder="input email.." bind:value={email}>
+</div>
+{/if}
+
+
+<div class="mobile">
+	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
+		<div class="vw-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
 			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Full Name</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input full name.." bind:value={full_name}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Username</div>
-				<input type="text" name="" class="input-field w-100" placeholder="input username.." bind:value={username}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Password</div>
-				<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={password}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="head-input-secondary">Confirm Password</div>
-				<input type="password" name="" class="input-field w-100" placeholder="input confirm password.." bind:value={confirm_password}>
-			</div>
-			<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
-				<button class="btn-secondary w-100" on:click={() => {
-					if (email == "" || email == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your email";
-					} else if(full_name == "" || full_name == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your full name";
-					} else if(username == "" || username == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your username";
-					} else if(password == "" || password == null) {
-						messageModal = 1;
-						messagePayload = "Please fill your password";
-					} else if(confirm_password == "" || confirm_password == null) {
-						messageModal = 1;
-						messagePayload = "Please confirm your password";
-					} else {
-						if (password != confirm_password) {
+		</div>
+		<div class="bg-primary vw-100 h-fit template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Email</div>
+					<input type="email" name="" class="input-field w-100" placeholder="input email.." bind:value={email}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Full Name</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input full name.." bind:value={full_name}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Username</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input username.." bind:value={username}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Password</div>
+					<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={password}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Confirm Password</div>
+					<input type="password" name="" class="input-field w-100" placeholder="input confirm password.." bind:value={confirm_password}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-secondary w-100" on:click={() => {
+						if (email == "" || email == null) {
 							messageModal = 1;
-							messagePayload = "Your password doesn't match";
+							messagePayload = "Please fill your email";
+						} else if(full_name == "" || full_name == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your full name";
+						} else if(username == "" || username == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your username";
+						} else if(password == "" || password == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your password";
+						} else if(confirm_password == "" || confirm_password == null) {
+							messageModal = 1;
+							messagePayload = "Please confirm your password";
 						} else {
-							for (var i = 0; i < username_list.length; i++) {
-								if (username_list[i] == username) {
-									messageModal = 1;
-									messagePayload = "The username has been taken";
-									break;
-								} else if(i == username_list.length - 1) {
-									for (var i = 0; i < email_list.length; i++) {
-										if (email_list[i] == email) {
-											messageModal = 1;
-											messagePayload = "The email has been registered";
-											break;
-										} else if(i == email_list.length - 1) {
-											setUserData(email, full_name, username, password);
-											messageModalSuccess = 1;
-											messagePayload = "Registration successful";
-											setTimeout(goToLogin, 3000);
+							if (password != confirm_password) {
+								messageModal = 1;
+								messagePayload = "Your password doesn't match";
+							} else {
+								for (var i = 0; i < username_list.length; i++) {
+									if (username_list[i] == username) {
+										messageModal = 1;
+										messagePayload = "The username has been taken";
+										break;
+									} else if(i == username_list.length - 1) {
+										for (var i = 0; i < email_list.length; i++) {
+											if (email_list[i] == email) {
+												messageModal = 1;
+												messagePayload = "The email has been registered";
+												break;
+											} else if(i == email_list.length - 1) {
+												setUserData(email, full_name, username, password);
+												messageModalSuccess = 1;
+												messagePayload = "Registration successful";
+												setTimeout(goToLogin, 3000);
+											}
 										}
 									}
 								}
 							}
 						}
-					}
-				}}>Sign Up</button>
+					}}>Sign Up</button>
+				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
+</div>
+
+<div class="desktop flex flex-center-horizontal">
+	<section class="bg-secondary w-30 h-100 flex flex-direction-col page-pad">
+		<div class="w-100 h-10 flex flex-center-vertical page-top">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<div class="bg-primary w-100 h-90 template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Email</div>
+					<input type="email" name="" class="input-field w-100" placeholder="input email.." bind:value={email}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Full Name</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input full name.." bind:value={full_name}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Username</div>
+					<input type="text" name="" class="input-field w-100" placeholder="input username.." bind:value={username}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Password</div>
+					<input type="password" name="" class="input-field w-100" placeholder="input password.." bind:value={password}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-regular">
+					<div class="head-input-secondary">Confirm Password</div>
+					<input type="password" name="" class="input-field w-100" placeholder="input confirm password.." bind:value={confirm_password}>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-large padding-btn-login">
+					<button class="btn-secondary w-100" on:click={() => {
+						if (email == "" || email == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your email";
+						} else if(full_name == "" || full_name == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your full name";
+						} else if(username == "" || username == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your username";
+						} else if(password == "" || password == null) {
+							messageModal = 1;
+							messagePayload = "Please fill your password";
+						} else if(confirm_password == "" || confirm_password == null) {
+							messageModal = 1;
+							messagePayload = "Please confirm your password";
+						} else {
+							if (password != confirm_password) {
+								messageModal = 1;
+								messagePayload = "Your password doesn't match";
+							} else {
+								for (var i = 0; i < username_list.length; i++) {
+									if (username_list[i] == username) {
+										messageModal = 1;
+										messagePayload = "The username has been taken";
+										break;
+									} else if(i == username_list.length - 1) {
+										for (var i = 0; i < email_list.length; i++) {
+											if (email_list[i] == email) {
+												messageModal = 1;
+												messagePayload = "The email has been registered";
+												break;
+											} else if(i == email_list.length - 1) {
+												setUserData(email, full_name, username, password);
+												messageModalSuccess = 1;
+												messagePayload = "Registration successful";
+												setTimeout(goToLogin, 3000);
+											}
+										}
+									}
+								}
+							}
+						}
+					}}>Sign Up</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
