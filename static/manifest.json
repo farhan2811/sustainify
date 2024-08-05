@@ -18,37 +18,37 @@
     {
         "src": "mobile1.png",
         "type": "image/png",
-        "sizes": "540x720",
+        "sizes": "412x896",
         "form_factor": "narrow"
       },
       {
         "src": "mobile2.png",
         "type": "image/png",
-        "sizes": "540x720",
+        "sizes": "412x896",
         "form_factor": "narrow"
       },
       {
         "src": "mobile3.png",
         "type": "image/png",
-        "sizes": "540x720",
+        "sizes": "412x896",
         "form_factor": "narrow"
       },
       {
         "src": "desktop1.png",
         "type": "image/png",
-        "sizes": "1024x593",
+        "sizes": "2560x1358",
         "form_factor": "wide"
       },
       {
         "src": "desktop2.png",
         "type": "image/png",
-        "sizes": "1024x593",
+        "sizes": "2560x1358",
         "form_factor": "wide"
       },
       {
         "src": "desktop3.png",
         "type": "image/png",
-        "sizes": "1024x593",
+        "sizes": "2560x1358",
         "form_factor": "wide"
       }
   ]
