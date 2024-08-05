@@ -13,5 +13,43 @@
     "display": "standalone",
     "scope": "/",
     "theme_color": "#D1E987",
-    "description": "Sustainable life for you and for me"
+    "description": "Sustainable life for you and for me",
+    "screenshots": [
+    {
+        "src": "mobile1.png",
+        "type": "image/png",
+        "sizes": "540x720",
+        "form_factor": "narrow"
+      },
+      {
+        "src": "mobile2.png",
+        "type": "image/png",
+        "sizes": "540x720",
+        "form_factor": "narrow"
+      },
+      {
+        "src": "mobile3.png",
+        "type": "image/png",
+        "sizes": "540x720",
+        "form_factor": "narrow"
+      },
+      {
+        "src": "desktop1.png",
+        "type": "image/png",
+        "sizes": "1024x593",
+        "form_factor": "wide"
+      },
+      {
+        "src": "desktop2.png",
+        "type": "image/png",
+        "sizes": "1024x593",
+        "form_factor": "wide"
+      },
+      {
+        "src": "desktop3.png",
+        "type": "image/png",
+        "sizes": "1024x593",
+        "form_factor": "wide"
+      }
+  ]
 }
