@@ -58,7 +58,6 @@
 	}
 
 	const loginFlow = async () => {
-		console.log("coba")
 		if (email == "" || email == null) {
 			messageModal = 1;
 			messagePayload = "Please fill your email";
@@ -67,31 +66,61 @@
 			messagePayload = "Please fill your password";
 		} else {
 			for (var i = 0; i < emails_list.length; i++) {
-				if (emails_list[i] == email) {
-					if (passwords_list[i] == password) {
-						if (verify_list[i] == "yes") {
-							messageModal = 0;
-							localStorage.setItem("email", email);
-							localStorage.setItem("username", usernames_list[i]);
-							localStorage.setItem("profile_pic", profile_pic_list[i]);
-							const userRef = await doc(frdb, 'users', usernames_list[i]);
-		    				const getDataUser = await getDoc(userRef);
-		    				localStorage.setItem("notification_count", getDataUser.data().notification_count);
-							messageModalSuccess = 1;
-							messagePayload = "Login successful";
-							setTimeout(goToHome, 3000);
-							break;
+				if (i != emails_list.length-1) {
+					if (emails_list[i] == email) {
+						if (passwords_list[i] == password) {
+							if (verify_list[i] == "yes") {
+								messageModal = 0;
+								localStorage.setItem("email", email);
+								localStorage.setItem("username", usernames_list[i]);
+								localStorage.setItem("profile_pic", profile_pic_list[i]);
+								const userRef = await doc(frdb, 'users', usernames_list[i]);
+			    				const getDataUser = await getDoc(userRef);
+			    				localStorage.setItem("notification_count", getDataUser.data().notification_count);
+								messageModalSuccess = 1;
+								messagePayload = "Login successful";
+								setTimeout(goToHome, 3000);
+								break;
+							} else {
+								messageModal = 1;
+								messagePayload = "Verify your email first";
+								break;
+							}
 						} else {
 							messageModal = 1;
-							messagePayload = "Verify your email first";
+							messagePayload = "Your email/username and password doesn't match";
+							break;
+						}
+					}
+				} else {
+					if (emails_list[i] == email) {
+						if (passwords_list[i] == password) {
+							if (verify_list[i] == "yes") {
+								messageModal = 0;
+								localStorage.setItem("email", email);
+								localStorage.setItem("username", usernames_list[i]);
+								localStorage.setItem("profile_pic", profile_pic_list[i]);
+								const userRef = await doc(frdb, 'users', usernames_list[i]);
+			    				const getDataUser = await getDoc(userRef);
+			    				localStorage.setItem("notification_count", getDataUser.data().notification_count);
+								messageModalSuccess = 1;
+								messagePayload = "Login successful";
+								setTimeout(goToHome, 3000);
+								break;
+							} else {
+								messageModal = 1;
+								messagePayload = "Verify your email first";
+								break;
+							}
+						} else {
+							messageModal = 1;
+							messagePayload = "Your email/username and password doesn't match";
+							break;
 						}
 					} else {
 						messageModal = 1;
 						messagePayload = "Your email/username and password doesn't match";
 					}
-				} else {
-						messageModal = 1;
-						messagePayload = "Your email/username and password doesn't match";
 				}
 			}
 		}
