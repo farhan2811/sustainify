@@ -9,6 +9,7 @@
 	import {frdb} from "$lib/firebaseConfig.js";
 	import {doc, setDoc, getDocs, collection, getDoc, updateDoc } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition';
+	import emailjs from '@emailjs/browser';
 	
 	let email = "";
 	let messageModal = 0;
@@ -30,7 +31,7 @@
 						  user_email: email,
 						  reply_to: 'sustainify.auto@gmail.com'
 						};
-						 emailjs.send("service_irj4qaq","template_i3ydnnj", templateParams).then(
+						 emailjs.send("service_irj4qaq","template_i3ydnnj", templateParams, {publicKey: 'Mxolr0cjEBnNbXvB1'}).then(
 						  (response) => {
 						    console.log('SUCCESS!', response.status, response.text);
 						  },
@@ -50,7 +51,7 @@
 						  user_email: email,
 						  reply_to: 'sustainify.auto@gmail.com'
 						};
-						 emailjs.send("service_irj4qaq","template_i3ydnnj", templateParams).then(
+						 emailjs.send("service_irj4qaq","template_i3ydnnj", templateParams, {publicKey: 'Mxolr0cjEBnNbXvB1'}).then(
 						  (response) => {
 						    console.log('SUCCESS!', response.status, response.text);
 						  },
@@ -72,9 +73,6 @@
 	}
 
 	onMount(async() => {
-		emailjs.init({
-          publicKey: "Mxolr0cjEBnNbXvB1",
-        });
 	})
 
 </script>

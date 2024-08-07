@@ -12,6 +12,7 @@
 	import {doc, setDoc, getDocs, collection } from "firebase/firestore"; 
 	import { writable } from 'svelte/store';
 	import {fly, scale} from 'svelte/transition';
+	import emailjs from '@emailjs/browser';
 
 	let hidden_state = 0;
 	let overflow = null;
@@ -125,9 +126,6 @@
 
 	onMount(async() => {
 		getUserIds();
-		emailjs.init({
-          publicKey: "Mxolr0cjEBnNbXvB1",
-        });
 	})
 
 </script>
@@ -255,35 +253,58 @@
 								messageModal = 1;
 								messagePayload = "Your password doesn't match";
 							} else {
-								for (var i = 0; i < username_list.length; i++) {
-									if (username_list[i] == username) {
-										messageModal = 1;
-										messagePayload = "The username has been taken";
-										break;
-									} else if(i == username_list.length - 1) {
-										for (var i = 0; i < email_list.length; i++) {
-											if (email_list[i] == email) {
-												messageModal = 1;
-												messagePayload = "The email has been registered";
-												break;
-											} else if(i == email_list.length - 1) {
-												setUserData(email, full_name, username, password);
-												let templateParams = {
-												  link_recovery: `https://sustainify.vercel.app/email-verification?username=${username}`,
-												  user_email: email,
-												  reply_to: 'sustainify.auto@gmail.com'
-												};
-												 emailjs.send("service_irj4qaq","template_wahlsjr", templateParams).then(
-												  (response) => {
-												    console.log('SUCCESS!', response.status, response.text);
-												  },
-												  (error) => {
-												    console.log('FAILED...', error);
-												  },
-												);
-												messageModalSuccess = 1;
-												messagePayload = "Registration successful. We've sent you an email to verify your account.";
-												setTimeout(goToLogin, 3000);
+								if (username_list.length == 0) {
+									setUserData(email, full_name, username, password);
+									let templateParams = {
+									  link_recovery: `https://sustainify.vercel.app/email-verification?username=${username}`,
+									  user_email: email,
+									  reply_to: 'sustainify.auto@gmail.com'
+									};
+									 emailjs.send("service_irj4qaq","template_wahlsjr",templateParams, {publicKey: 'Mxolr0cjEBnNbXvB1'
+									  }).then(
+									  (response) => {
+									    console.log('SUCCESS!', response.status, response.text);
+									  },
+									  (error) => {
+									    console.log('FAILED...', error);
+									  },
+									);
+									messageModalSuccess = 1;
+									messagePayload = "Registration successful. We've sent you an email to verify your account.";
+									setTimeout(goToLogin, 3000);
+								} else {
+									for (var i = 0; i < username_list.length; i++) {
+										if (username_list[i] == username) {
+											messageModal = 1;
+											messagePayload = "The username has been taken";
+											break;
+										} else if(i == username_list.length - 1) {
+											for (var i = 0; i < email_list.length; i++) {
+												if (email_list[i] == email) {
+													messageModal = 1;
+													messagePayload = "The email has been registered";
+													break;
+												} else if(i == email_list.length - 1) {
+
+													setUserData(email, full_name, username, password);
+													let templateParams = {
+													  link_recovery: `https://sustainify.vercel.app/email-verification?username=${username}`,
+													  user_email: email,
+													  reply_to: 'sustainify.auto@gmail.com'
+													};
+													 emailjs.send("service_irj4qaq","template_wahlsjr",templateParams, {publicKey: 'Mxolr0cjEBnNbXvB1'
+													  }).then(
+													  (response) => {
+													    console.log('SUCCESS!', response.status, response.text);
+													  },
+													  (error) => {
+													    console.log('FAILED...', error);
+													  },
+													);
+													messageModalSuccess = 1;
+													messagePayload = "Registration successful. We've sent you an email to verify your account.";
+													setTimeout(goToLogin, 3000);
+												}
 											}
 										}
 									}
@@ -376,7 +397,8 @@
 												  user_email: email,
 												  reply_to: 'sustainify.auto@gmail.com'
 												};
-												 emailjs.send("service_irj4qaq","template_wahlsjr", templateParams).then(
+												  emailjs.send("service_irj4qaq","template_wahlsjr",templateParams, {publicKey: 'Mxolr0cjEBnNbXvB1'
+												  }).then(
 												  (response) => {
 												    console.log('SUCCESS!', response.status, response.text);
 												  },
@@ -386,7 +408,7 @@
 												);
 												messageModalSuccess = 1;
 												messagePayload = "Registration successful. We've sent you an email to verify your account.";
-												// setTimeout(goToLogin, 3000);
+												setTimeout(goToLogin, 3000);
 											}
 										}
 									}

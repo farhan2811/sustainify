@@ -16,8 +16,10 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@emailjs/browser": "^4.4.1",
 		"axios": "^1.7.2",
 		"dotenv": "^16.4.5",
+		"emailjs-com": "^3.2.0",
 		"firebase": "^10.1.0",
 		"web-push": "^3.6.7"
 	}
