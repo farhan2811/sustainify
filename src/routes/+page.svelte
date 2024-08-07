@@ -50,6 +50,7 @@
 	      querySnapshot5.forEach((doc) => 
 	    	verify_list.push(doc.data().verified)
 	    );
+	      console.log(emails_list)
 	}
 
 	const goToHome = () => {
@@ -88,9 +89,6 @@
 						messageModal = 1;
 						messagePayload = "Your email/password doesn't match";
 					}
-				} else {
-					messageModal = 1;
-					messagePayload = "Your email/password doesn't match";
 				}
 			}
 		}
