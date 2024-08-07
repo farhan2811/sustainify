@@ -1,7 +1,4 @@
 <script>
-	/*import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';*/
 	import vector_login from '$lib/images/vector-login.png';
 	import logo from '$lib/images/logo-sustainify.png';
 	import loading from '$lib/images/loading.gif';
@@ -20,32 +17,8 @@
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
-	const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
-	const validatePassword = (password) => {
-	    return passwordRegex.test(password);
-	}
-
-	// const setUserData = async (email, full_name, username, password) => {
-	// 	await setDoc(doc(frdb, "users", username), {
-	// 	  email: email,
-	// 	  full_name: full_name,
-	// 	  password: password,
-	// 	  points: 0,
-	// 	  profile_picture: "https://firebasestorage.googleapis.com/v0/b/sustainify-67c1e.appspot.com/o/profile_images%2Fdummy-profile.png?alt=media&token=954cfca5-fdbc-49cd-9477-c172b6202f62",
-	// 	  post_count: 0,
-	// 	  comment_count: 0,
-	// 	  previous_month: monthNames[month]+"-"+year
-	// 	});
-	// 	await setDoc(doc(frdb, "users", username, "missions", "mission_1"), missions[0])
-	// 	await setDoc(doc(frdb, "users", username, "missions", "mission_2"), missions[1])
-	// 	await setDoc(doc(frdb, "users", username, "missions", "mission_3"), missions[2])
-	// 	await setDoc(doc(frdb, "users", username, "missions", "mission_4"), missions[3])
-	// 	create_user_state[`devices/${username}/status`] = "unsuspended";
-	// 	update(ref_database(rldb), create_user_state)
-	// }
-
-	const changePassword = async () => {
+	const changeEmailStatus = async () => {
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams(queryString);
 		let userId = urlParams.get("username")
@@ -57,18 +30,13 @@
         		let username = documentsUser[i].id;
         		let user_datas = documentsUser[i].data();
         		if (username == userId) {
-        			if (user_datas.password == new_password) {
-						messageModal = 1;
-						messagePayload = "You can't use your old password";
-					} else {
-						const userRef = await doc(frdb, 'users', userId);
-					    await updateDoc(userRef, {
-					        password: new_password
-					    });
-					    messageModalSuccess = 1;
-						messagePayload = "Changing password successful";
-						setTimeout(goToLogin, 3000);
-					}
+        			const userRef = await doc(frdb, 'users', userId);
+				    await updateDoc(userRef, {
+				        verified: "yes"
+				    });
+				    messageModalSuccess = 1;
+					messagePayload = "Email has been verified";
+					setTimeout(goToLogin, 3000);
         		}
         	}
         }
@@ -80,14 +48,14 @@
 	}
 
 	onMount(async() => {
-		
+		await changeEmailStatus();
 	})
 
 </script>
 
 <svelte:head>
-	<title>Verification Confirmed</title>
-	<meta name="description" content="Verification Confirmed Page" />
+	<title>Email Verification</title>
+	<meta name="description" content="Email Verification Page" />
 </svelte:head>
 
 {#if messageModal == 1}
@@ -153,7 +121,7 @@
 				<img src="{logo}" alt="" class="w-50">
 			</div>
 		</div>
-		<div class="bg-primary vw-100 vh-100 template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+		<!-- <div class="bg-primary vw-100 vh-100 template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="flex flex-direction-col flex-gap-regular">
 					<div class="head-input-secondary">New Password</div>
@@ -168,10 +136,7 @@
 						if (new_password == "" || new_password == null) {
 							messageModal = 1;
 							messagePayload = "Please fill your new password";
-						} else if (!validatePassword(password)) {
-				            messageModal = 1;
-				            messagePayload = "Password must be at least 8 characters long, contain at least one letter, one number, and one special character";
-         				} else if (confirm_new_password == "" || confirm_new_password == null) {
+						} else if (confirm_new_password == "" || confirm_new_password == null) {
 							messageModal = 1;
 							messagePayload = "Please confirm your new password";
 						} else {
@@ -185,7 +150,7 @@
 					}}>Change Password</button>
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</section>
 </div>
 
@@ -196,7 +161,7 @@
 				<img src="{logo}" alt="" class="w-50">
 			</div>
 		</div>
-		<div class="bg-primary w-100 h-100 template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
+		<!-- <div class="bg-primary w-100 h-100 template-form-bg flex flex-direction-col flex-gap-large" id="form-login">
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="flex flex-direction-col flex-gap-regular">
 					<div class="head-input-secondary">New Password</div>
@@ -211,10 +176,7 @@
 						if (new_password == "" || new_password == null) {
 							messageModal = 1;
 							messagePayload = "Please fill your new password";
-						} else if (!validatePassword(password)) {
-				            messageModal = 1;
-				            messagePayload = "Password must be at least 8 characters long, contain at least one letter, one number, and one special character";
-         				} else if (confirm_new_password == "" || confirm_new_password == null) {
+						} else if (confirm_new_password == "" || confirm_new_password == null) {
 							messageModal = 1;
 							messagePayload = "Please confirm your new password";
 						} else {
@@ -228,6 +190,6 @@
 					}}>Change Password</button>
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</section>
 </div>

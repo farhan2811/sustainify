@@ -19,6 +19,7 @@
 	let passwords_list = [];
 	let usernames_list = [];
 	let profile_pic_list = [];
+	let verify_list = [];
 	let messageModal = 0;
 	let messageModalSuccess = 0;
 	let messagePayload = null;
@@ -33,6 +34,7 @@
 	    const querySnapshot2 = await getDocs(collection(frdb, "users"));
 	    const querySnapshot3 = await getDocs(collection(frdb, "users"));
 	    const querySnapshot4 = await getDocs(collection(frdb, "users"));
+	    const querySnapshot5 = await getDocs(collection(frdb, "users"));
 	    querySnapshot1.forEach((doc) => 
 	    	emails_list.push(doc.data().email)
 	    );
@@ -44,6 +46,9 @@
 	    );
 	    querySnapshot4.forEach((doc) => 
 	    	profile_pic_list.push(doc.data().profile_picture)
+	    );
+	      querySnapshot5.forEach((doc) => 
+	    	verify_list.push(doc.data().verified)
 	    );
 	}
 
@@ -63,17 +68,22 @@
 			for (var i = 0; i < emails_list.length; i++) {
 				if (emails_list[i] == email) {
 					if (passwords_list[i] == password) {
-						messageModal = 0;
-						localStorage.setItem("email", email);
-						localStorage.setItem("username", usernames_list[i]);
-						localStorage.setItem("profile_pic", profile_pic_list[i]);
-						const userRef = await doc(frdb, 'users', usernames_list[i]);
-	    				const getDataUser = await getDoc(userRef);
-	    				localStorage.setItem("notification_count", getDataUser.data().notification_count);
-						messageModalSuccess = 1;
-						messagePayload = "Login successful";
-						setTimeout(goToHome, 3000);
-						break;
+						if (verify_list[i] == "yes") {
+							messageModal = 0;
+							localStorage.setItem("email", email);
+							localStorage.setItem("username", usernames_list[i]);
+							localStorage.setItem("profile_pic", profile_pic_list[i]);
+							const userRef = await doc(frdb, 'users', usernames_list[i]);
+		    				const getDataUser = await getDoc(userRef);
+		    				localStorage.setItem("notification_count", getDataUser.data().notification_count);
+							messageModalSuccess = 1;
+							messagePayload = "Login successful";
+							setTimeout(goToHome, 3000);
+							break;
+						} else {
+							messageModal = 1;
+							messagePayload = "Verify your email first";
+						}
 					} else {
 						messageModal = 1;
 						messagePayload = "Your email/password doesn't match";

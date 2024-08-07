@@ -29,6 +29,8 @@
 	let month = dateObj.getUTCMonth();
 	let day = dateObj.getUTCDate();
 	let year = dateObj.getUTCFullYear();
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 	const monthNames = ["January", "February", "March", "April", "May", "June",
 	  "July", "August", "September", "October", "November", "December"
 	];
@@ -88,6 +90,14 @@
 	    );
 	}
 
+	const validateEmail = (email) => {
+	    return emailRegex.test(email);
+	}
+
+	const validatePassword = (password) => {
+	    return passwordRegex.test(password);
+	}
+
 	const setUserData = async (email, full_name, username, password) => {
 		await setDoc(doc(frdb, "users", username), {
 		  email: email,
@@ -98,7 +108,8 @@
 		  post_count: 0,
 		  comment_count: 0,
 		  notification_count:0,
-		  previous_month: monthNames[month]+"-"+year
+		  previous_month: monthNames[month]+"-"+year,
+		  verified: "no"
 		});
 		await setDoc(doc(frdb, "users", username, "missions", "mission_1"), missions[0])
 		await setDoc(doc(frdb, "users", username, "missions", "mission_2"), missions[1])
@@ -114,6 +125,9 @@
 
 	onMount(async() => {
 		getUserIds();
+		emailjs.init({
+          publicKey: "Mxolr0cjEBnNbXvB1",
+        });
 	})
 
 </script>
@@ -217,7 +231,11 @@
 						if (email == "" || email == null) {
 							messageModal = 1;
 							messagePayload = "Please fill your email";
-						} else if(full_name == "" || full_name == null) {
+						} else if (!validateEmail(email)) {
+				            messageModal = 1;
+				            messagePayload = "Please enter a valid email";
+				        }
+						 else if(full_name == "" || full_name == null) {
 							messageModal = 1;
 							messagePayload = "Please fill your full name";
 						} else if(username == "" || username == null) {
@@ -226,7 +244,10 @@
 						} else if(password == "" || password == null) {
 							messageModal = 1;
 							messagePayload = "Please fill your password";
-						} else if(confirm_password == "" || confirm_password == null) {
+						} else if (!validatePassword(password)) {
+				            messageModal = 1;
+				            messagePayload = "Password must be at least 8 characters long, contain at least one letter, one number, and one special character";
+         				} else if(confirm_password == "" || confirm_password == null) {
 							messageModal = 1;
 							messagePayload = "Please confirm your password";
 						} else {
@@ -247,8 +268,21 @@
 												break;
 											} else if(i == email_list.length - 1) {
 												setUserData(email, full_name, username, password);
+												let templateParams = {
+												  link_recovery: `https://sustainify.vercel.app/email-verification?username=${username}`,
+												  user_email: email,
+												  reply_to: 'sustainify.auto@gmail.com'
+												};
+												 emailjs.send("service_irj4qaq","template_wahlsjr", templateParams).then(
+												  (response) => {
+												    console.log('SUCCESS!', response.status, response.text);
+												  },
+												  (error) => {
+												    console.log('FAILED...', error);
+												  },
+												);
 												messageModalSuccess = 1;
-												messagePayload = "Registration successful";
+												messagePayload = "Registration successful. We've sent you an email to verify your account.";
 												setTimeout(goToLogin, 3000);
 											}
 										}
@@ -300,7 +334,11 @@
 						if (email == "" || email == null) {
 							messageModal = 1;
 							messagePayload = "Please fill your email";
-						} else if(full_name == "" || full_name == null) {
+						} else if (!validateEmail(email)) {
+				            messageModal = 1;
+				            messagePayload = "Please enter a valid email";
+				        }
+						 else if(full_name == "" || full_name == null) {
 							messageModal = 1;
 							messagePayload = "Please fill your full name";
 						} else if(username == "" || username == null) {
@@ -309,7 +347,10 @@
 						} else if(password == "" || password == null) {
 							messageModal = 1;
 							messagePayload = "Please fill your password";
-						} else if(confirm_password == "" || confirm_password == null) {
+						} else if (!validatePassword(password)) {
+				            messageModal = 1;
+				            messagePayload = "Password must be at least 8 characters long, contain at least one letter, one number, and one special character";
+         				} else if(confirm_password == "" || confirm_password == null) {
 							messageModal = 1;
 							messagePayload = "Please confirm your password";
 						} else {
@@ -330,9 +371,22 @@
 												break;
 											} else if(i == email_list.length - 1) {
 												setUserData(email, full_name, username, password);
+												let templateParams = {
+												  link_recovery: `https://sustainify.vercel.app/email-verification?username=${username}`,
+												  user_email: email,
+												  reply_to: 'sustainify.auto@gmail.com'
+												};
+												 emailjs.send("service_irj4qaq","template_wahlsjr", templateParams).then(
+												  (response) => {
+												    console.log('SUCCESS!', response.status, response.text);
+												  },
+												  (error) => {
+												    console.log('FAILED...', error);
+												  },
+												);
 												messageModalSuccess = 1;
-												messagePayload = "Registration successful";
-												setTimeout(goToLogin, 3000);
+												messagePayload = "Registration successful. We've sent you an email to verify your account.";
+												// setTimeout(goToLogin, 3000);
 											}
 										}
 									}
