@@ -87,8 +87,11 @@
 						}
 					} else {
 						messageModal = 1;
-						messagePayload = "Your email/password doesn't match";
+						messagePayload = "Your email/username and password doesn't match";
 					}
+				} else {
+						messageModal = 1;
+						messagePayload = "Your email/username and password doesn't match";
 				}
 			}
 		}

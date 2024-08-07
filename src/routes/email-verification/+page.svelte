@@ -27,6 +27,8 @@
      	const documentsLengthUser = documentsUser.length;
      	if (documentsLengthUser > 0) {
         	for (var i = 0; i < documentsLengthUser; i++) {
+        		messageModalSuccess = 1;
+				messagePayload = "Email has been verified";
         		let username = documentsUser[i].id;
         		let user_datas = documentsUser[i].data();
         		if (username == userId) {
@@ -34,10 +36,8 @@
 				    await updateDoc(userRef, {
 				        verified: "yes"
 				    });
-				    messageModalSuccess = 1;
-					messagePayload = "Email has been verified";
-					setTimeout(goToLogin, 3000);
         		}
+        		setTimeout(goToLogin, 3000);
         	}
         }
 
