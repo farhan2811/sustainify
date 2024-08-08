@@ -32,6 +32,14 @@
 	let messagePayload = null;
 	let username_list = [];
 	let email_list = [];
+	let modalElectricity = 0;
+	let modalGas = 0;
+	let modalVehicle = 0;
+	let modalMeat = 0;
+	let modalVegetable = 0;
+	let modalGrains = 0;
+	let modalWaste = 0;
+	let modalAirplane = 0;
 	let dateObj = new Date();
 	let month = dateObj.getUTCMonth();
 	let day = dateObj.getUTCDate();
@@ -215,6 +223,736 @@
 </div>
 {/if}
 
+{#if modalElectricity== 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalElectricity = 0
+					}}></i>
+					<div class="title-notif">Electricity Usage</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>0.233 kg CO₂ per kWh</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This in an average carbon emission factor from electricity consumption</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Includes a mix of fossil fuels and renewable energy sources</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Emisssion factor is based on the energy grid mix, which varies in different regions and areas</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">UK Government GHG Conversion Factors for Company Reporting 2023</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalElectricity = 0
+					}}></i>
+					<div class="title-notif">Electricity Usage</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>0.233 kg CO₂ per kWh</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This in an average carbon emission factor from electricity consumption</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Includes a mix of fossil fuels and renewable energy sources</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Emisssion factor is based on the energy grid mix, which varies in different regions and areas</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">UK Government GHG Conversion Factors for Company Reporting 2023</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+{#if modalGas == 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalGas = 0
+					}}></i>
+					<div class="title-notif">Kitchen Gas Usage</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>2.95 kg CO₂ per kg of LPG</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This in an average carbon emission produced from burning 1 kg of LPG</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Reflects the combustion of hydrocarbons in cooking or heating</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Standard conversion factor from IPCC guidelines</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">IPCC (Intergovernmental Panel on Climate Change) Guidelines for National Greenhouse Gas Inventories</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalGas = 0
+					}}></i>
+					<div class="title-notif">Kitchen Gas Usage</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>2.95 kg CO₂ per kg of LPG</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This in an average carbon emission produced from burning 1 kg of LPG</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Reflects the combustion of hydrocarbons in cooking or heating</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Standard conversion factor from IPCC guidelines</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">IPCC (Intergovernmental Panel on Climate Change) Guidelines for National Greenhouse Gas Inventories</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+{#if modalVehicle == 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalVehicle = 0
+					}}></i>
+					<div class="title-notif">Vehicle Fuel</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Emission Factor</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">0.14 kg CO₂ per kilometer traveled (Motorcycle)</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">0.17 kg CO₂ per kilometer traveled (Car)</small>
+						</div>
+					</div>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">The number of carbon emission showed on this part is an accumulated mix of car and motorcycle travel tracked by the application</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the specific type and efficiency of the motorcycle and the car</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">UK Government GHG Conversion Factors for Company Reporting 2022</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalVehicle = 0
+					}}></i>
+					<div class="title-notif">Vehicle Fuel</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Emission Factor</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">0.14 kg CO₂ per kilometer traveled (Motorcycle)</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">0.17 kg CO₂ per kilometer traveled (Car)</small>
+						</div>
+					</div>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">The number of carbon emission showed on this part is an accumulated mix of car and motorcycle travel tracked by the application</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the specific type and efficiency of the motorcycle and the car</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">UK Government GHG Conversion Factors for Company Reporting 2022</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+{#if modalMeat== 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalMeat = 0
+					}}></i>
+					<div class="title-notif">Meat Consumption</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>99.48 kg CO₂ per kg</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">High emissions due to land use changes and deforestation</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Methane emissions from enteric fermentation in ruminants</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Energy-intensive feed production and transportation</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the location of meat production house. Local meat and less larger farms may produce lesser carbon emission</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">Poore, J., & Nemecek, T. (2018). Reducing food’s environmental impacts through producers and consumers</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalMeat = 0
+					}}></i>
+					<div class="title-notif">Meat Consumption</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>99.48 kg CO₂ per kg</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">High emissions due to land use changes and deforestation</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Methane emissions from enteric fermentation in ruminants</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Energy-intensive feed production and transportation</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the location of meat production house. Local meat and less larger farms may produce lesser carbon emission</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">Poore, J., & Nemecek, T. (2018). Reducing food’s environmental impacts through producers and consumers</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+{#if modalVegetable== 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalVegetable = 0
+					}}></i>
+					<div class="title-notif">Vegetable Consumption</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>0.43kg CO₂ per kg</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Lower emissions due to less intensive agricultural practices</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Minimal use of fertilizers and pesticides</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Shorter supply chains and reduced transportation emissions</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the location of the vegetable production. Local vegetables may produce lesser carbon emission</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">Poore, J., & Nemecek, T. (2018). Reducing food’s environmental impacts through producers and consumers</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalVegetable = 0
+					}}></i>
+					<div class="title-notif">Vegetable Consumption</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>0.43kg CO₂ per kg</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Lower emissions due to less intensive agricultural practices</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Minimal use of fertilizers and pesticides</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Shorter supply chains and reduced transportation emissions</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the location of the vegetable production. Local vegetables may produce lesser carbon emission</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">Poore, J., & Nemecek, T. (2018). Reducing food’s environmental impacts through producers and consumers</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+{#if modalGrains== 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalGrains = 0
+					}}></i>
+					<div class="title-notif">Grains Consumption</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>4.45 kg CO₂ per kg</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Emissions from agricultural processes including plowing and harvesting</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Use of fertilizers and water in crop production</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Processing and transportation energy consumption</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the location of the grains production. Local grains may produce lesser carbon emission</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">Poore, J., & Nemecek, T. (2018). Reducing food’s environmental impacts through producers and consumers</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalGrains = 0
+					}}></i>
+					<div class="title-notif">Grains Consumption</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>4.45 kg CO₂ per kg</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Emissions from agricultural processes including plowing and harvesting</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Use of fertilizers and water in crop production</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Processing and transportation energy consumption</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the location of the grains production. Local grains may produce lesser carbon emission</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">Poore, J., & Nemecek, T. (2018). Reducing food’s environmental impacts through producers and consumers</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+{#if modalWaste== 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalWaste = 0
+					}}></i>
+					<div class="title-notif">Waste Disposal</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>0.45 kg CO₂ per kg</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Emissions from waste decomposition in landfills</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Methane generation during organic waste breakdown</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Energy used in waste collection and processing</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the location and the condition of the waste disposal</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">U.S. Environmental Protection Agency (EPA)</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalWaste = 0
+					}}></i>
+					<div class="title-notif">Waste Disposal</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>0.45 kg CO₂ per kg</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Emissions from waste decomposition in landfills</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Methane generation during organic waste breakdown</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Energy used in waste collection and processing</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">This emission factor is a generalized estimate and may vary depending on the location and the condition of the waste disposal</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">U.S. Environmental Protection Agency (EPA)</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+{#if modalAirplane== 1}
+<div class="mobile">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-80 h-60 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalAirplane = 0
+					}}></i>
+					<div class="title-notif">Airplane Flight</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>0.246 kg CO₂ per km</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Aviation emissions are typically higher due to the fuel-intensive nature of flying, especially at high altitudes where the impact on the atmosphere is greater.</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">The factor varies slightly depending on the flight type (domestic, short-haul, long-haul) and the specific aircraft used.</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">UK Government GHG Conversion Factors for Company Reporting 2022</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="desktop desktop-fix">
+	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
+		<div class="flex flex-center-vertical flex-center-horizontal h-100">
+			<div class="card-notif w-25 h-70 flex flex-direction-col flex-gap-semi-large flex-center-horizontal">
+				<div class="flex flex-between-horizontal flex-center-vertical w-100 h-10">
+					<i class="fa-solid fa-xmark arrow-back" on:click={() => {
+						modalAirplane = 0
+					}}></i>
+					<div class="title-notif">Airplane Flight</div>
+				</div>
+				<div class="flex flex-direction-col flex-gap-semi-small h-90 notif-scroll">
+					<small><b>Emission Factor</b></small>
+					<small>0.246 kg CO₂ per km</small>
+					<div class="flex flex-direction-col flex-gap-semi-small">
+						<small><b>Explanations</b></small>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">Aviation emissions are typically higher due to the fuel-intensive nature of flying, especially at high altitudes where the impact on the atmosphere is greater.</small>
+						</div>
+						<div class="flex flex-gap-small flex-center-vertical">
+							<div class="flex flex-start-vertical h-100 p-bullet">
+								<div class="bullet-point"></div>
+							</div>
+							<small class="text-justify line-point">The factor varies slightly depending on the flight type (domestic, short-haul, long-haul) and the specific aircraft used.</small>
+						</div>
+					</div>
+					<small><b>Source</b></small>
+					<small class="text-justify line-point">UK Government GHG Conversion Factors for Company Reporting 2022</small>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
 <div class="mobile">
 	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
 		<div class="vw-100 h-10 flex flex-center-vertical page-top">
@@ -231,8 +969,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Energy Consumption</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical-vertical">
 					<div class="accent-title-emission">Home Electricity Usage</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalElectricity = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -251,8 +992,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Kitchen Gas Usage</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalGas = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -274,8 +1018,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Transportation</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Vehicle Fuel</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalVehicle = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -297,8 +1044,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Food</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Meat Consumption</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalMeat = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -317,8 +1067,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Vegetable Consumption</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalVegetable = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -337,8 +1090,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Grains Consumption</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalGrains = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -360,8 +1116,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Waste Disposal</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Garbage</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalWaste = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -383,8 +1142,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Air Travel</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Airplane Flight</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalAirplane = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -449,8 +1211,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Energy Consumption</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Home Electricity Usage</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalElectricity = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -469,8 +1234,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Kitchen Gas Usage</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalGas = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -492,8 +1260,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Transportation</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Vehicle Fuel</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalVehicle = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -515,8 +1286,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Food</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Meat Consumption</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalMeat = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -535,8 +1309,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Vegetable Consumption</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalVegetable = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -555,8 +1332,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Grains Consumption</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalGrains = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -578,8 +1358,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Waste Disposal</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Garbage</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalWaste = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">
@@ -601,8 +1384,11 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="sub-title-emission">Air Travel</div>
-				<div class="flex flex-direction-col flex-gap-regular">
+				<div class="flex flex-between-horizontal flex-center-vertical">
 					<div class="accent-title-emission">Airplane Flight</div>
+					<i class="fa-solid fa-circle-info icon-info" on:click={() => {
+						modalAirplane = 1;
+					}}></i>
 				</div>
 				<div class="flex flex-between-horizontal flex-gap-semi-small flex-direction-col">
 					<div class="carbon-level-bar">

@@ -408,6 +408,10 @@ border-radius: 10px;
 	text-align: justify;
 }
 
+.line-point {
+	line-height: 20px;
+}
+
 .no-device {
 	font-family: Montserrat;
 	font-size: 4vw;
@@ -510,6 +514,10 @@ border-radius: 10px;
 	bottom: 0;
 	filter: drop-shadow(0px 10px 50px #105157);
 	z-index: 1;
+}
+
+.p-bullet {
+	padding-top: 7px;
 }
 
 .form-note {
@@ -700,6 +708,18 @@ border-radius: 10px;
 	line-height: normal;
 }
 
+.icon-info {
+	color: #D1E987;
+	cursor: pointer;
+}
+
+.bullet-point {
+	background: #105157;
+	width: 5px;
+	height: 5px;
+	border-radius: 100%;
+}
+
 .input-field-capt {
 	border: none;
 	border-radius: 20px;
@@ -773,6 +793,10 @@ border-radius: 10px;
 
 .text-center {
 	text-align: center;
+}
+
+.text-justify {
+	text-align: justify;
 }
 
 .loading-text {
@@ -2212,6 +2236,10 @@ a:visited { text-decoration: none; color: #105157;}
     height: 22px;
     background-size: cover;
   }
+
+  .text-justify {
+		text-align: justify;
+	}
 }
 
 

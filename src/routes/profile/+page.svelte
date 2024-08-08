@@ -204,9 +204,6 @@
 				<a href="/profile/missions" class="no-decoration">
 					<button class="btn-secondary w-100 flex flex-gap-regular flex-center-vertical flex-center-horizontal">Missions</button>
 				</a>
-				<a href="/profile/edit-username/" class="no-decoration">
-					<button class="btn-secondary w-100 flex flex-gap-regular flex-center-vertical flex-center-horizontal">Edit Username</button>
-				</a>
 				<a href="/profile/edit-email/" class="no-decoration">
 					<button class="btn-secondary w-100 flex flex-gap-regular flex-center-vertical flex-center-horizontal">Edit Email</button>
 				</a>
