@@ -162,7 +162,7 @@
 		} else if (localStorage.getItem("username") == "" || localStorage.getItem("username") == null) {
 			window.location.href = '/'
 		}
-		await subscribeNotif(localStorage.getItem("username"))
+		// await subscribeNotif(localStorage.getItem("username"))
 		// await getNotificationCount();
 		// await getNotificationList();
 		// await getUserMonthYear()
