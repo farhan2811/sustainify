@@ -113,8 +113,8 @@ html,body {
 	height: 30%;
 }
 
-.h-37 {
-	height: 37%;
+.h-27 {
+	height: 27%;
 }
 
 .h-25 {
@@ -361,10 +361,20 @@ border-radius: 10px;
 	line-height: normal;
 }
 
+.user-name-poster-community {
+		color: #105157;
+		font-family: Montserrat;
+		font-size: 20px;
+		font-style: normal;
+		font-weight: 600;
+		line-height: normal;
+	}
+
 .notif-icon {
 	width: 30px;
 	height: 30px;
 	position: relative;
+	cursor: pointer;
 }
 
 .small-red-dot {
@@ -380,11 +390,22 @@ border-radius: 10px;
 .title-card-home {
 	color: #D1E987;
 	font-family: Montserrat;
-	font-size: 7.246vw;
+	font-size: 5.5vw;
 	font-style: normal;
 	font-weight: 700;
-	line-height: normal;
+	line-height: 35px;
 	margin-top: 3px;
+}
+
+.desc-home {
+	color: #D1E987;
+	font-family: Montserrat;
+	font-size: 4.5vw;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 30px;
+	margin-top: 3px;
+	text-align: justify;
 }
 
 .no-device {
@@ -428,6 +449,7 @@ border-radius: 10px;
 
 .no-decoration {
 	text-decoration: none;
+	cursor: pointer;
 }
 
 .checkbox {
@@ -538,7 +560,7 @@ border-radius: 10px;
 .sub-home {
 	color: #105157;
 	font-family: Montserrat;
-	font-size: 4.831vw;
+	font-size: 4.5vw;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
@@ -621,7 +643,7 @@ border-radius: 10px;
 }
 
 .carbon-status-home {
-	padding: 4.4vh 7.246vw 4.4vh 7.246vw;
+	padding: 4.4vh 7.246vw 6.7vh 7.246vw;
 }
 
 .card-bg {
@@ -726,6 +748,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .btn-add {
@@ -735,6 +758,7 @@ border-radius: 10px;
 	padding: 12px 18px 12px 18px;
 	color: #105157;
 	font-size: 21px;
+	cursor: pointer;
 }
 
 .btn-add-comment {
@@ -744,6 +768,7 @@ border-radius: 10px;
 	padding: 12px 18px 12px 18px;
 	color: #105157;
 	font-size: 21px;
+	cursor: pointer;
 }
 
 .text-center {
@@ -770,6 +795,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .btn-schedule-item {
@@ -783,6 +809,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .btn-schedule-item-danger {
@@ -796,6 +823,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .btn-modal-danger {
@@ -809,6 +837,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .time-text {
@@ -831,6 +860,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .icon-house-signal {
@@ -847,6 +877,13 @@ border-radius: 10px;
 	height: 50px;
 	background: #D1E987;
 	border-radius: 100px;
+	cursor: pointer;
+}
+
+.profilePhoto {
+  width: 30px;
+  height: 30px;
+  background-size: cover;
 }
 
 .input-field::placeholder {
@@ -877,6 +914,7 @@ border-radius: 10px;
 	font-weight: 500;
 	line-height: normal;
 	text-decoration: none;
+	cursor: pointer;
 }
 
 .text-icon-post {
@@ -903,7 +941,10 @@ border-radius: 10px;
 .arrow-back {
 	color: #105157;
 	font-size: 21px;
+	cursor: pointer;
 }
+
+a:visited { text-decoration: none; color: #105157;}
 
 .star-missions {
 	font-size: 5.609vw;
@@ -1006,6 +1047,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 500;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .select-track {
@@ -1025,6 +1067,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 500;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .btn-track {
@@ -1038,6 +1081,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 500;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .btn-stop-track {
@@ -1051,6 +1095,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 500;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .sub-title-emission {
@@ -1113,6 +1158,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 500;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .switch-button {
@@ -1120,16 +1166,19 @@ border-radius: 10px;
 	width: 15.459vw;
 	height: 2.23vh;
 	border-radius: 100px;
+	cursor: pointer;
 }
 
 .on-button {
 	border-radius: 100px 0px 0px 100px;
 	padding-left: 6px;
+	cursor: pointer;
 }
 
 .off-button {
 	border-radius: 0px 100px 100px 0px;
 	padding-right: 8px;
+	cursor: pointer;
 }
 
 .on-button-inactive {
@@ -1140,18 +1189,21 @@ border-radius: 10px;
 .off-button-inactive {
 	background: #D9D9D9;
 	color: #718284;
+	cursor: pointer;
 }
 
 .off-button-active {
 	background: #dc3545;
 	color: #FFFFFF;
 	transition: 0.5s;
+	cursor: pointer;
 }
 
 .on-button-active {
 	background: #02BA87;
 	color: #FFFFFF;
 	transition: 0.5s;
+	cursor: pointer;
 }
 
 .icon-on {
@@ -1223,6 +1275,7 @@ border-radius: 10px;
 	margin-top: 4px;
 	width: 25px;
 	height: 21.351px;
+	cursor: pointer;
 }
 
 .icon-detail-post {
@@ -1230,6 +1283,10 @@ border-radius: 10px;
 	margin-top: 4px;
 	width: 25px;
 	height: 21.351px;
+}
+
+.like-cursor {
+		cursor: pointer;
 }
 
 .card-body {
@@ -1272,6 +1329,7 @@ border-radius: 10px;
 
 .settings-device {
 	color: #105157;
+	cursor: pointer;
 }
 
 .padding-right-setting {
@@ -1303,6 +1361,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 500;
 	line-height: normal;
+	cursor: pointer;
 }
 
 .user-name-commenter {
@@ -1368,6 +1427,9 @@ border-radius: 10px;
 }
 
 @media screen and (min-width: 1001px) {
+	.like-cursor {
+			cursor: pointer;
+	}
   .mobile {
   	display: none;
   }
@@ -1452,6 +1514,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 600;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.link-login {
@@ -1462,11 +1525,13 @@ border-radius: 10px;
 		font-weight: 500;
 		line-height: normal;
 		text-decoration: none;
+		cursor: pointer;
 	}
 
 	.arrow-back {
 		color: #105157;
 		font-size: 15px;
+		cursor: pointer;
 	}
 
 	.page-top {
@@ -1484,6 +1549,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 600;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.input-field::placeholder {
@@ -1506,6 +1572,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 600;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.btn-modal-danger {
@@ -1519,6 +1586,7 @@ border-radius: 10px;
 	font-style: normal;
 	font-weight: 600;
 	line-height: normal;
+	cursor: pointer;
 }
 
 	.loading-text {
@@ -1533,7 +1601,7 @@ border-radius: 10px;
 	.sub-home {
 		color: #105157;
 		font-family: Montserrat;
-		font-size: 1.5vw;
+		font-size: 1.3vw;
 		font-style: normal;
 		font-weight: 600;
 		line-height: normal;
@@ -1558,7 +1626,7 @@ border-radius: 10px;
 	}
 
 	.carbon-status-home {
-		padding: 4.4vh 2vw 4.4vh 2vw;
+		padding: 4.4vh 2vw 6.5vh 2vw;
 	}
 
 	.carbon-status-home-desktop {
@@ -1595,11 +1663,23 @@ border-radius: 10px;
 	.title-card-home {
 		color: #D1E987;
 		font-family: Montserrat;
-		font-size: 2vw;
+		font-size: 1.6vw;
 		font-style: normal;
 		font-weight: 700;
+		line-height: 25px;
+		margin-top: 3px;
+	}
+
+	.desc-home {
+		color: #D1E987;
+		font-family: Montserrat;
+		font-size: 1.3vw;
+		font-style: normal;
+		font-weight: 400;
 		line-height: normal;
 		margin-top: 3px;
+		text-align: justify;
+		line-height: 20px;
 	}
 
 	.template-home-bg {
@@ -1680,6 +1760,7 @@ border-radius: 10px;
 		height: 35px;
 		background: #D1E987;
 		border-radius: 100px;
+		cursor: pointer;
 	}
 
 	.title-page-sh {
@@ -1698,6 +1779,7 @@ border-radius: 10px;
 		padding: 12px 18px 12px 18px;
 		color: #105157;
 		font-size: 15px;
+		cursor: pointer;
 	}
 
 	.title-device {
@@ -1714,6 +1796,7 @@ border-radius: 10px;
 		width: 5.459vw;
 		height: 2.23vh;
 		border-radius: 100px;
+		cursor: pointer;
 	}
 
 	.no-device {
@@ -1759,6 +1842,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 500;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.time-text {
@@ -1790,6 +1874,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 600;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.btn-schedule-item-danger {
@@ -1803,6 +1888,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 600;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.select-2 {
@@ -1824,6 +1910,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 500;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.sub-title-emission {
@@ -1852,6 +1939,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 500;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.btn-track {
@@ -1865,6 +1953,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 500;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.btn-stop-track {
@@ -1878,6 +1967,7 @@ border-radius: 10px;
 		font-style: normal;
 		font-weight: 500;
 		line-height: normal;
+		cursor: pointer;
 	}
 
 	.time-track {
@@ -1905,6 +1995,11 @@ border-radius: 10px;
 		margin-bottom: 10px;
 		font-weight: 600;
 		text-align: center;
+	}
+
+	.line-controller{
+		line-height: 17px;
+		text-align: justify;
 	}
 
 	.accent-title-emission {
@@ -1968,6 +2063,7 @@ border-radius: 10px;
 		margin-top: 4px;
 		width: 20px;
 		height: 21.351px;
+		cursor: pointer;
 	}
 
 	.input-field-capt {
@@ -1975,7 +2071,7 @@ border-radius: 10px;
 		border-radius: 20px;
 		background: #F8FDDF;
 		padding: 17px;
-		padding-left: 30px;
+		padding-left: 17px;
 		color: #105157;
 		font-family: Montserrat;
 		font-size: 1.5vw;
@@ -2043,12 +2139,22 @@ border-radius: 10px;
 		padding: 2px 8px 2px 8px;
 		color: #105157;
 		font-size: 21px;
+		cursor: pointer;
 	}
 
 	.user-name-poster {
 		color: #D1E987;
 		font-family: Montserrat;
 		font-size: 15px;
+		font-style: normal;
+		font-weight: 600;
+		line-height: normal;
+	}
+
+	.user-name-poster-community {
+		color: #105157;
+		font-family: Montserrat;
+		font-size: 13px;
 		font-style: normal;
 		font-weight: 600;
 		line-height: normal;
@@ -2099,6 +2205,13 @@ border-radius: 10px;
 	border-radius: 10px;
 	}
 
+	a:visited { text-decoration: none; color: #105157; }
+
+	.profilePhoto {
+    width: 22px;
+    height: 22px;
+    background-size: cover;
+  }
 }
 
 

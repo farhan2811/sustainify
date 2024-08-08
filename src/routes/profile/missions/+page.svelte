@@ -1,16 +1,13 @@
 <script>
 	import vector_login from '$lib/images/vector-login.png';
 	import logo from '$lib/images/logo-sustainify.png';
-	import carbon_footprint from '$lib/images/carbon-footprint.jpeg';
-	import carbon_footprint2 from '$lib/images/carbon-footprint2.jpeg';
-	import carbon_footprint3 from '$lib/images/carbon-footprint3.png';
 	import loading from '$lib/images/loading.gif';
 	import { onMount } from 'svelte';
 	import {frdb} from "$lib/firebaseConfig.js";
 	import {doc, setDoc, getDocs, getDoc, collection, query, where, orderBy } from "firebase/firestore"; 
 	import {fly, scale} from 'svelte/transition'
 	import Navbar from '$lib/components/navbar.svelte';
-	import ApiController from '../../ApiController'
+	import ApiController from '../../../ApiController'
 	let month_year_list = [];
 	const monthNames = ["January", "February", "March", "April", "May", "June",
 	  "July", "August", "September", "October", "November", "December"
@@ -166,9 +163,9 @@
 			window.location.href = '/'
 		}
 		await subscribeNotif(localStorage.getItem("username"))
-		await getNotificationCount();
-		await getNotificationList();
-		await getUserMonthYear()
+		// await getNotificationCount();
+		// await getNotificationList();
+		// await getUserMonthYear()
 		await getMissions();
 	})
 
@@ -179,7 +176,7 @@
 	<meta name="description" content="Home Page" />
 </svelte:head>
 
-{#if notifModal == 1}
+<!-- {#if notifModal == 1}
 <div class="mobile">
 	<div class="modal-backdrop" in:fly={{ y: -20, duration: 600 }}>
 		<div class="flex flex-center-vertical flex-center-horizontal h-100">
@@ -228,102 +225,51 @@
 		</div>
 	</div>
 </div>
-{/if}
+{/if} -->
 
 
 <div class="mobile">
 	<section class="bg-secondary vw-100 vh-100 flex flex-direction-col page-pad">
-		<Navbar pagePointer="home"/>
 		<div class="vw-100 h-10 flex flex-direction-col page-top">
 			<div class="flex flex-between-horizontal flex-center-vertical">
-				<div class="notif-icon flex flex-center-vertical" on:click={() => {
-					if (notifModal == 0) {
-						notifModal = 1
-						device_switcher = 0;
-						setNotifCount();
-					} else {
-						notifModal = 0
-					}
-				}}>
-					<i class="fa-solid fa-bell arrow-back"></i>
-					{#if old_notif_count < new_notif_count}
-						<div class="small-red-dot"  id="red-dot1"></div>
-					{/if}
-				</div>
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
 				<img src="{logo}" alt="" class="w-50">
 			</div>
 		</div>
-		<div class="vw-100 vh-37 flex flex-direction-col flex-center-vertical flex-gap-regular carbon-status-home">
-			<img src="{logo}" alt="header login image" class="header-login">
-			<div class="sub-home">Sustainable life for you and for me</div>
-		</div>
+		<!-- <div class="vw-100 vh-37 flex flex-direction-col flex-center-vertical flex-gap-regular carbon-status-home">
+			{#if carbon_total && carbon_level}
+				<div class="sub-home">This Month's Carbon Footprint</div>
+				<div class="carbon-count">{carbon_total} Kg CO2</div>
+				<div class="sub-home">Emission Level : 
+					{#if carbon_level == "Low"}
+						<span class="carbon-level-low">
+							{carbon_level}
+						</span>
+					{:else if carbon_level == "Average"}
+						<span class="carbon-level-average">
+							{carbon_level}
+						</span>
+					{:else if carbon_level == "High"}
+						<span class="carbon-level-high">
+							{carbon_level}
+						</span>
+					{:else}
+						<span class="carbon-level-low">
+							None
+						</span>
+					{/if}
+				</div>
+			{:else}
+				<img src="{loading}" class="w-30" alt="">
+			{/if}
+		</div> -->
 		<div class="bg-primary vw-100 card-bg template-home-bg flex flex-direction-col flex-gap-large missions-home">
-			<div class="flex flex-direction-col flex-gap-semi-large">
-				<div class="title-card-home">
-					What is carbon footprint? 
-				</div>
-				<img src="{carbon_footprint}" class="w-100 rounded-20">
-				<div class="desc-home">A carbon footprint is the total amount of greenhouse gases, primarily carbon dioxide (CO2), that are emitted directly or indirectly by human activities. It is typically measured in units of carbon dioxide equivalents (CO2e), which account for the different global warming potentials of various greenhouse gases. Understanding and managing one's carbon footprint is crucial for reducing the overall impact on climate change.</div>
-				<div class="title-card-home">
-					Components of carbon footprint
-				</div>
-				<img src="{carbon_footprint2}" class="w-100 rounded-20">
-				<div class="desc-home">A carbon footprint includes emissions from several sources. Energy use covers electricity and heating in buildings. Transportation involves emissions from vehicles. Food production, transport, and waste contribute significantly, with meat and dairy having higher footprints than plants. Goods and services include consumer products and services like healthcare and education. Waste management releases greenhouse gases from landfills.</div>
-				<div class="title-card-home">
-					Why do we need to reduce carbon footprint?
-				</div>
-				<img src="{carbon_footprint3}" class="w-100 rounded-20">
-				<div class="desc-home">Reducing carbon emissions plays a crucial role in climate change mitigation by slowing the rate of global warming and lessening its adverse effects. It also promotes resource conservation, ensuring more sustainable use of natural resources. Additionally, cutting energy use and waste yields economic benefits, including cost savings for individuals, businesses, and governments. Furthermore, decreasing pollution enhances air quality and public health.</div>
+			<div class="title-card-home">
+				Monthly Missions 
 			</div>
-		</div>
-	</section>
-</div>
-
-<div class="desktop flex flex-center-horizontal">
-	<section class="bg-secondary w-30 h-100 flex flex-direction-col page-pad relative">
-		<Navbar pagePointer="home"/>
-		<div class="w-100 h-10 flex flex-center-vertical page-top missions-home">
-			<div class="flex flex-between-horizontal flex-center-vertical">
-				<div class="notif-icon flex flex-center-vertical" on:click={() => {
-					if (notifModal == 0) {
-						notifModal = 1
-						device_switcher = 1;
-						setNotifCount();
-					} else {
-						notifModal = 0
-					}
-				}}>
-					<i class="fa-solid fa-bell arrow-back"></i>
-					{#if old_notif_count < new_notif_count}
-						<div class="small-red-dot"  id="red-dot2"></div>
-					{/if}
-				</div>
-				<img src="{logo}" alt="" class="w-50">
-			</div>
-		</div>
-		<div class="w-100 h-30 flex flex-direction-col flex-center-vertical flex-gap-regular carbon-status-home missions-home">
-			<img src="{logo}" alt="header login image" class="header-login">
-			<div class="sub-home">Sustainable life for you and for me</div>
-		</div>
-		<div class="bg-primary w-100 card-bg template-home-bg flex flex-direction-col flex-gap-semi-large missions-home">
-			<div class="flex flex-direction-col flex-gap-regular">
-				<div class="title-card-home">
-					What is carbon footprint? 
-				</div>
-				<img src="{carbon_footprint}" class="w-100 rounded-20">
-				<div class="desc-home">A carbon footprint is the total amount of greenhouse gases, primarily carbon dioxide (CO2), that are emitted directly or indirectly by human activities. It is typically measured in units of carbon dioxide equivalents (CO2e), which account for the different global warming potentials of various greenhouse gases. Understanding and managing one's carbon footprint is crucial for reducing the overall impact on climate change.</div>
-				<div class="title-card-home">
-					Components of carbon footprint
-				</div>
-				<img src="{carbon_footprint2}" class="w-100 rounded-20">
-				<div class="desc-home">A carbon footprint includes emissions from several sources. Energy use covers electricity and heating in buildings. Transportation involves emissions from vehicles. Food production, transport, and waste contribute significantly, with meat and dairy having higher footprints than plants. Goods and services include consumer products and services like healthcare and education. Waste management releases greenhouse gases from landfills.</div>
-				<div class="title-card-home">
-					Why do we need to reduce carbon footprint?
-				</div>
-				<img src="{carbon_footprint3}" class="w-100 rounded-20">
-				<div class="desc-home">Reducing carbon emissions plays a crucial role in climate change mitigation by slowing the rate of global warming and lessening its adverse effects. It also promotes resource conservation, ensuring more sustainable use of natural resources. Additionally, cutting energy use and waste yields economic benefits, including cost savings for individuals, businesses, and governments. Furthermore, decreasing pollution enhances air quality and public health.</div>
-			</div>
-			<!-- <div class="w-100 flex flex-direction-col flex-gap-semi-large  {missions_loaded == true ? "h-fit" : "vh-75"} flex-center-vertical {missions_loaded == false ? "flex-center-horizontal" : "flex-center-vertical"}">
+			<div class="w-100 flex flex-direction-col flex-gap-semi-large {missions_loaded == true ? "h-fit" : "vh-75"} flex-center-vertical {missions_loaded == false ? "flex-center-horizontal" : "flex-center-vertical"}">
 				{#if missions_loaded != false}
 					{#each missions_list_sorted as mission, index}
 						<div class="card card-mission w-100 {mission.state == "finished" ? "disabled-card" : ""}">
@@ -339,7 +285,69 @@
 				{:else}
 					<img src="{loading}" class="w-30" alt="">
 				{/if}
-			</div> -->
+			</div>
+		</div>
+	</section>
+</div>
+
+<div class="desktop flex flex-center-horizontal">
+	<section class="bg-secondary w-30 h-100 flex flex-direction-col page-pad relative">
+		<div class="w-100 h-10 flex flex-center-vertical page-top missions-home">
+			<div class="flex flex-between-horizontal flex-center-vertical">
+				<i class="fa-solid fa-arrow-left arrow-back" on:click={() => {
+					history.back();
+				}}></i>
+				<img src="{logo}" alt="" class="w-50">
+			</div>
+		</div>
+		<!-- <div class="w-100 h-37 flex flex-direction-col flex-center-vertical flex-gap-regular carbon-status-home missions-home">
+			{#if carbon_total && carbon_level}
+				<div class="sub-home">This Month's Carbon Footprint</div>
+				<div class="carbon-count">{carbon_total} Kg CO2</div>
+				<div class="sub-home">Emission Level : 
+					{#if carbon_level == "Low"}
+						<span class="carbon-level-low">
+							{carbon_level}
+						</span>
+					{:else if carbon_level == "Average"}
+						<span class="carbon-level-average">
+							{carbon_level}
+						</span>
+					{:else if carbon_level == "High"}
+						<span class="carbon-level-high">
+							{carbon_level}
+						</span>
+					{:else}
+						<span class="carbon-level-low">
+							None
+						</span>
+					{/if}
+				</div>
+			{:else}
+				<img src="{loading}" class="w-30" alt="">
+			{/if}
+		</div> -->
+		<div class="bg-primary w-100 card-bg template-home-bg flex flex-direction-col flex-gap-large missions-home">
+			<div class="title-card-home">
+				Monthly Missions 
+			</div>
+			<div class="w-100 flex flex-direction-col flex-gap-semi-large  {missions_loaded == true ? "h-fit" : "vh-75"} flex-center-vertical {missions_loaded == false ? "flex-center-horizontal" : "flex-center-vertical"}">
+				{#if missions_loaded != false}
+					{#each missions_list_sorted as mission, index}
+						<div class="card card-mission w-100 {mission.state == "finished" ? "disabled-card" : ""}">
+							<div class="flex flex-center-vertical flex-gap-semi-large">
+								<i class="fa-solid fa-star star-missions"></i>
+								<div class="flex flex-direction-col flex-gap-semi-small">
+									<div class="mission-title">{mission.title}</div>
+									<div class="mission-points">{mission.points} pts</div>
+								</div>
+							</div>
+						</div>
+					{/each}
+				{:else}
+					<img src="{loading}" class="w-30" alt="">
+				{/if}
+			</div>
 		</div>
 	</section>
 </div>

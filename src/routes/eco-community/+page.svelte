@@ -47,6 +47,13 @@
 		}
 
 		posts_real = [...posts]; // Spread the posts array to trigger reactivity
+		 for (let i = 0; i < posts_real.length; i++) {
+		     const postProfileRef = doc(frdb, 'users', posts_real[i].user_id);
+		     const postProfileDoc = await getDoc(postProfileRef);
+		     posts_real[i].profile_picture = postProfileDoc.data().profile_picture;
+		 }
+
+		 console.log(posts_real)
 		posts_loaded = true;
 	}
 
@@ -75,10 +82,21 @@
 	}
 
 	async function handle_like(post) {
-		const postRef = doc(frdb, 'posts', post.id);
+		messageModalSuccess = 1;
+    	messagePayload = "Processing like"
+		post.has_liked = !post.has_liked;
+
+		posts_real = posts_real.map(p => p.id === post.id ? { ...post } : p);
+
 		const likesCollection = collection(frdb, 'likes');
 		const likeQuery = query(likesCollection, where('post_id', '==', post.id.split("_")[1]), where('user_id', '==', localStorage.getItem("username")));
 		const likeSnapshot = await getDocs(likeQuery);
+		if (likeSnapshot.empty) {
+			post.like_count++;
+		} else {
+			post.like_count--;
+		}
+		const postRef = doc(frdb, 'posts', post.id);
 
 		if (likeSnapshot.empty) {
 			// Add like
@@ -92,7 +110,6 @@
 			await updateDoc(postRef, {
 				like_count: increment(1)
 			});
-			post.like_count++;
 
 			if (post.user_id != localStorage.getItem("username")) {
 				sendNotif(post.user_id)
@@ -117,12 +134,11 @@
 			await updateDoc(postRef, {
 				like_count: increment(-1)
 			});
-			post.like_count--;
 		}
-		post.has_liked = !post.has_liked;
 
 		// Trigger reactivity for the specific post
 		posts_real = posts_real.map(p => p.id === post.id ? { ...post } : p);
+		messageModalSuccess = 0;
 	}
 
 	const sendNotif = async (user_id) => {
@@ -306,20 +322,28 @@
 							<div class="card-body flex flex-direction-col flex-gap-semi-small">
 								<div class="title-card">{post.title}</div>
 								<div class="content-card">{post.caption}</div>
-								<div class="flex flex-gap-regular">
-									<div class="flex flex-center-vertical" on:click={() => { handle_like(post) }}>
-										{#if post.has_liked}
-											<i class="fa-solid fa-heart icon-post"></i>
-											<div class="text-icon-post">{post.like_count}</div>
-										{:else}
-											<i class="fa-regular fa-heart icon-post"></i>
-											<div class="text-icon-post">{post.like_count}</div>
-										{/if}
+								<div class="flex flex-between-horizontal">
+									<div class="flex flex-gap-regular">
+										<div class="flex flex-center-vertical" on:click={() => { handle_like(post) }}>
+											{#if post.has_liked}
+												<i class="fa-solid fa-heart icon-post"></i>
+												<div class="text-icon-post">{post.like_count}</div>
+											{:else}
+												<i class="fa-regular fa-heart icon-post"></i>
+												<div class="text-icon-post">{post.like_count}</div>
+											{/if}
+										</div>
+										<div class="flex flex-center-vertical">
+											<a href="/eco-community/{post.id.split('_')[1]}" class="no-decoration" aria-label="Link Post 2">
+												<i class="fa-regular fa-comment icon-post"></i>
+											</a>
+											<div class="text-icon-post">{post.comment_count}</div>
+										</div>
 									</div>
-									<div class="flex flex-center-vertical">
-										<i class="fa-regular fa-comment icon-post"></i>
-										<div class="text-icon-post">{post.comment_count}</div>
-									</div>
+									<div class="flex flex-gap-small flex-center-vertical">
+										<img src="{post.profile_picture}" class="profilePhoto rounded-image">
+							            <div class="user-name-poster-community">@{post.user_id}</div>
+							        </div>
 								</div>
 							</div>
 						</div>
@@ -376,20 +400,28 @@
 							<div class="card-body flex flex-direction-col flex-gap-semi-small">
 								<div class="title-card">{post.title}</div>
 								<div class="content-card">{post.caption}</div>
-								<div class="flex flex-gap-regular">
-									<div class="flex flex-center-vertical" on:click={() => { handle_like(post) }}>
-										{#if post.has_liked}
-											<i class="fa-solid fa-heart icon-post"></i>
-											<div class="text-icon-post">{post.like_count}</div>
-										{:else}
-											<i class="fa-regular fa-heart icon-post"></i>
-											<div class="text-icon-post">{post.like_count}</div>
-										{/if}
+								<div class="flex flex-between-horizontal">
+									<div class="flex flex-gap-regular">
+										<div class="flex flex-center-vertical" on:click={() => { handle_like(post) }}>
+											{#if post.has_liked}
+												<i class="fa-solid fa-heart icon-post"></i>
+												<div class="text-icon-post">{post.like_count}</div>
+											{:else}
+												<i class="fa-regular fa-heart icon-post"></i>
+												<div class="text-icon-post">{post.like_count}</div>
+											{/if}
+										</div>
+										<div class="flex flex-center-vertical">
+											<a href="/eco-community/{post.id.split('_')[1]}" class="no-decoration" aria-label="Link Post 2">
+												<i class="fa-regular fa-comment icon-post"></i>
+											</a>
+											<div class="text-icon-post">{post.comment_count}</div>
+										</div>
 									</div>
-									<div class="flex flex-center-vertical">
-										<i class="fa-regular fa-comment icon-post"></i>
-										<div class="text-icon-post">{post.comment_count}</div>
-									</div>
+									<div class="flex flex-gap-small flex-center-vertical">
+										<img src="{post.profile_picture}" class="profilePhoto rounded-image">
+							            <div class="user-name-poster-community">@{post.user_id}</div>
+							        </div>
 								</div>
 							</div>
 						</div>

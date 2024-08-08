@@ -33,12 +33,25 @@
     let uploaded = 0;
     let done_all_progress = 0;
 
+    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+	const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
+
 
 	function isOverflowY(element) {
 	  return element.scrollHeight != Math.max(element.offsetHeight, element.clientHeight)
 	}
 
 	const setPost = async (title,caption,file,user_id) => {
+		if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+			messageModal = 1;
+			messagePayload = "Only jpg and png files are allowed.";
+			return;
+		}
+		if (file.size > MAX_FILE_SIZE) {
+			messageModal = 1;
+			messagePayload = "File size should not exceed 2MB.";
+			return;
+		}
 		uploaded = 1;	
 		const postId = doc(collection(frdb, 'posts')).id;
 		const storageRef = ref(strg, `posts_images/${file.name}`);

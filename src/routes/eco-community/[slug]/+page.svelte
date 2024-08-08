@@ -75,11 +75,19 @@
     post_detail_loaded = true;
   }
 
-  async function handleLike(post) {
-    const postRef = doc(frdb, 'posts', "post_" + postId);
+  async function handleLike(post_user) {
+    messageModalSuccess = 1;
+    messagePayload = "Processing like"
+    hasLiked = !hasLiked;
     const likesCollection = collection(frdb, 'likes');
     const likeQuery = query(likesCollection, where('post_id', '==', postId), where('user_id', '==', localStorage.getItem("username")));
     const likeSnapshot = await getDocs(likeQuery);
+    if (likeSnapshot.empty) {
+      post_user.like_count++;
+    } else {
+      post_user.like_count--;
+    }
+    const postRef = doc(frdb, 'posts', "post_" + postId);
 
     if (likeSnapshot.empty) {
       const likeId = doc(likesCollection).id;
@@ -90,18 +98,17 @@
       await updateDoc(postRef, {
         like_count: increment(1)
       });
-      post.like_count++;
-      if (post.user_id != localStorage.getItem("username")) {
-        sendNotifLike(post.user_id)
+      if (post_user.user_id != localStorage.getItem("username")) {
+        sendNotifLike(post_user.user_id)
         const notifCollection = collection(frdb, 'notifications');
         const notifId = doc(notifCollection).id;
         await setDoc(doc(notifCollection, notifId), {
-          user_id: post.user_id,
+          user_id: post_user.user_id,
           message: `${localStorage.getItem("username")} liked your post!`,
           page_url: window.location.href,
           timestamp : `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`
         });
-        const userRef = await doc(frdb, 'users', post.user_id);
+        const userRef = await doc(frdb, 'users', post_user.user_id);
         await updateDoc(userRef, {
           notification_count: increment(1)
         });
@@ -111,14 +118,16 @@
       await updateDoc(postRef, {
         like_count: increment(-1)
       });
-      post.like_count--;
     }
-    hasLiked = !hasLiked;
+    post = post_user
+    messageModalSuccess = 0;
   }
 
   async function addComment() {
     if (newComment.trim() === '') return;
 
+    messageModalSuccess = 1;
+    messagePayload = "Adding comment"
     const commentsCollection = collection(frdb, 'comments');
     await addDoc(commentsCollection, {
       post_id: postId,
@@ -151,12 +160,15 @@
     newComment = '';
     await getDetailPost();
     post.comment_count = comments.length;
+    messageModalSuccess = 0;
     overflow = isOverflowY(document.getElementById("form-login"))
   }
 
   async function addReply(commentId) {
     if (newReply.trim() === '') return;
 
+    messageModalSuccess = 1;
+    messagePayload = "Adding reply comment"
     const commentsCollection = collection(frdb, 'comments');
     try {
     	 await addDoc(commentsCollection, {
@@ -197,6 +209,7 @@
     comments.find(c => c.id === commentId).showReplyBox = false;
     replyTo = null;
     newReply = '';
+    messageModalSuccess = 0;
   }
 
   const sendNotifComment = async (user_id) => {
@@ -299,7 +312,7 @@
   <style type="text/css">
     @media screen and (min-width: 1001px) {
       .profilePhoto {
-        width: 27px;
+        width: 25px;
         height: 25px;
         background-size: cover;
       }
@@ -410,10 +423,10 @@
           <div class="flex flex-gap-regular">
             <div class="flex flex-center-vertical" on:click={()=>{handleLike(post)}}>
               {#if hasLiked}
-                <i class="fa-solid fa-heart icon-detail-post"></i>
+                <i class="fa-solid fa-heart icon-detail-post like-cursor"></i>
                 <div class="text-icon-detail-post">{post.like_count}</div>
               {:else}
-                <i class="fa-regular fa-heart icon-detail-post"></i>
+                <i class="fa-regular fa-heart icon-detail-post like-cursor"></i>
                 <div class="text-icon-detail-post">{post.like_count}</div>
               {/if}
             </div>
@@ -527,10 +540,10 @@
           <div class="flex flex-gap-regular">
             <div class="flex flex-center-vertical" on:click={()=>{handleLike(post)}}>
               {#if hasLiked}
-                <i class="fa-solid fa-heart icon-detail-post"></i>
+                <i class="fa-solid fa-heart icon-detail-post like-cursor"></i>
                 <div class="text-icon-detail-post">{post.like_count}</div>
               {:else}
-                <i class="fa-regular fa-heart icon-detail-post"></i>
+                <i class="fa-regular fa-heart icon-detail-post like-cursor"></i>
                 <div class="text-icon-detail-post">{post.like_count}</div>
               {/if}
             </div>

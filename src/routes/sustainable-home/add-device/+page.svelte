@@ -41,6 +41,8 @@
 	let month = dateObj.getUTCMonth();
 	let day = dateObj.getUTCDate();
 	let year = dateObj.getUTCFullYear();
+	const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+	const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png'];
 
 
 	function isOverflowY(element) {
@@ -58,6 +60,16 @@
 	}
 
 	let addDevice = (device_name,device_category,device_picture,user_id) => {
+		if (!ALLOWED_FILE_TYPES.includes(device_picture.type)) {
+			messageModal = 1;
+			messagePayload = "Only jpg and png files are allowed.";
+			return;
+		}
+		if (device_picture.size > MAX_FILE_SIZE) {
+			messageModal = 1;
+			messagePayload = "File size should not exceed 2MB.";
+			return;
+		}
 		uploaded = 1;
 		discover_device = 1;	
 		const storageRef = ref_storage(strg, `device_images/${device_picture.name}`);
@@ -292,6 +304,9 @@
 		</div>
 		<div class="bg-primary vw-100 h-fit template-home-bg flex flex-direction-col flex-gap-large" id="form-login">
 			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+					<div class="form-note w-100">You can only fill this form once a month!</div>
+				</div>
 				<div class="flex flex-direction-col flex-gap-regular">
 					<div class="head-input-secondary">Device Name</div>
 					<input type="text" name="" class="input-field w-100" placeholder="input device name.." bind:value={device_name}>
@@ -348,6 +363,16 @@
 		</div>
 		<div class="bg-primary w-100 h-90 template-home-bg flex flex-direction-col flex-gap-large missions-home" id="form-login">
 			<div class="flex flex-direction-col flex-gap-semi-large">
+				<div class="flex flex-direction-col flex-gap-regular flex-center-vertical flex-center-horizontal">
+					<div class="form-note w-100 flex flex-gap-semi-small flex-direction-col flex-center-vertical flex-center-horizontal">
+						<div>Please read this instruction!</div>
+						<ul class="flex flex-direction-col flex-gap-semi-small">
+							<li class="line-controller">Upon first attempt registering your smart device, please connect the smart device and your smartphone/laptop/computer to the same wireless network (Wi-Fi)</li>
+							<li class="line-controller">Please wait for 5 to 10 seconds for the smart device to be found</li>
+							<li class="line-controller">After the device is registered, you can use other network on your smartphone/laptop/computer and control your smart device anytime and anywhere</li>
+						</ul>
+					</div>
+				</div>
 				<div class="flex flex-direction-col flex-gap-regular">
 					<div class="head-input-secondary">Device Name</div>
 					<input type="text" name="" class="input-field w-100" placeholder="input device name.." bind:value={device_name}>
