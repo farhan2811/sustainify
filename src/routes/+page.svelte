@@ -242,7 +242,7 @@
 			</div>
 			<div class="flex flex-direction-col flex-gap-semi-large">
 				<div class="flex flex-direction-col flex-gap-regular">
-					<div class="head-input-primary">Email</div>
+					<div class="head-input-primary">Email/Username</div>
 					<input type="text" name="" class="input-field w-100" placeholder="input email/username.." bind:value={email} on:keypress={(e) => { if (e.key === 'Enter') loginFlow(); }}>
 				</div>
 				<div class="flex flex-direction-col flex-gap-regular">
